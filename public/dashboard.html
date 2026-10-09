@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aangan Dashboard</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%23b5532f%27/%3E%3Cpath d=%27M9 24V15a7 7 0 0 1 14 0v9%27 fill=%27none%27 stroke=%27white%27 stroke-width=%273%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/app.css">
+<style>
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.kpi{padding:14px 16px}
+.kpi .v{font-size:1.9rem;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+.kpi .l{color:var(--muted);font-size:.84rem;margin-top:4px}
+.kpi .s{font-size:.78rem;margin-top:6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:860px){.two{grid-template-columns:1fr}}
+section.block{margin:22px 0}
+.sec-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.sec-h p{margin:0}
+.bar{height:10px;border-radius:6px;background:var(--surface2);overflow:hidden;display:flex}
+.bar i{display:block;height:100%}
+.cmp{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:6px 14px;align-items:center;font-size:.92rem}
+.cmp .h{font-size:.76rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.cmp .bad{color:var(--bad);font-weight:700} .cmp .good{color:var(--good);font-weight:700}
+.kv{display:grid;grid-template-columns:1fr auto;gap:6px 12px;font-size:.92rem}
+.kv .tot{border-top:1px solid var(--line);padding-top:8px;font-weight:700}
+.assume{background:var(--warn-bg);color:var(--warn);border-radius:6px;padding:0 6px;font-size:.72rem;font-weight:700;margin-left:6px}
+.meas{background:var(--good-bg);color:var(--good);border-radius:6px;padding:0 6px;font-size:.72rem;font-weight:700;margin-left:6px}
+dialog{border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);max-width:min(760px,94vw);width:100%;padding:0}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+.dlg{padding:18px;max-height:82vh;overflow:auto}
+.note{background:#17212b;color:#e8eef3;border-radius:12px;padding:14px;white-space:pre-wrap;font:.86rem/1.5 ui-monospace,Menlo,monospace}
+.tr{display:grid;gap:6px;margin-top:10px;font-size:.9rem}
+.tr div{padding:7px 11px;border-radius:10px;max-width:90%} .tr .a{background:var(--surface2)} .tr .c{background:var(--accent);color:var(--accent-ink);justify-self:end}
+.settings{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+label.f{display:grid;gap:4px;font-size:.84rem;color:var(--muted)}
+details>summary{cursor:pointer;font-weight:600}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/"><i></i>Aangan Desk</a>
+  <nav aria-label="Main"><a href="/">Live call</a><a href="/dashboard" aria-current="page">Dashboard</a><a href="/brief">Brief &amp; checks</a></nav>
+</div></header>
+<main class="wrap">
+  <div style="padding:24px 0 8px">
+    <h1>Nikhil's dashboard</h1>
+    <p class="muted" style="max-width:68ch">What the phone assistant handled, what it produced for your designers, and what it costs to run. Nothing here needs pulling by hand.</p>
+    <div id="mode" class="banner" role="status">Loading&hellip;</div>
+  </div>
+
+  <section class="block"><div class="kpis" id="kpis"></div></section>
+
+  <section class="block two">
+    <div class="card">
+      <div class="sec-h"><h2>What it costs</h2><span class="muted small" id="costBasis"></span></div>
+      <div class="kv" id="costKv"></div>
+    </div>
+    <div class="card">
+      <div class="sec-h"><h2>What it generates</h2><span class="muted small">pipeline, not revenue</span></div>
+      <div class="kv" id="valKv"></div>
+      <p class="small muted" style="margin-top:12px" id="roiLine"></p>
+    </div>
+  </section>
+
+  <section class="block card">
+    <div class="sec-h"><h2>September with the front desk vs. with the assistant</h2><span class="muted small">phone calls, from the 20 real transcripts</span></div>
+    <div class="cmp" id="cmp"></div>
+    <p class="small muted" style="margin-top:12px" id="cmpNote"></p>
+  </section>
+
+  <section class="block card">
+    <div class="sec-h"><h2>Calls handled</h2><span class="muted small" id="leadCount"></span>
+      <span style="margin-left:auto;display:flex;gap:8px"><button class="btn sm" id="csv">Download CSV</button><button class="btn sm" id="clear">Clear demo calls</button></span></div>
+    <div class="scroll"><table id="leads"><thead><tr><th>When</th><th>Caller</th><th>Outcome</th><th>Priority</th><th>Answered in</th><th>Length</th><th>AI cost</th><th>Handoff</th></tr></thead><tbody></tbody></table></div>
+    <p class="muted small" id="empty" hidden>No calls yet. Make one on the <a href="/">Live call</a> page and it will appear here.</p>
+  </section>
+
+  <section class="block card">
+    <div class="sec-h"><h2>Back-test: the 40 September enquiries through the rules</h2><span class="muted small" id="btSum"></span></div>
+    <details><summary>Show all 40 (what actually happened vs. what the assistant would decide)</summary>
+      <div class="scroll" style="margin-top:10px"><table id="bt"><thead><tr><th>ID</th><th>Channel</th><th>What happened in September</th><th>Assistant verdict</th><th>Five checks</th></tr></thead><tbody></tbody></table></div>
+    </details>
+  </section>
+
+  <section class="block card">
+    <details><summary>Assumptions you can change (cost model)</summary>
+      <p class="small muted">The AI cost is measured from real token counts. The phone/voice layer is not built in this demo, so its price is an assumption. Replace these with real quotes.</p>
+      <div class="settings" id="settings"></div>
+    </details>
+  </section>
+</main>
+<dialog id="dlg"><div class="dlg" id="dlgBody"></div></dialog>
+<footer><div class="wrap">Case 03 &middot; Aangan Studio &middot; Figures marked <span class="assume">assumption</span> are estimates; <span class="meas">measured</span> comes from real calls.</div></footer>
+<script src="/common.js"></script>
+<script src="/dashboard.js"></script>
+</body>
+</html>

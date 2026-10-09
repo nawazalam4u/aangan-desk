@@ -1,0 +1,67 @@
+[
+ {
+  "label": "Qualified home (asks price)",
+  "open": "Hi, I got your number from a friend, Shruti Joshi. We have a 3BHK and want to redo the whole thing, kitchen, living room and both bedrooms. Can you tell me roughly how much it would cost?",
+  "a": {
+   "location": "It's in Kothrud, Dahanukar Colony.",
+   "timeline": "We'd like to be done by March. We're in no rush.",
+   "size": "About 1,400 sq ft carpet.",
+   "property_state": "We bought it two years ago and it still looks like the builder flat.",
+   "name": "I'm Priya Kulkarni. My husband and I own it and he's happy to go ahead.",
+   "slot": "Weekends work best for us.",
+   "project": "A full redesign with execution."
+  }
+ },
+ {
+  "label": "Startup office",
+  "open": "Hi, I'm the founder of a startup. We just got a bare-shell office of about 800 sq ft in Baner. We need workstations for 20 people, a cabin and a meeting room.",
+  "a": {
+   "timeline": "We want to be operational by December.",
+   "property_state": "Bare shell, just columns and floor.",
+   "name": "I'm Rohan Mehta.",
+   "slot": "Any weekday afternoon.",
+   "size": "About 800 sq ft.",
+   "location": "Baner."
+  }
+ },
+ {
+  "label": "Out of area (Nashik)",
+  "open": "Hello, I saw your work on LinkedIn. I'm in Nashik. Would you take on redoing my home office and study?",
+  "a": {}
+ },
+ {
+  "label": "Budget far too low",
+  "open": "Hi, I have a 1BHK in Kharadi, about 550 sq ft. I want the kitchen and one bedroom done. My budget is 1 to 1.5 lakh maximum for everything. Is that possible?",
+  "a": {}
+ },
+ {
+  "label": "Needs it in 3 weeks",
+  "open": "I want to redo my living room and kitchen in my flat in Baner before Diwali, which is three weeks away. Can you take it up?",
+  "a": {}
+ },
+ {
+  "label": "Only wants ideas",
+  "open": "Hi, can someone come and give us some ideas for our living room? Just suggestions on colours and furniture arrangement.",
+  "a": {}
+ },
+ {
+  "label": "Restaurant",
+  "open": "I'm planning to open a restaurant in Koregaon Park. Could you design the interiors?",
+  "a": {}
+ },
+ {
+  "label": "Angry existing client",
+  "open": "I need to speak to someone senior right now. My project has been going for three months and my designer hasn't replied in five days. This is not acceptable.",
+  "a": {
+   "name": "Sheetal Deshpande, my designer is Aryan."
+  }
+ },
+ {
+  "label": "Call drops midway",
+  "open": "Hi, I have a 3BHK in Pimple Saudagar and I want to do the interiors. We want to start now.",
+  "a": {
+   "timeline": "Ideally done by March."
+  },
+  "hangAfter": 2
+ }
+]

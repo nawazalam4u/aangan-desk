@@ -1,0 +1,9 @@
+.env
+.env.local
+.vercel
+__pycache__/
+*.pyc
+.DS_Store
+# course case files (internal pricing guide, rubric, transcripts) are not republished
+data/
+tests/enquiries.py

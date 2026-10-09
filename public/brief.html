@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aangan Brief and Checks</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%23b5532f%27/%3E%3Cpath d=%27M9 24V15a7 7 0 0 1 14 0v9%27 fill=%27none%27 stroke=%27white%27 stroke-width=%273%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/app.css">
+<style>
+.page{max-width:900px;margin:0 auto;padding:24px 16px 10px}
+.toc{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 6px}
+.toc a{padding:5px 12px;border:1px solid var(--line);border-radius:99px;text-decoration:none;color:var(--ink);font-size:.86rem;background:var(--surface)}
+section{margin:34px 0;scroll-margin-top:70px}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:760px){.three{grid-template-columns:1fr}}
+.three .card h3{color:var(--accent)}
+ol.journey{padding-left:0;list-style:none;display:grid;gap:8px;counter-reset:j}
+ol.journey li{counter-increment:j;display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:start}
+ol.journey li:before{content:counter(j);width:28px;height:28px;border-radius:50%;background:var(--surface2);display:grid;place-items:center;font-weight:700;font-size:.82rem}
+ol.journey li.bad:before{background:var(--bad-bg);color:var(--bad)}
+.group{margin:18px 0 6px;font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:700}
+.ck{display:grid;grid-template-columns:52px 1fr auto;gap:4px 12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.ck .no{font-weight:800;color:var(--accent)} .ck h3{margin:0;font-size:1rem} .ck p{margin:2px 0 0;font-size:.9rem;color:var(--muted)} .ck .ev{grid-column:2/4;font-size:.92rem}
+.cut{border:2px solid var(--bad);background:var(--bad-bg);border-radius:var(--r);padding:16px 18px}
+.cut h2{color:var(--bad);margin-bottom:6px}
+.map{display:grid;grid-template-columns:110px repeat(6,minmax(0,1fr));gap:6px;font-size:.78rem;min-width:860px}
+.map .h{font-weight:800;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;text-align:center;padding:8px 4px;background:var(--ink);color:var(--bg);border-radius:8px}
+.map .a{font-weight:700;display:flex;flex-direction:column;justify-content:center;padding:6px 8px;border-radius:8px;background:var(--surface2)}
+.map .a small{font-weight:500;color:var(--muted)}
+.map .c{border:1px dashed var(--line);border-radius:8px;padding:6px 7px;min-height:74px;background:var(--surface)}
+.map .c.on{border:1px solid var(--info);background:var(--info-bg)}
+.map .c.ai{border:1px solid var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--surface))}
+.map .c.gate{border:2px solid var(--bad);background:var(--bad-bg)}
+.map .c.code{border:1px solid var(--good);background:var(--good-bg)}
+.map b{display:block;font-size:.8rem}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--accent);margin-right:4px;vertical-align:middle}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.8rem;margin-top:10px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px;border:1px solid}
+.flags{display:grid;gap:10px}
+.flag{display:grid;grid-template-columns:auto 1fr;gap:10px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.flag .p{font-size:.72rem;font-weight:800;border-radius:6px;padding:2px 7px;height:fit-content;white-space:nowrap}
+.flag .p.hi{background:var(--bad-bg);color:var(--bad)} .flag .p.md{background:var(--warn-bg);color:var(--warn)} .flag .p.lo{background:var(--info-bg);color:var(--info)}
+.flag h3{margin:0 0 2px;font-size:.98rem} .flag p{margin:0;font-size:.9rem;color:var(--muted)}
+.cmp2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:700px){.cmp2{grid-template-columns:1fr}}
+.cmp2 ul{margin:6px 0 0;padding-left:18px;font-size:.92rem} .cmp2 .win{border-color:var(--good)}
+code{background:var(--surface2);padding:1px 6px;border-radius:6px;font-size:.88em}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/"><i></i>Aangan Desk</a>
+  <nav aria-label="Main"><a href="/">Live call</a><a href="/dashboard">Dashboard</a><a href="/brief" aria-current="page">Brief &amp; checks</a></nav>
+</div></header>
+
+<main class="page">
+  <h1>Nikhil: Unanswered Enquiries</h1>
+  <p class="muted">MESA AI and its Application &middot; Founder's Office &middot; Cohort C4 &middot; Case 03. I own this build, and this page is the reasoning behind it.</p>
+  <div class="toc"><a href="#brief">1 Automation brief</a><a href="#checks">2 Nine checks</a><a href="#cut">The Cut</a><a href="#map">3 Components map</a><a href="#telegram">Telegram vs email</a><a href="#flags">Red flags</a><a href="#extend">Other channels</a></div>
+
+  <section id="brief">
+    <h2>1. Automation brief</h2>
+    <div class="three">
+      <div class="card"><h3>Pain</h3><p>About 200 enquiries a month, and roughly <b>48% get no reply within 48 hours</b> (around 96 a month). A third arrive outside the 10am to 7pm desk. Nikhil's own numbers: an answer inside an hour converts at 4&times; the next-day rate, and the average project is &#8377;8&ndash;14 lakh. When an enquiry does reach a designer it is a forwarded message with no context, so the first call is spent re-asking what the desk already asked.</p><p class="small muted">September phone evidence: T08 missed at 10:47pm and the call-back went unanswered; T16 called on Monday and was never logged; T07 hung up before anyone took a name or number; T17's line dropped.</p></div>
+      <div class="card"><h3>User</h3><p><b>The caller</b>: a first-time Pune or PCMC enquirer who talks to the assistant. <b>The designer</b>: 14 of them, mostly out on sites, who receive the note. <b>Nikhil</b>: owns the rules and reads the dashboard.</p><p class="small muted">The front desk (2 people) is not replaced. They keep consultations, calendars and relationships; the assistant removes the unanswered and unrecorded calls.</p></div>
+      <div class="card"><h3>Outcome</h3><ul style="padding-left:18px;margin:0 0 8px"><li><b>100%</b> of calls answered in under 5 minutes, day or night (target: on the first ring)</li><li><b>0</b> calls lost to process (missed, unlogged, no details)</li><li>Every qualified lead reaches a designer in <b>under 5 minutes</b> with all the basics</li><li><b>0</b> prices quoted</li><li>Cost per qualified lead on the dashboard</li></ul></div>
+    </div>
+    <h3 style="margin-top:22px">The journey today (phone)</h3>
+    <ol class="journey">
+      <li><span>A caller rings the studio number, often after seeing Instagram or a friend's flat.</span></li>
+      <li class="bad"><span><b>10am to 7pm only.</b> Outside that the phone rings out (T08, 10:47pm: no voicemail, call-back next morning unanswered).</span></li>
+      <li><span>The desk asks questions in whatever order comes to mind. Size, timeline and ownership are asked in some calls and skipped in others.</span></li>
+      <li class="bad"><span><b>Notes are inconsistent.</b> T16: "I don't see a note", the Monday call was never recorded. T07: no name or number taken.</span></li>
+      <li class="bad"><span>The desk decides alone who is "worth a designer", with Nikhil's rubric in their head (Nashik, advice-only, restaurant, &#8377;1&ndash;1.5 lakh budget were all handled well, but only by memory).</span></li>
+      <li class="bad"><span>The lead is forwarded to a designer as a message <b>with no context</b>; booking waits for the calendar ("I'll revert by end of day", T12).</span></li>
+      <li class="bad"><span>The designer calls and <b>re-asks the same questions</b>, and Nikhil has no number for any of it until he pulls them by hand.</span></li>
+    </ol>
+  </section>
+
+  <section id="checks">
+    <h2>2. The Nine Checks</h2>
+    <p class="muted">Evidence is from the case files and the 20 phone transcripts.</p>
+    <div class="group">Kill switches: any No means do not build</div>
+    <div class="ck"><span class="no">01</span><div><h3>Problem Real</h3><p>Is there documented, ongoing evidence of pain?</p></div><span class="pill good">Pass</span><div class="ev">Nikhil's own pull: 48% unanswered in 48 hours and a 4&times; conversion gap. The transcripts show it live: T08, T16, W02, W08 (a customer says "is anyone monitoring this number?").</div></div>
+    <div class="ck"><span class="no">02</span><div><h3>Workflow Repeated</h3><p>Does this task recur regularly?</p></div><span class="pill good">Pass</span><div class="ev">~200 enquiries a month, with 20 phone calls in the 40-transcript September sample. The same five questions are asked on nearly every call.</div></div>
+    <div class="ck"><span class="no">03</span><div><h3>Input Available</h3><p>Do all inputs exist and are they accessible now?</p></div><span class="pill good">Pass</span><div class="ev">Yes for the logic: 40 transcripts, <code>services.md</code>, <code>qualified.md</code> and <code>pricing.md</code> exist today. Caveat: the live phone line (a number, telephony and speech) is an integration, not data, so it is not in the demo. The demo uses the browser's microphone.</div></div>
+    <div class="group">Sizing: any No means build something smaller</div>
+    <div class="ck"><span class="no">04</span><div><h3>Output Valuable</h3><p>Would someone pay for or act on this output?</p></div><span class="pill good">Pass</span><div class="ev">A designer acts on a complete note; Nikhil acts on the dashboard. Callers get an answer at 11pm instead of nothing.</div></div>
+    <div class="ck"><span class="no">05</span><div><h3>Impact Measurable</h3><p>Can you track improvement with a number?</p></div><span class="pill good">Pass</span><div class="ev">Logged on every call: time to answer, outcome, time to Telegram, time to designer claim, minutes, AI cost. The dashboard replaces Nikhil's manual pull.</div></div>
+    <div class="ck"><span class="no">08</span><div><h3>ROI Worth It</h3><p>Does the benefit clearly outweigh build and running cost?</p></div><span class="pill good">Pass</span><div class="ev">The AI itself costs an estimated 40 paise a call (the dashboard shows the measured figure once real calls run); with an assumed &#8377;10 a minute for the phone and speech layer the total is roughly &#8377;46 a call, about &#8377;9,000 a month at 200 calls. One extra &#8377;8&ndash;14 lakh project covers about a year of it. The voice price is an assumption to replace with a real quote.</div></div>
+    <div class="group">Boundary: any No means build the tool, the human stays here</div>
+    <div class="ck"><span class="no">06</span><div><h3>Failure Risk OK</h3><p>If the AI gets it wrong, what is the consequence?</p></div><span class="pill bad">No for pricing</span><div class="ev"><b>Pricing fails this check.</b> A wrong number on a &#8377;8&ndash;14 lakh decision anchors the customer and cannot be taken back. T13: a standard vs premium kitchen alone can be 3&times; the cost. Every other failure is recoverable (a wrongly closed caller is logged and reviewable), so those stay with the AI.</div></div>
+    <div class="ck"><span class="no">07</span><div><h3>Judgment Protected</h3><p>Does a human review before anything consequential happens?</p></div><span class="pill good">Pass</span><div class="ev">The assistant only <b>forwards</b>. The designer owns the price, the consultation and the fit; senior staff own complaints (T09); nothing is booked, promised or quoted by the AI.</div></div>
+    <div class="ck"><span class="no">09</span><div><h3>Owner Clear</h3><p>Is one person accountable for the output?</p></div><span class="pill good">Pass</span><div class="ev"><b>Nikhil.</b> He owns <code>qualified.md</code>, the rules in code mirror it, and the dashboard lists every closed call so he can spot a good lead declined by mistake.</div></div>
+  </section>
+
+  <section id="cut">
+    <div class="cut">
+      <h2>The Cut: quoting per-square-foot pricing</h2>
+      <p><b>Nikhil asked for it:</b> "the system should be able to quote our standard per-square-foot pricing so people don't have to wait for that."</p>
+      <p><b>The check that stops it: 06, Failure Risk</b> (with 07 behind it). <code>pricing.md</code> is headed "indicative only, varies by site" and says no number from the guide should ever be quoted. It lists what the agent must never say: any figure, range, "it'll cost around", "our rates start at". The only approved answer is to defer to the designer and offer the booking.</p>
+      <p><b>What I built instead:</b> the assistant answers a price question with the approved line, once, and keeps going. It never disqualifies for asking (<code>qualified.md</code>). Two September callers (T02, T13) asked twice, were deflected, and still booked. That is the evidence this works.</p>
+      <p><b>Enforced in code, not only in a prompt:</b> every reply passes a filter that blocks any rupee figure, "lakh", "per sq ft" and similar. If the AI ever slips, the reply is replaced with the approved line and the dashboard counts the attempt.</p>
+      <p class="small" style="margin:0"><b>What Nikhil gets for his underlying need</b> (people should not wait): the caller is answered in seconds and the designer calls back with a real number at the consultation.</p>
+    </div>
+  </section>
+
+  <section id="map">
+    <h2>3. Components map</h2>
+    <p class="muted">Trigger &rarr; Input &rarr; Context &rarr; Processing &rarr; AI &rarr; Output. <span class="dot"></span>marks a handoff; the red cell is the human gate.</p>
+    <div class="scroll"><div class="map" role="table" aria-label="Components map">
+      <div></div><div class="h">Trigger</div><div class="h">Input</div><div class="h">Context</div><div class="h">Processing</div><div class="h">AI</div><div class="h">Output</div>
+
+      <div class="a">Caller<small>customer</small></div>
+      <div class="c on"><b><span class="dot"></span>Rings the studio number</b>any hour, any day</div>
+      <div class="c on"><b>Speaks</b>answers one question at a time</div>
+      <div class="c"></div><div class="c"></div><div class="c"></div>
+      <div class="c on"><b>Hears the reply</b>no price, honest decline, or "team will call you"</div>
+
+      <div class="a">Phone layer<small>demo: browser mic and speaker</small></div>
+      <div class="c on"><b><span class="dot"></span>Answers on the first ring</b>greeting says it is an AI and the call is recorded</div>
+      <div class="c on"><b>Speech to text</b>en-IN; Hinglish is next</div>
+      <div class="c"></div><div class="c"></div><div class="c"></div>
+      <div class="c on"><b>Text to speech</b>reads the reply aloud</div>
+
+      <div class="a">Aangan Desk<small>Vercel serverless (code)</small></div>
+      <div class="c"></div><div class="c"></div>
+      <div class="c code"><b>Context</b><code>services.md</code>, <code>qualified.md</code>, pricing guardrail, Pune/PCMC list, today's date</div>
+      <div class="c code"><b>Rules engine</b>5 criteria &rarr; ask / decline / escalate / forward. Price filter. Dedupe. Drop-call call-back.</div>
+      <div class="c ai"><b>Gemini 3.1 Flash-Lite</b>extracts facts, words the reply. Never decides.</div>
+      <div class="c code"><b><span class="dot"></span>Handoff note + lead record</b>every call logged</div>
+
+      <div class="a">Telegram bot<small>handoff channel</small></div>
+      <div class="c"></div><div class="c"></div><div class="c"></div><div class="c"></div><div class="c"></div>
+      <div class="c on"><b><span class="dot"></span>Posts to designers' group</b>"I'll take it" button</div>
+
+      <div class="a">Designer<small>14, on site</small></div>
+      <div class="c gate"><b>Human gate</b>reads the note, claims the lead</div>
+      <div class="c"></div><div class="c"></div>
+      <div class="c gate"><b>Judgment</b>calls back, runs the consultation</div><div class="c"></div>
+      <div class="c gate"><b>Owns the price</b>quoted at consultation only</div>
+
+      <div class="a">Nikhil<small>founder</small></div>
+      <div class="c gate"><b>Escalations</b>complaints from existing clients</div><div class="c"></div>
+      <div class="c"><b>Owns the rules</b><code>qualified.md</code></div><div class="c"></div><div class="c"></div>
+      <div class="c on"><b>Dashboard</b>volume, response, cost, value, closed list</div>
+    </div></div>
+    <div class="legend"><span><i style="background:var(--info-bg);border-color:var(--info)"></i>System step</span><span><i style="background:var(--good-bg);border-color:var(--good)"></i>Plain code (testable)</span><span><i style="background:color-mix(in srgb,var(--accent) 12%,var(--surface));border-color:var(--accent)"></i>AI</span><span><i style="background:var(--bad-bg);border-color:var(--bad)"></i>Human gate</span></div>
+    <p class="small muted" style="margin-top:10px"><b>Why the AI is a small box:</b> it turns speech into facts and facts into a friendly sentence. Deciding who is worth a designer's time, and whether a number can be said, is plain code written from Nikhil's own rubric, so I can test it against all 40 real enquiries (they agree with my reading of his rubric on all 40; &ldquo;qualified&rdquo; and &ldquo;needs one more answer&rdquo; count together because a live call asks the missing question) and he can change a rule without touching a prompt.</p>
+  </section>
+
+  <section id="telegram">
+    <h2>Telegram or email for the handoff?</h2>
+    <p><b>I chose Telegram,</b> and kept the database as the permanent record.</p>
+    <div class="cmp2">
+      <div class="card win"><h3>Telegram (chosen)</h3><ul>
+        <li><b>It matches the 5-minute promise.</b> A push alert reaches a designer standing on a site. Email gets triaged later.</li>
+        <li><b>One tap to own it.</b> The "I'll take it" button stops two designers calling the same person, and the claim time is measured on the dashboard.</li>
+        <li><b>No routing guesswork.</b> We have no data on designer specialties, so a shared group beats picking one inbox.</li>
+        <li><b>Free and instant.</b> A bot is a minute to create; no domain, SPF or spam-folder risk.</li>
+        <li>I have already built this pattern in Case 1.</li></ul></div>
+      <div class="card"><h3>Email</h3><ul>
+        <li>Good record and attachments, but easy to miss on a phone.</li>
+        <li>No claim button, so duplicate or dropped follow-ups.</li>
+        <li>Needs a verified sending domain to stay out of spam.</li>
+        <li><b>Weakness of Telegram I am covering:</b> messages can be deleted and are not a system of record, so every note also lives in the database and the dashboard. The group must be private: it contains callers' phone numbers.</li></ul></div>
+    </div>
+    <p class="small muted" style="margin-top:10px">When I would switch: if designers will not install Telegram (many Indian teams live on WhatsApp, but its business API needs paid, pre-approved templates), or if compliance needs email. The sender is one function, so the change is small.</p>
+  </section>
+
+  <section id="flags">
+    <h2>Red flags I found, and what I did</h2>
+    <div class="flags">
+      <div class="flag"><span class="p hi">HIGH</span><div><h3>The ask contradicts <code>pricing.md</code></h3><p>Nikhil wants per-sq-ft quotes; his own guide forbids any number. Not built; deflection is enforced in code. See The Cut.</p></div></div>
+      <div class="flag"><span class="p hi">HIGH</span><div><h3>A real phone line is not included</h3><p>"Day or night" needs an Indian phone number, telephony and speech in English, Hindi and Marathi (W03 is Hinglish). That needs accounts, KYC and money only Nikhil can provide. The demo runs the full brain through the browser mic; connecting a provider replaces only the voice layer. Next step, not a hidden gap.</p></div></div>
+      <div class="flag"><span class="p md">MED</span><div><h3>Two timeline rules disagree</h3><p><code>services.md</code> says execution cannot start if it must be ready in under 6 weeks; <code>qualified.md</code> says 8&ndash;10 weeks. I used 6 weeks as the hard stop and flag anything under 12 weeks for the designer. Nikhil should confirm.</p></div></div>
+      <div class="flag"><span class="p md">MED</span><div><h3>A 500 sq ft commercial minimum appears only in T18</h3><p>The desk said it on the call, but it is not in <code>services.md</code>. Implemented as a soft rule in one constant; Nikhil to confirm or delete.</p></div></div>
+      <div class="flag"><span class="p md">MED</span><div><h3>The rubric has no category for angry existing clients</h3><p>T09 (a client with an unreplied designer) is not an enquiry. I added an escalation path that skips qualification and alerts a senior person. The AI never argues or promises.</p></div></div>
+      <div class="flag"><span class="p md">MED</span><div><h3>Recording and consent</h3><p>The greeting says it is an AI and that the call is recorded. India's data-protection law applies to callers' phone numbers; the Telegram group must be private and members limited to designers.</p></div></div>
+      <div class="flag"><span class="p md">MED</span><div><h3>The 5-minute promise stops at Telegram</h3><p>If no designer claims a lead, it still waits. The dashboard measures claim time; the next step is an automatic nudge to Nikhil after 15 minutes unclaimed.</p></div></div>
+      <div class="flag"><span class="p lo">LOW</span><div><h3>"4&times; conversion" is a correlation</h3><p>Fast answers may go to hotter leads. I will not promise Nikhil a 4&times; lift; the dashboard lets him measure the real effect.</p></div></div>
+      <div class="flag"><span class="p lo">LOW</span><div><h3>Small data problems</h3><p>The brief names "Arjun" (the founder is Nikhil, a leftover from Case 02). The zip had no <code>enquiries/</code> folder; the 40 transcripts came as one PDF and I used all of them. Phone numbers are redacted, so repeat-caller matching is tested on the caller-ID field only.</p></div></div>
+    </div>
+  </section>
+
+  <section id="extend">
+    <h2>How this extends to WhatsApp and the web form</h2>
+    <p>Not built (out of scope), but the design is ready: the rules engine, the guardrail, the note and the dashboard are channel-free. A WhatsApp message would call the same <code>/api/turn</code> endpoint and the web form is a single-shot version of the same extraction. I already ran all 40 enquiries, including the 10 WhatsApp and 10 form ones, through the rules as a test. Only the trigger and the reply channel change. The September numbers show why it matters next: 2 of 10 WhatsApp threads sat unanswered for 2 to 4 days, 5 more waited 16+ hours, and the form enquiries have no response times recorded at all.</p>
+  </section>
+</main>
+<footer><div class="wrap">Case 03 &middot; Aangan Studio &middot; <a href="/dashboard">Dashboard</a> &middot; <a href="/">Try a call</a></div></footer>
+<script>
+if (/[?&]only=map/.test(location.search)) {
+  document.querySelectorAll('header.top,footer,.toc,main>h1,main>p,main>section:not(#map)').forEach(e => e.remove());
+  document.documentElement.setAttribute('data-theme', 'light');
+  document.querySelector('.page').style.maxWidth = '1200px';
+  document.querySelector('.scroll').style.overflow = 'visible';
+}
+</script>
+</body>
+</html>

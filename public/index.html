@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aangan Desk</title>
+<meta name="description" content="An AI phone assistant for Aangan Studio that answers every enquiry instantly, qualifies it with Nikhil's rubric and hands designers a complete note.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%23b5532f%27/%3E%3Cpath d=%27M9 24V15a7 7 0 0 1 14 0v9%27 fill=%27none%27 stroke=%27white%27 stroke-width=%273%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/app.css">
+<style>
+.hero{padding:30px 0 10px}
+.hero p{max-width:62ch;color:var(--muted)}
+.layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px;align-items:start;padding-bottom:30px}
+@media (max-width:900px){.layout{grid-template-columns:1fr}}
+.phone{display:flex;flex-direction:column;height:min(640px,78vh);padding:0;overflow:hidden}
+.phone-head{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--surface2)}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--muted)} .dot.live{background:var(--good);box-shadow:0 0 0 4px color-mix(in srgb,var(--good) 25%,transparent);animation:pulse 1.6s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 8px transparent}}
+@media (prefers-reduced-motion:reduce){.dot.live{animation:none}}
+.log{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:84%;padding:9px 13px;border-radius:14px;font-size:.96rem;white-space:pre-wrap}
+.msg.agent{background:var(--surface2);border-bottom-left-radius:4px;align-self:flex-start}
+.msg.caller{background:var(--accent);color:var(--accent-ink);border-bottom-right-radius:4px;align-self:flex-end}
+.msg small{display:block;opacity:.65;font-size:.72rem;margin-bottom:2px}
+.msg.sys{align-self:center;background:transparent;color:var(--muted);font-size:.82rem;max-width:100%;text-align:center}
+.controls{border-top:1px solid var(--line);padding:12px;display:grid;gap:10px}
+.row{display:flex;gap:8px;align-items:center}
+.row>input{flex:1}
+.idle{padding:22px;text-align:center;margin:auto;max-width:34ch}
+.idle .big{font-size:1.1rem;font-weight:700;margin-bottom:6px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:6px 12px;font-size:.86rem;cursor:pointer;color:var(--ink)}
+.chip:hover{background:var(--surface2)}
+.side h3{margin-bottom:8px}
+.crit{display:grid;grid-template-columns:auto 1fr auto;gap:8px 10px;align-items:center;font-size:.9rem}
+.crit .n{width:22px;height:22px;border-radius:50%;background:var(--surface2);display:grid;place-items:center;font-weight:700;font-size:.76rem}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:.88rem}
+.facts dt{color:var(--muted)} .facts dd{margin:0;font-weight:600}
+.tg{background:#17212b;color:#e8eef3;border-radius:14px;padding:14px;font-size:.88rem;white-space:pre-wrap;font-family:ui-monospace,Menlo,monospace;line-height:1.5}
+.tg .btnrow{margin-top:12px;display:block;width:fit-content;background:#2b5278;color:#fff;border-radius:8px;padding:6px 12px;font-family:inherit}
+.stat{display:flex;gap:18px;flex-wrap:wrap;font-size:.86rem;color:var(--muted)}
+.stat b{color:var(--ink)}
+.callout{border-left:4px solid var(--accent);padding:2px 14px;margin:6px 0 14px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/"><i></i>Aangan Desk</a>
+  <nav aria-label="Main"><a href="/" aria-current="page">Live call</a><a href="/dashboard">Dashboard</a><a href="/brief">Brief &amp; checks</a></nav>
+</div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>Every enquiry answered. Instantly. Day or night.</h1>
+    <p>Call Aangan's AI assistant the way a customer would. It answers on the first ring, asks only what Nikhil's rubric needs, never quotes a price, and sends the designer a note so nobody asks the same questions twice.</p>
+    <div id="modeBanner" class="banner" role="status">Checking setup&hellip;</div>
+  </section>
+
+  <div class="layout">
+    <section class="card phone" aria-label="Phone call">
+      <div class="phone-head">
+        <span class="dot" id="dot"></span>
+        <div><b>Aangan Studio</b> <span class="muted small" id="status">Ready for a call</span></div>
+        <div style="margin-left:auto" class="stat"><span>Time <b id="timer">0:00</b></span></div>
+      </div>
+      <div class="log" id="log" aria-live="polite">
+        <div class="idle" id="idle">
+          <div class="big">Pretend you are a customer</div>
+          <p class="muted small">Press <b>Call</b>, then speak (Chrome works best) or type. Or tap a scenario below to watch a typical caller.</p>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="row" id="startRow">
+          <input id="phoneNo" aria-label="Caller ID (demo)" value="+91 98765 43210" inputmode="tel">
+          <button class="btn primary" id="callBtn">&#9742; Call</button>
+        </div>
+        <div class="row" id="liveRow" hidden>
+          <button class="btn" id="micBtn" aria-pressed="false" title="Speak">&#127908; Speak</button>
+          <input id="say" placeholder="…or type what the caller says" aria-label="Type what the caller says" autocomplete="off">
+          <button class="btn primary" id="sendBtn">Send</button>
+          <button class="btn danger" id="hangBtn">Hang up</button>
+        </div>
+        <div class="row small muted"><label><input type="checkbox" id="voiceOn" style="width:auto;min-height:0"> Agent speaks aloud</label><span id="micNote"></span></div>
+        <div class="chips" id="scenarios" aria-label="Scenarios"></div>
+      </div>
+    </section>
+
+    <aside class="grid side">
+      <section class="card">
+        <h3>What the agent understands</h3>
+        <p class="muted small" style="margin-top:-4px">Updates every turn. The five checks are Nikhil's own rubric, applied in code, not guessed by the AI.</p>
+        <div class="crit" id="crit"></div>
+        <hr style="border:0;border-top:1px solid var(--line);margin:14px 0">
+        <dl class="facts" id="facts"><dt>Nothing yet</dt><dd>Start a call</dd></dl>
+        <div class="stat" style="margin-top:12px"><span>Tokens <b id="tok">0</b></span><span>AI cost so far <b id="cost">&#8377;0.00</b></span><span>Price attempts blocked <b id="blk">0</b></span></div>
+      </section>
+      <section class="card" id="resultCard" hidden>
+        <h3 id="resTitle">Result</h3>
+        <div id="resBody"></div>
+        <p class="small muted" id="resFoot"></p>
+        <a class="btn sm" href="/dashboard">See it on the dashboard &rarr;</a>
+      </section>
+    </aside>
+  </div>
+</main>
+<footer><div class="wrap">Case 03 &middot; Aangan Studio &middot; Built for MESA AI and its Application. Demo callers are fictional. The agent never states a price (pricing.md).</div></footer>
+<script src="/common.js"></script>
+<script src="/call.js"></script>
+</body>
+</html>
