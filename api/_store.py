@@ -82,3 +82,8 @@ def get_setting(key):
 def set_setting(key, value):
     _ensure()
     _sql("insert into settings (key, value) values ($1, $2) on conflict (key) do update set value = excluded.value", [key, str(value)])
+
+
+def delete_setting(key):
+    _ensure()
+    _sql("delete from settings where key = $1", [key])

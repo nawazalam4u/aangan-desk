@@ -37,6 +37,9 @@ def process_turn(body):
     if dec["decision"] == "ask":
         asked[dec["ask"]] = asked.get(dec["ask"], 0) + 1
 
+    if facts.get("structural_work") and not asked.get("_struct") and dec["decision"] in ("ask", "forward"):
+        dec["note_structural"] = True
+        asked["_struct"] = 1
     if facts.get("asked_price") and not asked.get("_price") and dec["decision"] in ("ask", "forward"):
         dec["deflect_price"] = True      # say the approved pricing line once, not on every turn
         asked["_price"] = 1

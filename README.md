@@ -23,6 +23,8 @@ The AI only extracts facts and words the reply. **Code decides** (`api/_core.py`
 python3 dev_server.py          # http://localhost:3000  (demo mode: rules-based voice)
 python3 -I tests/backtest.py   # the 40 real September enquiries through the rules
 python3 -I tests/scenarios.py  # the 9 demo calls end to end + the price-guardrail attack
+python3 -I tests/voice_sim.py  # simulated phone calls through /api/voice
+python3 -I tests/hubspot_mock.py  # HubSpot requests against a fake HubSpot
 ```
 
 ## Turn things on (Vercel > Settings > Environment Variables)
@@ -37,9 +39,13 @@ python3 -I tests/scenarios.py  # the 9 demo calls end to end + the price-guardra
 
 Without a database the dashboard shows calls made in the same browser. With the database set but no `DASHBOARD_KEY`, the dashboard stays locked on purpose, because it holds callers' phone numbers.
 
+## Real phone calls (Twilio-style)
+
+`/api/voice` is a webhook a phone provider calls for every call: it answers with spoken replies, listens, and loops through the same brain as the web demo, then creates the lead and handoff note. To go live: buy a number at a provider (Twilio, or Exotel in India), set the number's "A call comes in" webhook to `https://aangan-desk.vercel.app/api/voice` and its status callback to `https://aangan-desk.vercel.app/api/voice?status=1`, and set `TWILIO_AUTH_TOKEN` on Vercel so only the provider can call it. Tested with `python3 -I tests/voice_sim.py` (simulated calls, no phone needed).
+
 ## What is not built (on purpose)
 
-- A real phone number and telephony. The demo uses the browser microphone; a voice provider replaces only the voice layer.
+- A live phone number (needs a provider account and KYC). The demo uses the browser microphone; the phone endpoint is built and tested with simulated calls.
 - WhatsApp and the web form (out of scope). The same engine would serve them.
 - Any price quoting. See `/brief#cut`.
 

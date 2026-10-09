@@ -86,6 +86,7 @@ EMPTY_FACTS = {
     "asked_price": None,         # true if caller asked for a price/ballpark at any point
     "existing_client_complaint": None,
     "wants_human": None,
+    "structural_work": None,     # true if they want walls moved / structural changes (Aangan does not do structural work)
     "language": None,
     "notes": None,
 }
@@ -102,7 +103,7 @@ def clean_facts(f):
             out[k] = None if out[k] is None else float(out[k])
         except (TypeError, ValueError):
             out[k] = None
-    for k in ("wants_execution", "just_exploring", "asked_price", "existing_client_complaint", "wants_human"):
+    for k in ("wants_execution", "just_exploring", "asked_price", "existing_client_complaint", "wants_human", "structural_work"):
         v = out[k]
         if isinstance(v, str):
             v = v.strip().lower() in ("true", "yes", "1")
@@ -205,6 +206,8 @@ def evaluate(facts, now=None, skip=()):
         crit[5] = {"status": "unclear", "reason": "Not confirmed"}
         flags.append("Decision-maker not confirmed on the call")
 
+    if f["structural_work"]:
+        flags.append("Caller mentions structural work (walls). Aangan does NOT do structural/architectural changes: designer to clarify scope at consultation")
     fails = [k for k in (1, 2, 3, 4) if crit[k]["status"] == "fail"]
     out = {"criteria": crit, "flags": flags, "fails": fails}
 
@@ -401,6 +404,10 @@ def heuristic_extract(caller_lines, now=None, prev=None):
         f["decision_maker"] = "researching_for_others"
 
     # misc intents
+    if re.search(r"(break|knock|remove|shift|move|demolish)\w*\s+(a |the |some )?(wall|partition)|structural", t):
+        f["structural_work"] = True
+    if "vastu" in t and not _has(t, ["redesign", "execution", "interior"]):
+        f["project_type"], f["wants_execution"] = "advice_only", False
     if asks_for_price(t):
         f["asked_price"] = True
     if _has(t, ["hasn't replied", "not acceptable", "complain", "my designer", "project has been going", "speak to someone right now", "unacceptable"]):
@@ -499,7 +506,7 @@ def _parse_json(txt):
 
 
 EXTRACT_SYSTEM = """You read a phone-call transcript between an AI receptionist and a caller to Aangan Studio, an interior design studio in Pune. Extract facts the CALLER has stated. Use the caller's LATEST position if they changed their mind. Never guess: use null when not stated. Output ONLY a JSON object with exactly these keys:
-caller_name, project_type (full_home | partial_home | single_room | office | advice_only | out_of_scope | other), scope_text, wants_execution (true if they want design + execution; false if they only want ideas/advice/colour suggestions; null if unknown), just_exploring (true if "just exploring / early stage / maybe later"), location_text (locality/city of the SITE, always written in English letters e.g. Kothrud, even if the caller spoke Hindi or Marathi), area_sqft (number, carpet area), property_state (e.g. bare builder flat, new possession, lived-in, rented), timeline_status (hard_deadline ONLY if they say the finished project is needed by a date/event, e.g. 'done by March', 'before Diwali', 'guests in 3 weeks'. A possession/handover/keys date is NOT a deadline, it is when they can start, so use start_only; flexible if no rush; start_only if they only say they want to start now/soon with no completion date; unknown), ready_by_weeks (number of weeks from TODAY until they need the project finished, only for hard_deadline), timeline_text, budget_min_lakh, budget_max_lakh (only if the caller volunteered a figure; in lakh), decision_maker (self = caller decides or is the owner with the spouse's go-ahead; authorised = calling for someone who authorised them; researching_for_others = only doing initial research for family/others who will decide; unknown), referral_source, preferred_slot (days/times they prefer for a consultation), asked_price (true if they asked about cost/price/rate/ballpark at any point), existing_client_complaint (true if they are an existing client complaining about a project/designer), wants_human (true if they ask for a person/senior/manager), language, notes (one short line of anything useful the designer should know).
+caller_name, project_type (full_home | partial_home | single_room | office | advice_only | out_of_scope | other; advice_only ALSO covers vastu-consultation-only, decor/styling-only and standalone furniture buying with no design project), scope_text, wants_execution (true if they want design + execution; false if they only want ideas/advice/colour suggestions; null if unknown), just_exploring (true if "just exploring / early stage / maybe later"), location_text (locality/city of the SITE, always written in English letters e.g. Kothrud, even if the caller spoke Hindi or Marathi), area_sqft (number, carpet area), property_state (e.g. bare builder flat, new possession, lived-in, rented), timeline_status (hard_deadline ONLY if they say the finished project is needed by a date/event, e.g. 'done by March', 'before Diwali', 'guests in 3 weeks'. A possession/handover/keys date is NOT a deadline, it is when they can start, so use start_only; flexible if no rush; start_only if they only say they want to start now/soon with no completion date; unknown), ready_by_weeks (number of weeks from TODAY until they need the project finished, only for hard_deadline), timeline_text, budget_min_lakh, budget_max_lakh (only if the caller volunteered a figure; in lakh), decision_maker (self = caller decides or is the owner with the spouse's go-ahead; authorised = calling for someone who authorised them; researching_for_others = only doing initial research for family/others who will decide; unknown), referral_source, preferred_slot (days/times they prefer for a consultation), asked_price (true if they asked about cost/price/rate/ballpark at any point), existing_client_complaint (true if they are an existing client complaining about a project/designer), wants_human (true if they ask for a person/senior/manager), structural_work (true if they want walls moved/broken, demolition or structural changes), language, notes (one short line of anything useful the designer should know).
 Homes (flats, villas, rooms) are full_home / partial_home / single_room. Offices, clinics, studios, coworking and any other work-space fit-out are project_type office, which Aangan DOES do: NEVER label them out_of_scope. out_of_scope is ONLY for restaurants, hotels, cafes, retail stores/showrooms, gyms and salons. If unsure, use other, never out_of_scope or advice_only. Today is %s (IST)."""
 
 SPEAK_SYSTEM = """You are the voice of Aangan Studio's AI phone assistant (Aangan Studio does interior design + execution for homes and small offices in Pune and PCMC). You are speaking aloud on a phone call, so: warm, plain, brief (1-3 short sentences, under 45 words), one question at a time, no lists, no emojis, no markdown. If the caller writes in Hinglish or Marathi, answer in the same language/script style. You are an AI and say so honestly if asked.
@@ -510,7 +517,7 @@ HARD RULES - never break these:
 - Follow the DIRECTIVE exactly; do not ask anything the directive doesn't ask for."""
 
 
-_ADVICE = re.compile(r"(ideas|suggest|advice|advise|advisory|consult(?:ation)? only|colou?rs?\b|styling|arrange|rearrange|just (?:want|looking)|diy|myself)", re.I)
+_ADVICE = re.compile(r"(vastu|only furniture|just furniture|buy furniture|sourc|ideas|suggest|advice|advise|advisory|consult(?:ation)? only|colou?rs?\b|styling|arrange|rearrange|just (?:want|looking)|diy|myself)", re.I)
 _EXPLORE = re.compile(r"(explor|just looking|browsing|early stage|maybe later|not (?:sure|ready)|thinking about|window shopping|research|portfolio|brochure)", re.I)
 _COMPLAIN = re.compile(r"(शिकायत|तक्रार|डिज़ाइनर|डिझायनर|जवाब नहीं|उत्तर नाही|प्रतिसाद|सीनियर|सिनियर|मैनेजर|मॅनेजर|निखिल|नाराज|स्वीकार्य|किसी से बात|कोणाशी बोल|complain|not acceptable|unacceptable|hasn'?t replied|no reply|not replied|my designer|my project|escalat|senior|manager|nikhil|speak to (?:a |some)|talk to (?:a |some)|human|person)", re.I)
 _DEADLINE = re.compile(r"(तक|पर्यंत|पहले|आधी|पूरा हो|पूर्ण|तयार|दिवाली|दिवाळी|\bby\b|before|within|done|ready|complete|finish|move[- ]?in|moving in|operational|deadline|guests|arriv|diwali|wedding|festival|max(?:imum)?\b|urgent|latest|open(?:ing)?\b|in \d+ weeks?|in (?:one|two|three|four|five) weeks?)", re.I)
@@ -528,6 +535,8 @@ def sanity_check(f, caller_text):
         if f["project_type"] == "advice_only":
             f["project_type"] = "other"
         notes.append("advice-only claim not supported by caller words")
+    if f["structural_work"] and not re.search(r"(wall|structur|demolish|knock|break|partition|extension|extend|balcony|merge)", caller_text, re.I):
+        f["structural_work"] = False
     if f["just_exploring"] and not _EXPLORE.search(caller_text):
         f["just_exploring"] = False
         notes.append("exploring claim not supported")
@@ -604,6 +613,8 @@ def make_directive(decision, facts):
     price = ""
     if decision.get("deflect_price"):
         price = " The caller asked about price: first say, in your own words, exactly this idea and nothing more specific: '%s' (without repeating the booking offer if you are about to ask a question)." % APPROVED_PRICING_LINE
+    if decision.get("note_structural"):
+        price += " ALSO, once, honestly mention that Aangan does interior design and execution only and does not move walls or do structural work, so any wall changes would be outside our scope."
     d = decision["decision"]
     if d == "ask":
         return "ASK: %s%s" % (ASK_LINES[decision["ask"]], price)

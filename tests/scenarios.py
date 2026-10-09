@@ -4,6 +4,9 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "api"))
 if not os.environ.get("LIVE"):
     os.environ.pop("ANTHROPIC_API_KEY", None); os.environ.pop("GEMINI_API_KEY", None)
+# tests must NEVER touch real systems (database, Telegram, HubSpot): drop those settings even if the shell loaded .env
+for _k in ("DATABASE_URL", "TELEGRAM_BOT_TOKEN", "HUBSPOT_TOKEN", "TELEGRAM_CHAT_ID"):
+    os.environ.pop(_k, None)
 import turn, finalize, _core as c
 
 import json

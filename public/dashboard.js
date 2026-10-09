@@ -12,10 +12,7 @@
     const j = await r.json().catch(() => ({})); return { status: r.status, j };
   }
   try {
-    let { status, j } = await loadLeads();
-    if (j.mode === 'locked' && status === 401) {
-      const k = prompt('Dashboard key (set as DASHBOARD_KEY on Vercel):'); if (k) { LS.set('aangan_key', k); ({ status, j } = await loadLeads()); }
-    }
+    const { j } = await loadLeads();
     mode = j.mode || 'local'; leads = j.leads || []; if (j.mode === 'locked') lockMsg = j.error || 'Dashboard is locked.';
   } catch (e) {}
   if (mode === 'local') leads = getLocalLeads();
@@ -25,7 +22,11 @@
   const phRows = bt.filter(r => r.channel === 'phone');
   const qualRate = phRows.length ? phRows.filter(r => r.got === 'forward' || r.got === 'ask').length / phRows.length : 0.6; // share of September phone calls that reach a designer
   $('mode').className = 'banner' + (mode === 'shared' ? ' ok' : '');
-  if (mode === 'locked') { $('mode').textContent = lockMsg + ' Reload to enter the key again.'; LS.set('aangan_key', ''); }
+  if (mode === 'locked') {
+    $('mode').className = 'banner';
+    $('mode').innerHTML = '<b>\ud83d\udd12 Dashboard locked.</b> It holds callers\' phone numbers, so it needs your key. <form id="kf" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><input id="kk" type="password" autocomplete="current-password" placeholder="Paste your dashboard key" aria-label="Dashboard key" style="max-width:280px"><button class="btn primary sm" type="submit">Unlock</button></form><span class="small">' + (LS.get('aangan_key', '') ? 'That key was not accepted. ' : '') + 'Your key is the DASHBOARD_KEY you were given.</span>';
+    $('kf').onsubmit = e => { e.preventDefault(); LS.set('aangan_key', $('kk').value.trim()); location.reload(); };
+  }
   if (mode !== 'locked') $('mode').textContent = mode === 'shared' ? 'Shared database connected: every call from every device appears here.' : 'Demo mode: showing calls made in this browser (plus the September baseline). Connect the shared database to see calls from all devices.';
 
   // ------------- aggregates
