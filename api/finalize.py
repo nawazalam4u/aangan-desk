@@ -10,6 +10,7 @@ import uuid
 from _http import read_json, send, clamp_transcript
 import _core as c
 import _store
+import _hubspot
 
 
 def ts(v, default):
@@ -74,6 +75,8 @@ def process_finalize(b):
         lead["handoff"] = c.send_telegram(note, lead["id"], urgent=(outcome == "escalated"))
         lead["handoff"]["channel"] = "telegram"
         lead["handoff"]["at"] = datetime.now(c.IST).isoformat()
+    if _hubspot.configured():
+        lead["hubspot"] = _hubspot.sync_lead(lead)
     stored = False
     if _store.configured():
         try:

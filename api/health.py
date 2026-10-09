@@ -8,6 +8,7 @@ from http.server import BaseHTTPRequestHandler
 from _http import send
 import _core as c
 import _store
+import _hubspot
 
 
 class handler(BaseHTTPRequestHandler):
@@ -20,7 +21,7 @@ class handler(BaseHTTPRequestHandler):
             except Exception as e:
                 probe = {"ok": False, "error": str(e)[:300]}
         send(self, {"probe": probe, "ok": True, "llm_provider": c.provider(), "model": c.model_name(),
-                    "telegram": c.telegram_configured(), "shared_database": _store.configured(),
+                    "telegram": c.telegram_configured(), "shared_database": _store.configured(), "hubspot": _hubspot.configured(),
                     "mode": "live-ai" if c.provider() != "none" else "demo-rules"})
 
     def log_message(self, *a):

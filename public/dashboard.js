@@ -110,7 +110,7 @@
     '<td><span class="pill ' + OUT[l.outcome][0] + '">' + OUT[l.outcome][1] + '</span><br><span class="muted small">' + esc((l.reason || '').replace(/_/g, ' ')) + '</span></td>' +
     '<td>' + (l.priority ? '<span class="pill ' + (l.priority === 'HOT' || l.priority === 'URGENT' ? 'bad' : 'warn') + '">' + l.priority + '</span>' : '—') + '</td>' +
     '<td>' + (l.first_response_secs || 0).toFixed(1) + ' s</td><td>' + Math.round((l.duration_secs || 0) / 6) / 10 + ' min</td><td>' + inr(l.llm_cost_inr, 3) + '</td>' +
-    '<td>' + (l.handoff && l.handoff.sent ? '<span class="pill good">Telegram sent</span>' : l.outcome === 'closed' ? '—' : '<span class="pill mute">preview only</span>') + (l.claimed_at ? '<br><span class="muted small">claimed ' + esc(l.claimed_by || '') + '</span>' : '') + '</td></tr>').join('');
+    '<td>' + (l.handoff && l.handoff.sent ? '<span class="pill good">Telegram sent</span>' : l.outcome === 'closed' ? '—' : '<span class="pill mute">preview only</span>') + (l.claimed_at ? '<br><span class="muted small">claimed ' + esc(l.claimed_by || '') + '</span>' : '') + (l.hubspot ? '<br><span class="pill ' + (l.hubspot.ok ? 'good' : 'bad') + '" title="' + esc(l.hubspot.error || '') + '">HubSpot ' + (l.hubspot.ok ? 'synced' : 'failed') + '</span>' : '') + '</td></tr>').join('');
   const open = i => {
     const l = leads[i];
     $('dlgBody').innerHTML = '<div style="display:flex;justify-content:space-between;gap:10px"><h2>' + esc(l.name || 'Unknown caller') + ' <span class="pill ' + OUT[l.outcome][0] + '">' + OUT[l.outcome][1] + '</span></h2><button class="btn sm" id="x">Close</button></div>' +

@@ -183,6 +183,11 @@ code{background:var(--surface2);padding:1px 6px;border-radius:6px;font-size:.88e
     </div>
   </section>
 
+  <section id="crm">
+    <h2>Is a CRM (HubSpot) needed?</h2>
+    <p>No. The call data lives in the app's own database and the dashboard reads it, so Nikhil never needs a CRM to see volume, speed, cost or value. A CRM becomes useful when the sales team wants to follow each lead for weeks. So HubSpot is an <b>optional switch</b>: with a token set, every qualified, call-back or escalated lead is also created as a contact with the handoff note on its timeline (and a deal for qualified ones). Without it, nothing changes. Closed callers are never sent.</p>
+  </section>
+
   <section id="extend">
     <h2>How this extends to WhatsApp and the web form</h2>
     <p>Not built (out of scope), but the design is ready: the rules engine, the guardrail, the note and the dashboard are channel-free. A WhatsApp message would call the same <code>/api/turn</code> endpoint and the web form is a single-shot version of the same extraction. I already ran all 40 enquiries, including the 10 WhatsApp and 10 form ones, through the rules as a test. Only the trigger and the reply channel change. The September numbers show why it matters next: 2 of 10 WhatsApp threads sat unanswered for 2 to 4 days, 5 more waited 16+ hours, and the form enquiries have no response times recorded at all.</p>
