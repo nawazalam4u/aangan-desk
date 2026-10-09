@@ -1,0 +1,943 @@
+[
+ {
+  "id": "T01",
+  "channel": "phone",
+  "gold": [
+   "ask",
+   "forward"
+  ],
+  "got": "forward",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:pass; 4:pass; 5:pass",
+  "reason": null,
+  "facts": {
+   "caller_name": "Priya",
+   "project_type": "full_home",
+   "scope_text": "kitchen, living room, both bedrooms",
+   "location_text": "Kothrud",
+   "area_sqft": 1400.0,
+   "timeline_status": "flexible",
+   "timeline_text": "flexible / no rush",
+   "decision_maker": "self",
+   "referral_source": "friend"
+  },
+  "happened": "Consultation booked",
+  "resp": "answered",
+  "ts": "2026-09-02T10:23:00+05:30",
+  "priority": "HOT"
+ },
+ {
+  "id": "T02",
+  "channel": "phone",
+  "gold": [
+   "ask",
+   "forward"
+  ],
+  "got": "forward",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:pass; 4:pass; 5:unclear",
+  "reason": null,
+  "facts": {
+   "project_type": "full_home",
+   "scope_text": "kitchen, wardrobes, living room, both bedrooms",
+   "wants_execution": true,
+   "location_text": "Wakad",
+   "area_sqft": 950.0,
+   "timeline_status": "start_only",
+   "timeline_text": "start in October",
+   "referral_source": "instagram",
+   "asked_price": true
+  },
+  "happened": "Asked price twice; deflected; consultation booked",
+  "resp": "answered",
+  "ts": "2026-09-03T14:41:00+05:30",
+  "priority": "WARM"
+ },
+ {
+  "id": "T03",
+  "channel": "phone",
+  "gold": [
+   "decline"
+  ],
+  "got": "decline",
+  "ok": true,
+  "why": "1:pass; 2:fail; 3:unclear; 4:pass; 5:pass",
+  "reason": "outside_service_area",
+  "facts": {
+   "caller_name": "Suresh Patil",
+   "project_type": "office",
+   "scope_text": "study",
+   "location_text": "Nashik",
+   "decision_maker": "self",
+   "referral_source": "linkedin"
+  },
+  "happened": "Declined politely (out of area)",
+  "resp": "answered",
+  "ts": "2026-09-03T16:15:00+05:30",
+  "priority": null
+ },
+ {
+  "id": "T04",
+  "channel": "phone",
+  "gold": [
+   "decline"
+  ],
+  "got": "decline",
+  "ok": true,
+  "why": "1:fail; 2:unclear; 3:unclear; 4:pass; 5:unclear",
+  "reason": "exploring_only",
+  "facts": {
+   "project_type": "advice_only",
+   "scope_text": "living room? we're not planning to do the full thing right now",
+   "just_exploring": true
+  },
+  "happened": "Declined politely (advice only)",
+  "resp": "answered",
+  "ts": "2026-09-04T11:07:00+05:30",
+  "priority": null
+ },
+ {
+  "id": "T05",
+  "channel": "phone",
+  "gold": [
+   "ask",
+   "forward"
+  ],
+  "got": "forward",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:pass; 4:pass; 5:unclear",
+  "reason": null,
+  "facts": {
+   "caller_name": "Aarti Mehta",
+   "project_type": "full_home",
+   "scope_text": "kitchen, all four bedrooms",
+   "wants_execution": true,
+   "location_text": "Koregaon Park",
+   "area_sqft": 2400.0,
+   "timeline_status": "hard_deadline",
+   "ready_by_weeks": 25.0,
+   "timeline_text": "by February",
+   "referral_source": "friend"
+  },
+  "happened": "Site visit being scheduled",
+  "resp": "answered",
+  "ts": "2026-09-05T10:52:00+05:30",
+  "priority": "WARM"
+ },
+ {
+  "id": "T06",
+  "channel": "phone",
+  "gold": [
+   "ask",
+   "forward"
+  ],
+  "got": "forward",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:pass; 4:pass; 5:pass",
+  "reason": null,
+  "facts": {
+   "project_type": "office",
+   "location_text": "Baner",
+   "area_sqft": 800.0,
+   "property_state": "bare / empty",
+   "timeline_status": "hard_deadline",
+   "ready_by_weeks": 16.1,
+   "timeline_text": "by December",
+   "decision_maker": "self"
+  },
+  "happened": "Consultation being set up",
+  "resp": "answered",
+  "ts": "2026-09-05T15:28:00+05:30",
+  "priority": "HOT"
+ },
+ {
+  "id": "T07",
+  "channel": "phone",
+  "gold": [
+   "ask",
+   "forward"
+  ],
+  "got": "ask",
+  "ok": true,
+  "why": "1:pass; 2:unclear; 3:pass; 4:pass; 5:unclear",
+  "reason": null,
+  "facts": {
+   "project_type": "partial_home",
+   "scope_text": "living room and kitchen before diwali",
+   "timeline_status": "start_only",
+   "timeline_text": "wants to start after Diwali"
+  },
+  "happened": "Caller said she'd call back; no name or number taken - lead likely lost",
+  "resp": "answered",
+  "ts": "2026-09-08T09:44:00+05:30",
+  "priority": "WARM"
+ },
+ {
+  "id": "T08",
+  "channel": "phone",
+  "gold": [
+   "ask"
+  ],
+  "got": "ask",
+  "ok": true,
+  "why": "missed call - the AI would have answered",
+  "happened": "MISSED CALL after hours, no voicemail; call-back next morning not answered",
+  "resp": "missed",
+  "ts": "2026-09-09T22:47:00+05:30"
+ },
+ {
+  "id": "T09",
+  "channel": "phone",
+  "gold": [
+   "escalate"
+  ],
+  "got": "escalate",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:unclear; 4:pass; 5:unclear",
+  "reason": "Existing-client complaint or caller insists on a senior person",
+  "facts": {
+   "project_type": "full_home",
+   "location_text": "Viman Nagar",
+   "existing_client_complaint": true,
+   "wants_human": true
+  },
+  "happened": "Escalated to studio head",
+  "resp": "answered",
+  "ts": "2026-09-10T11:32:00+05:30",
+  "priority": null
+ },
+ {
+  "id": "T10",
+  "channel": "phone",
+  "gold": [
+   "decline"
+  ],
+  "got": "decline",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:unclear; 4:fail; 5:unclear",
+  "reason": "budget_misaligned",
+  "facts": {
+   "project_type": "partial_home",
+   "scope_text": "kitchen and one bedroom",
+   "location_text": "Kharadi",
+   "area_sqft": 550.0,
+   "budget_min_lakh": 1.0,
+   "budget_max_lakh": 1.5
+  },
+  "happened": "Declined kindly (budget far below any scope)",
+  "resp": "answered",
+  "ts": "2026-09-11T14:04:00+05:30",
+  "priority": null
+ },
+ {
+  "id": "T11",
+  "channel": "phone",
+  "gold": [
+   "ask",
+   "forward"
+  ],
+  "got": "ask",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:unclear; 4:pass; 5:unclear",
+  "reason": null,
+  "facts": {
+   "project_type": "partial_home",
+   "scope_text": "living room, bedroom, and kitchen \u2014 no structural changes, just design and fittings",
+   "location_text": "Baner",
+   "property_state": "bare / empty"
+  },
+  "happened": "Consultation booked (rented flat is fine)",
+  "resp": "answered",
+  "ts": "2026-09-12T10:18:00+05:30",
+  "priority": "WARM"
+ },
+ {
+  "id": "T12",
+  "channel": "phone",
+  "gold": [
+   "ask",
+   "forward"
+  ],
+  "got": "forward",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:pass; 4:pass; 5:unclear",
+  "reason": "Passes all five criteria",
+  "facts": {
+   "caller_name": "Anand Sharma",
+   "project_type": "full_home",
+   "location_text": "Kalyani Nagar",
+   "area_sqft": 5500.0,
+   "property_state": "new possession",
+   "timeline_status": "flexible",
+   "timeline_text": "flexible / no rush",
+   "preferred_slot": "this week"
+  },
+  "happened": "Principal designer visit requested; reply promised by end of day",
+  "resp": "answered",
+  "ts": "2026-09-15T10:05:00+05:30",
+  "priority": "WARM"
+ },
+ {
+  "id": "T13",
+  "channel": "phone",
+  "gold": [
+   "ask",
+   "forward"
+  ],
+  "got": "ask",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:unclear; 4:pass; 5:pass",
+  "reason": null,
+  "facts": {
+   "project_type": "full_home",
+   "scope_text": "kitchen, wardrobes in both bedrooms, living room",
+   "location_text": "Aundh",
+   "area_sqft": 1100.0,
+   "decision_maker": "self",
+   "asked_price": true
+  },
+  "happened": "Asked price twice; deflected; booking",
+  "resp": "answered",
+  "ts": "2026-09-16T12:19:00+05:30",
+  "priority": "WARM"
+ },
+ {
+  "id": "T14",
+  "channel": "phone",
+  "gold": [
+   "ask",
+   "forward"
+  ],
+  "got": "ask",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:unclear; 4:pass; 5:unclear",
+  "reason": null,
+  "facts": {
+   "project_type": "full_home",
+   "location_text": "Hadapsar",
+   "property_state": "new possession",
+   "decision_maker": "researching_for_others"
+  },
+  "happened": "Details noted; owners (parents) to attend",
+  "resp": "answered",
+  "ts": "2026-09-17T11:41:00+05:30",
+  "priority": "WARM"
+ },
+ {
+  "id": "T15",
+  "channel": "phone",
+  "gold": [
+   "ask",
+   "forward"
+  ],
+  "got": "forward",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:pass; 4:pass; 5:pass",
+  "reason": null,
+  "facts": {
+   "caller_name": "Smita",
+   "project_type": "full_home",
+   "scope_text": "kitchen, wardrobes, living room",
+   "location_text": "Undri",
+   "area_sqft": 875.0,
+   "property_state": "new possession",
+   "timeline_status": "start_only",
+   "timeline_text": "possession in ~6 weeks, wants to start design now",
+   "decision_maker": "self",
+   "referral_source": "builder"
+  },
+  "happened": "Designer availability being checked",
+  "resp": "answered",
+  "ts": "2026-09-18T15:12:00+05:30",
+  "priority": "HOT"
+ },
+ {
+  "id": "T16",
+  "channel": "phone",
+  "gold": [
+   "ask",
+   "escalate",
+   "forward"
+  ],
+  "got": "ask",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:unclear; 4:pass; 5:unclear",
+  "reason": null,
+  "facts": {
+   "project_type": "full_home",
+   "location_text": "Viman Nagar"
+  },
+  "happened": "Monday enquiry was NEVER logged; re-logged Friday; caller frustrated",
+  "resp": "answered",
+  "ts": "2026-09-19T10:38:00+05:30",
+  "priority": "WARM"
+ },
+ {
+  "id": "T17",
+  "channel": "phone",
+  "gold": [
+   "ask",
+   "forward"
+  ],
+  "got": "forward",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:pass; 4:pass; 5:unclear",
+  "reason": null,
+  "facts": {
+   "caller_name": "Ritu Kapoor",
+   "project_type": "full_home",
+   "scope_text": "kitchen, wardrobes, living room",
+   "location_text": "Pimple Saudagar",
+   "area_sqft": 1050.0,
+   "property_state": "lived in",
+   "timeline_status": "flexible",
+   "timeline_text": "flexible / no rush",
+   "referral_source": "builder"
+  },
+  "happened": "First call dropped at 1 min; caller had to call again; booked",
+  "resp": "answered",
+  "ts": "2026-09-22T14:16:00+05:30",
+  "priority": "WARM"
+ },
+ {
+  "id": "T18",
+  "channel": "phone",
+  "gold": [
+   "decline"
+  ],
+  "got": "decline",
+  "ok": true,
+  "why": "1:fail; 2:unclear; 3:unclear; 4:pass; 5:unclear",
+  "reason": "not_a_real_project",
+  "facts": {
+   "project_type": "office",
+   "area_sqft": 180.0
+  },
+  "happened": "Declined (below minimum scale)",
+  "resp": "answered",
+  "ts": "2026-09-23T11:55:00+05:30",
+  "priority": null
+ },
+ {
+  "id": "T19",
+  "channel": "phone",
+  "gold": [
+   "decline"
+  ],
+  "got": "decline",
+  "ok": true,
+  "why": "1:fail; 2:pass; 3:unclear; 4:pass; 5:unclear",
+  "reason": "not_a_real_project",
+  "facts": {
+   "project_type": "out_of_scope",
+   "location_text": "Koregaon Park"
+  },
+  "happened": "Declined (hospitality out of scope)",
+  "resp": "answered",
+  "ts": "2026-09-24T16:02:00+05:30",
+  "priority": null
+ },
+ {
+  "id": "T20",
+  "channel": "phone",
+  "gold": [
+   "ask",
+   "forward"
+  ],
+  "got": "forward",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:pass; 4:pass; 5:pass",
+  "reason": null,
+  "facts": {
+   "caller_name": "Pooja",
+   "project_type": "partial_home",
+   "scope_text": "kitchen, both bedrooms, living room",
+   "wants_execution": true,
+   "location_text": "Magarpatta",
+   "area_sqft": 900.0,
+   "timeline_status": "flexible",
+   "timeline_text": "flexible / no rush",
+   "decision_maker": "self"
+  },
+  "happened": "Consultation booked",
+  "resp": "answered",
+  "ts": "2026-09-25T09:15:00+05:30",
+  "priority": "WARM"
+ },
+ {
+  "id": "W01",
+  "channel": "whatsapp",
+  "gold": [
+   "ask",
+   "forward"
+  ],
+  "got": "forward",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:pass; 4:pass; 5:unclear",
+  "reason": null,
+  "facts": {
+   "project_type": "full_home",
+   "wants_execution": true,
+   "location_text": "Viman Nagar",
+   "area_sqft": 1800.0,
+   "property_state": "new possession",
+   "timeline_status": "hard_deadline",
+   "ready_by_weeks": 7.7,
+   "timeline_text": "by October",
+   "referral_source": "got your number",
+   "preferred_slot": "weekdays after 6pm"
+  },
+  "happened": "Received 7:14pm, first reply next day 11:47am (~16.5 h)",
+  "resp": "slow",
+  "ts": "2026-09-03T19:14:00+05:30",
+  "priority": "HOT"
+ },
+ {
+  "id": "W02",
+  "channel": "whatsapp",
+  "gold": [
+   "ask"
+  ],
+  "got": "ask",
+  "ok": true,
+  "why": "1:pass; 2:unclear; 3:unclear; 4:pass; 5:unclear",
+  "reason": null,
+  "facts": {
+   "project_type": "full_home",
+   "asked_price": true
+  },
+  "happened": "No reply for 2 days; lead unresponsive after follow-up",
+  "resp": "missed",
+  "ts": "2026-09-08T14:31:00+05:30",
+  "priority": "WARM"
+ },
+ {
+  "id": "W03",
+  "channel": "whatsapp",
+  "gold": [
+   "ask",
+   "forward"
+  ],
+  "got": "ask",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:unclear; 4:pass; 5:unclear",
+  "reason": null,
+  "facts": {
+   "project_type": "full_home",
+   "location_text": "Pimple Nilakh",
+   "preferred_slot": "saturday subah theek hai"
+  },
+  "happened": "Answered in 17 min; booked Sat 4 Oct 10:30",
+  "resp": "fast",
+  "ts": "2026-09-12T10:45:00+05:30",
+  "priority": "WARM"
+ },
+ {
+  "id": "W04",
+  "channel": "whatsapp",
+  "gold": [
+   "ask",
+   "forward"
+  ],
+  "got": "forward",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:pass; 4:pass; 5:unclear",
+  "reason": null,
+  "facts": {
+   "project_type": "office",
+   "location_text": "Chinchwad",
+   "area_sqft": 1200.0,
+   "property_state": "bare / empty",
+   "timeline_status": "hard_deadline",
+   "ready_by_weeks": 19.1,
+   "timeline_text": "by January"
+  },
+  "happened": "Answered in 27 min; site visit being booked",
+  "resp": "fast",
+  "ts": "2026-09-15T15:18:00+05:30",
+  "priority": "WARM"
+ },
+ {
+  "id": "W05",
+  "channel": "whatsapp",
+  "gold": [
+   "ask"
+  ],
+  "got": "ask",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:unclear; 4:pass; 5:pass",
+  "reason": null,
+  "facts": {
+   "project_type": "full_home",
+   "location_text": "Baner",
+   "decision_maker": "self"
+  },
+  "happened": "Sat 6:44pm; replied Monday; lead lost after 2 follow-ups",
+  "resp": "slow",
+  "ts": "2026-09-20T18:44:00+05:30",
+  "priority": "WARM"
+ },
+ {
+  "id": "W06",
+  "channel": "whatsapp",
+  "gold": [
+   "ask",
+   "forward"
+  ],
+  "got": "ask",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:unclear; 4:pass; 5:unclear",
+  "reason": null,
+  "facts": {
+   "project_type": "full_home",
+   "location_text": "Koregaon Park",
+   "property_state": "new possession"
+  },
+  "happened": "Answered in 19 min; site visit 21/22 Oct",
+  "resp": "fast",
+  "ts": "2026-09-17T11:22:00+05:30",
+  "priority": "WARM"
+ },
+ {
+  "id": "W07",
+  "channel": "whatsapp",
+  "gold": [
+   "decline"
+  ],
+  "got": "decline",
+  "ok": true,
+  "why": "1:fail; 2:pass; 3:unclear; 4:pass; 5:unclear",
+  "reason": "not_a_real_project",
+  "facts": {
+   "project_type": "out_of_scope",
+   "location_text": "Kothrud",
+   "area_sqft": 2500.0
+  },
+  "happened": "Declined next morning (out of scope)",
+  "resp": "slow",
+  "ts": "2026-09-05T16:52:00+05:30",
+  "priority": null
+ },
+ {
+  "id": "W08",
+  "channel": "whatsapp",
+  "gold": [
+   "ask",
+   "escalate",
+   "forward"
+  ],
+  "got": "ask",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:unclear; 4:pass; 5:pass",
+  "reason": null,
+  "facts": {
+   "project_type": "full_home",
+   "location_text": "Aundh",
+   "area_sqft": 850.0,
+   "decision_maker": "self"
+  },
+  "happened": "Original message 4 days earlier was never seen; frustrated; same-day outreach promised",
+  "resp": "missed",
+  "ts": "2026-09-10T08:44:00+05:30",
+  "priority": "WARM"
+ },
+ {
+  "id": "W09",
+  "channel": "whatsapp",
+  "gold": [
+   "ask",
+   "forward"
+  ],
+  "got": "ask",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:unclear; 4:pass; 5:unclear",
+  "reason": null,
+  "facts": {
+   "project_type": "full_home",
+   "scope_text": "living room in aundh",
+   "wants_execution": true,
+   "location_text": "Aundh"
+  },
+  "happened": "Received 3:18pm; replied next day 11:08am (~20 h)",
+  "resp": "slow",
+  "ts": "2026-09-25T15:18:00+05:30",
+  "priority": "WARM"
+ },
+ {
+  "id": "W10",
+  "channel": "whatsapp",
+  "gold": [
+   "decline"
+  ],
+  "got": "decline",
+  "ok": true,
+  "why": "1:fail; 2:pass; 3:unclear; 4:pass; 5:pass",
+  "reason": "exploring_only",
+  "facts": {
+   "project_type": "full_home",
+   "just_exploring": true,
+   "location_text": "Hinjewadi",
+   "decision_maker": "self"
+  },
+  "happened": "Portfolio sent; early-stage; re-engage in 4-6 weeks",
+  "resp": "slow",
+  "ts": "2026-09-22T18:12:00+05:30",
+  "priority": null
+ },
+ {
+  "id": "F01",
+  "channel": "form",
+  "gold": [
+   "ask",
+   "forward"
+  ],
+  "got": "forward",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:pass; 4:pass; 5:pass",
+  "reason": null,
+  "facts": {
+   "project_type": "office",
+   "scope_text": "kitchen (modular), both bedrooms, living room, and add a home office corner",
+   "wants_execution": true,
+   "location_text": "Kalyani Nagar",
+   "area_sqft": 920.0,
+   "property_state": "lived in",
+   "timeline_status": "hard_deadline",
+   "ready_by_weeks": 25.6,
+   "timeline_text": "by February",
+   "decision_maker": "self",
+   "referral_source": "instagram"
+  },
+  "happened": "No response time recorded",
+  "resp": "answered",
+  "ts": "2026-09-01T09:44:00+05:30",
+  "priority": "HOT"
+ },
+ {
+  "id": "F02",
+  "channel": "form",
+  "gold": [
+   "ask",
+   "forward"
+  ],
+  "got": "forward",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:pass; 4:pass; 5:unclear",
+  "reason": null,
+  "facts": {
+   "project_type": "full_home",
+   "scope_text": "bedroom + living room only)",
+   "location_text": "Baner",
+   "area_sqft": 1100.0,
+   "property_state": "builder flat",
+   "timeline_status": "flexible",
+   "timeline_text": "flexible / no rush",
+   "referral_source": "friend"
+  },
+  "happened": "No response time recorded",
+  "resp": "answered",
+  "ts": "2026-09-04T19:12:00+05:30",
+  "priority": "WARM"
+ },
+ {
+  "id": "F03",
+  "channel": "form",
+  "gold": [
+   "decline"
+  ],
+  "got": "decline",
+  "ok": true,
+  "why": "1:pass; 2:fail; 3:pass; 4:pass; 5:unclear",
+  "reason": "outside_service_area",
+  "facts": {
+   "project_type": "full_home",
+   "location_text": "Talegaon",
+   "area_sqft": 1400.0,
+   "property_state": "new possession",
+   "timeline_status": "flexible",
+   "timeline_text": "flexible / no rush",
+   "budget_min_lakh": 15.0,
+   "budget_max_lakh": 20.0
+  },
+  "happened": "No response time recorded",
+  "resp": "answered",
+  "ts": "2026-09-06T11:18:00+05:30",
+  "priority": null
+ },
+ {
+  "id": "F04",
+  "channel": "form",
+  "gold": [
+   "ask"
+  ],
+  "got": "ask",
+  "ok": true,
+  "why": "1:unclear; 2:pass; 3:pass; 4:pass; 5:unclear",
+  "reason": null,
+  "facts": {
+   "location_text": "Pune",
+   "timeline_status": "start_only",
+   "timeline_text": "wants to start now",
+   "asked_price": true
+  },
+  "happened": "No response time recorded",
+  "resp": "answered",
+  "ts": "2026-09-09T14:37:00+05:30",
+  "priority": "WARM"
+ },
+ {
+  "id": "F05",
+  "channel": "form",
+  "gold": [
+   "ask",
+   "forward"
+  ],
+  "got": "forward",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:pass; 4:pass; 5:unclear",
+  "reason": null,
+  "facts": {
+   "project_type": "office",
+   "location_text": "Hinjewadi",
+   "area_sqft": 2200.0,
+   "timeline_status": "hard_deadline",
+   "ready_by_weeks": 19.7,
+   "timeline_text": "by January",
+   "budget_min_lakh": 60.0,
+   "budget_max_lakh": 80.0
+  },
+  "happened": "No response time recorded",
+  "resp": "answered",
+  "ts": "2026-09-11T10:05:00+05:30",
+  "priority": "HOT"
+ },
+ {
+  "id": "F06",
+  "channel": "form",
+  "gold": [
+   "ask",
+   "forward"
+  ],
+  "got": "forward",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:pass; 4:pass; 5:unclear",
+  "reason": null,
+  "facts": {
+   "project_type": "full_home",
+   "scope_text": "kitchen needs full replacement, other bedrooms need redoing, living room flooring and d",
+   "wants_execution": true,
+   "location_text": "Nibm",
+   "area_sqft": 1950.0,
+   "property_state": "lived in",
+   "timeline_status": "flexible",
+   "timeline_text": "flexible / no rush",
+   "budget_min_lakh": 35.0,
+   "budget_max_lakh": 40.0
+  },
+  "happened": "No response time recorded",
+  "resp": "answered",
+  "ts": "2026-09-14T20:52:00+05:30",
+  "priority": "WARM"
+ },
+ {
+  "id": "F07",
+  "channel": "form",
+  "gold": [
+   "ask"
+  ],
+  "got": "ask",
+  "ok": true,
+  "why": "1:unclear; 2:pass; 3:unclear; 4:pass; 5:unclear",
+  "reason": null,
+  "facts": {
+   "location_text": "Pune",
+   "referral_source": "instagram",
+   "asked_price": true
+  },
+  "happened": "No phone number given; can't be called back",
+  "resp": "answered",
+  "ts": "2026-09-16T15:11:00+05:30",
+  "priority": "WARM"
+ },
+ {
+  "id": "F08",
+  "channel": "form",
+  "gold": [
+   "decline"
+  ],
+  "got": "decline",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:fail; 4:pass; 5:unclear",
+  "reason": "timeline_not_possible",
+  "facts": {
+   "project_type": "partial_home",
+   "scope_text": "living room + kitchen)",
+   "location_text": "Wakad",
+   "area_sqft": 875.0,
+   "timeline_status": "hard_deadline",
+   "ready_by_weeks": 3.0,
+   "timeline_text": "needs it in ~3 weeks",
+   "budget_min_lakh": 4.0,
+   "budget_max_lakh": 5.0,
+   "referral_source": "google"
+  },
+  "happened": "No response time recorded",
+  "resp": "answered",
+  "ts": "2026-09-18T18:44:00+05:30",
+  "priority": null
+ },
+ {
+  "id": "F09",
+  "channel": "form",
+  "gold": [
+   "ask",
+   "forward"
+  ],
+  "got": "forward",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:pass; 4:pass; 5:unclear",
+  "reason": null,
+  "facts": {
+   "project_type": "full_home",
+   "location_text": "Kondhwa",
+   "area_sqft": 1150.0,
+   "property_state": "bare / empty",
+   "timeline_status": "hard_deadline",
+   "ready_by_weeks": 26.9,
+   "timeline_text": "by March",
+   "referral_source": "referred"
+  },
+  "happened": "No response time recorded",
+  "resp": "answered",
+  "ts": "2026-09-20T11:30:00+05:30",
+  "priority": "WARM"
+ },
+ {
+  "id": "F10",
+  "channel": "form",
+  "gold": [
+   "ask",
+   "forward"
+  ],
+  "got": "forward",
+  "ok": true,
+  "why": "1:pass; 2:pass; 3:pass; 4:pass; 5:pass",
+  "reason": null,
+  "facts": {
+   "project_type": "office",
+   "location_text": "Aundh",
+   "area_sqft": 1300.0,
+   "property_state": "lived in",
+   "timeline_status": "start_only",
+   "timeline_text": "wants to start now",
+   "budget_min_lakh": 18.0,
+   "budget_max_lakh": 22.0,
+   "decision_maker": "self",
+   "referral_source": "linkedin"
+  },
+  "happened": "No response time recorded",
+  "resp": "answered",
+  "ts": "2026-09-26T16:22:00+05:30",
+  "priority": "HOT"
+ }
+]
