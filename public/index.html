@@ -41,18 +41,32 @@
 .stat{display:flex;gap:18px;flex-wrap:wrap;font-size:.86rem;color:var(--muted)}
 .stat b{color:var(--ink)}
 .callout{border-left:4px solid var(--accent);padding:2px 14px;margin:6px 0 14px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0 14px}
+@media (max-width:760px){.stats{grid-template-columns:1fr 1fr}}
+.stats div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.stats b{display:block;font-size:1.6rem;letter-spacing:-.02em;color:var(--accent);line-height:1.1}.stats span{font-size:.8rem;color:var(--muted)}
+.wave{display:flex;gap:3px;align-items:center;height:22px}.wave i{width:3px;height:5px;border-radius:2px;background:var(--muted);transition:height .15s}
+.wave.on i{background:var(--accent);animation:wv .9s infinite ease-in-out}.wave.on i:nth-child(2){animation-delay:.1s}.wave.on i:nth-child(3){animation-delay:.2s}.wave.on i:nth-child(4){animation-delay:.3s}.wave.on i:nth-child(5){animation-delay:.15s}.wave.on i:nth-child(6){animation-delay:.25s}.wave.on i:nth-child(7){animation-delay:.05s}
+@keyframes wv{0%,100%{height:5px}50%{height:20px}}
+@media (prefers-reduced-motion:reduce){.wave.on i{animation:none;height:12px}}
 </style>
 </head>
 <body>
 <header class="top"><div class="wrap">
   <a class="brand" href="/"><i></i>Aangan Desk</a>
-  <nav aria-label="Main"><a href="/" aria-current="page">Live call</a><a href="/dashboard">Dashboard</a><a href="/brief">Brief &amp; checks</a></nav>
+  <nav aria-label="Main"><a href="/" aria-current="page">Live call</a><a href="/dashboard">Dashboard</a><a href="/connect">How it connects</a><a href="/brief">Brief &amp; checks</a></nav>
 </div></header>
 
 <main class="wrap">
   <section class="hero">
     <h1>Every enquiry answered. Instantly. Day or night.</h1>
     <p>Call Aangan's AI assistant the way a customer would. It answers on the first ring, asks only what Nikhil's rubric needs, never quotes a price, and sends the designer a note so nobody asks the same questions twice.</p>
+    <div class="stats" aria-label="Why this matters">
+      <div><b>48%</b><span>of enquiries got no reply in 48 hours</span></div>
+      <div><b>4&times;</b><span>conversion when answered within an hour</span></div>
+      <div><b>33%</b><span>arrive outside 10am&ndash;7pm</span></div>
+      <div><b>&lt;1&nbsp;s</b><span>this assistant takes to answer</span></div>
+    </div>
     <div id="modeBanner" class="banner" role="status">Checking setup&hellip;</div>
   </section>
 
@@ -61,6 +75,7 @@
       <div class="phone-head">
         <span class="dot" id="dot"></span>
         <div><b>Aangan Studio</b> <span class="muted small" id="status">Ready for a call</span></div>
+        <div class="wave" id="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
         <div style="margin-left:auto" class="stat"><span>Time <b id="timer">0:00</b></span></div>
       </div>
       <div class="log" id="log" aria-live="polite">
@@ -80,7 +95,8 @@
           <button class="btn primary" id="sendBtn">Send</button>
           <button class="btn danger" id="hangBtn">Hang up</button>
         </div>
-        <div class="row small muted"><label><input type="checkbox" id="voiceOn" style="width:auto;min-height:0"> Agent speaks aloud</label><span id="micNote"></span></div>
+        <div class="row small muted" style="flex-wrap:wrap;gap:12px"><label><input type="checkbox" id="voiceOn" style="width:auto;min-height:0"> Agent speaks aloud</label>
+          <label>Caller language <select id="lang" style="width:auto;min-height:34px;padding:4px 8px" aria-label="Caller language"><option value="en">English</option><option value="hi">&#2361;&#2367;&#2306;&#2342;&#2368; Hindi</option><option value="mr">&#2350;&#2352;&#2366;&#2336;&#2368; Marathi</option></select></label><span id="micNote"></span></div>
         <div class="chips" id="scenarios" aria-label="Scenarios"></div>
       </div>
     </section>

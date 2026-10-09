@@ -50,7 +50,7 @@ code{background:var(--surface2);padding:1px 6px;border-radius:6px;font-size:.88e
 <body>
 <header class="top"><div class="wrap">
   <a class="brand" href="/"><i></i>Aangan Desk</a>
-  <nav aria-label="Main"><a href="/">Live call</a><a href="/dashboard">Dashboard</a><a href="/brief" aria-current="page">Brief &amp; checks</a></nav>
+  <nav aria-label="Main"><a href="/">Live call</a><a href="/dashboard">Dashboard</a><a href="/connect">How it connects</a><a href="/brief" aria-current="page">Brief &amp; checks</a></nav>
 </div></header>
 
 <main class="page">
@@ -134,8 +134,12 @@ code{background:var(--surface2);padding:1px 6px;border-radius:6px;font-size:.88e
       <div class="c"></div><div class="c"></div><div class="c"></div><div class="c"></div><div class="c"></div>
       <div class="c on"><b><span class="dot"></span>Posts to designers' group</b>"I'll take it" button</div>
 
+      <div class="a">HubSpot CRM<small>system of record for leads</small></div>
+      <div class="c"></div><div class="c"></div><div class="c"></div><div class="c"></div><div class="c"></div>
+      <div class="c on"><b><span class="dot"></span>Contact + note + task + deal</b>qualified, call-back and escalated leads only</div>
+
       <div class="a">Designer<small>14, on site</small></div>
-      <div class="c gate"><b>Human gate</b>reads the note, claims the lead</div>
+      <div class="c gate"><b>Human gate</b>reads the note, claims the lead, moves the deal stage in HubSpot</div>
       <div class="c"></div><div class="c"></div>
       <div class="c gate"><b>Judgment</b>calls back, runs the consultation</div><div class="c"></div>
       <div class="c gate"><b>Owns the price</b>quoted at consultation only</div>
@@ -184,8 +188,9 @@ code{background:var(--surface2);padding:1px 6px;border-radius:6px;font-size:.88e
   </section>
 
   <section id="crm">
-    <h2>Is a CRM (HubSpot) needed?</h2>
-    <p>No. The call data lives in the app's own database and the dashboard reads it, so Nikhil never needs a CRM to see volume, speed, cost or value. A CRM becomes useful when the sales team wants to follow each lead for weeks. So HubSpot is an <b>optional switch</b>: with a token set, every qualified, call-back or escalated lead is also created as a contact with the handoff note on its timeline (and a deal for qualified ones). Without it, nothing changes. Closed callers are never sent.</p>
+    <h2>Where HubSpot fits</h2>
+    <p><b>HubSpot is the CRM: the system of record for each lead after the call.</b> The assistant creates the lead and writes it into HubSpot as a contact (matched on phone number, so a repeat caller is the same record), with the handoff note on its timeline, a call-back task, and a deal in the first pipeline stage. From there the designers and Nikhil work the relationship in HubSpot, and move the deal toward won or lost.</p>
+    <p>Our own database and dashboard answer a different question: <i>how is the phone assistant performing?</i> (volume, speed, cost). HubSpot answers: <i>what is happening with each customer?</i> The split is deliberate. Not-a-fit callers are never pushed into the CRM, no price is ever written to it, and if HubSpot is down the call, the Telegram note and the dashboard still work. The connection is checked live on the <a href="/connect">How it connects</a> page.</p>
   </section>
 
   <section id="extend">

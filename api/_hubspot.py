@@ -65,6 +65,14 @@ def sync_lead(lead):
         note = "[Aangan Desk] %s\n\n%s" % (lead.get("label", ""), lead.get("note", ""))
         out["note_id"] = _req("POST", "/crm/v3/objects/notes", {"properties": {"hs_note_body": note.replace("\n", "<br>"), "hs_timestamp": int(time.time() * 1000)},
                                                               "associations": _assoc(cid, ASSOC_NOTE_TO_CONTACT)}).get("id")
+        try:  # follow-up task so the call-back shows in HubSpot's task queue (non-fatal: needs the tasks scope)
+            due = int((time.time() + (900 if lead["outcome"] == "escalated" else 1800)) * 1000)
+            out["task_id"] = _req("POST", "/crm/v3/objects/tasks", {"properties": {
+                "hs_task_subject": ("URGENT: senior call-back to " if lead["outcome"] == "escalated" else "Call back ") + (lead.get("name") or "new enquiry"),
+                "hs_task_body": lead.get("note", "")[:900], "hs_task_status": "NOT_STARTED", "hs_task_priority": "HIGH", "hs_timestamp": due},
+                "associations": _assoc(cid, 204)}).get("id")   # 204 = task -> contact
+        except Exception as e:
+            out["task_error"] = str(e)[:120]
         if lead["outcome"] in ("qualified", "callback"):
             name = "%s - %s, %s" % (lead.get("name") or "Phone enquiry", (f.get("project_type") or "project").replace("_", " "), f.get("location_text") or "Pune")
             out["deal_id"] = _req("POST", "/crm/v3/objects/deals", {

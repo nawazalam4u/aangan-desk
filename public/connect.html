@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aangan How It Connects</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%23b5532f%27/%3E%3Cpath d=%27M9 24V15a7 7 0 0 1 14 0v9%27 fill=%27none%27 stroke=%27white%27 stroke-width=%273%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/app.css">
+<style>
+.page{max-width:1000px;margin:0 auto;padding:24px 16px 10px}
+section{margin:30px 0}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;position:relative}
+@media (max-width:820px){.flow{grid-template-columns:1fr 1fr}} @media (max-width:520px){.flow{grid-template-columns:1fr}}
+.node{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;box-shadow:var(--shadow);position:relative;display:flex;flex-direction:column;gap:6px}
+.node .n{position:absolute;top:-10px;left:12px;background:var(--accent);color:var(--accent-ink);border-radius:99px;font-size:.72rem;font-weight:800;padding:1px 9px}
+.node h3{margin:6px 0 0;font-size:1rem}.node p{margin:0;font-size:.86rem;color:var(--muted)}
+.node.human{border:2px solid var(--bad)}
+.st{display:flex;align-items:center;gap:7px;font-size:.8rem;margin-top:auto;padding-top:6px}
+.led{width:10px;height:10px;border-radius:50%;background:var(--muted)}.led.on{background:var(--good);box-shadow:0 0 0 3px color-mix(in srgb,var(--good) 25%,transparent)}.led.off{background:var(--warn)}.led.bad{background:var(--bad)}
+.node .btn{margin-top:4px}
+.res{font-size:.8rem;margin-top:4px;min-height:1.2em}
+.hub{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media (max-width:760px){.hub{grid-template-columns:1fr}}
+.cmp2 ul{margin:6px 0 0;padding-left:18px;font-size:.92rem}.cmp2 li{margin:4px 0}
+.mockrec{border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:.86rem;background:var(--surface)}
+.mockrec .hd{background:#ff7a59;color:#fff;padding:8px 12px;font-weight:700}
+.mockrec .r{display:grid;grid-template-columns:120px 1fr;gap:6px;padding:7px 12px;border-top:1px solid var(--line)}
+.mockrec .r span:first-child{color:var(--muted)}
+.steps{counter-reset:s;display:grid;gap:10px;padding:0;list-style:none}
+.steps li{counter-increment:s;display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+.steps li:before{content:counter(s);width:30px;height:30px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:800}
+code{background:var(--surface2);padding:1px 6px;border-radius:6px;font-size:.88em}
+.keybar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.keybar input{max-width:240px}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/"><i></i>Aangan Desk</a>
+  <nav aria-label="Main"><a href="/">Live call</a><a href="/dashboard">Dashboard</a><a href="/connect" aria-current="page">How it connects</a><a href="/brief">Brief &amp; checks</a></nav>
+</div></header>
+
+<main class="page">
+  <h1>How one phone call travels through the system</h1>
+  <p class="muted" style="max-width:70ch">Each box is a real system. The light shows whether it is connected right now. Enter your dashboard key once to use the <b>Test</b> buttons.</p>
+  <div class="keybar card" style="padding:10px 14px"><label for="key" class="small muted">Dashboard key</label><input id="key" type="password" placeholder="enter once, saved in this browser" autocomplete="off"><button class="btn sm" id="saveKey">Save</button><span class="small muted" id="keyMsg"></span></div>
+
+  <section>
+    <div class="flow" id="flow">
+      <div class="node"><span class="n">1</span><h3>Caller &amp; phone line</h3><p>A customer rings. The line answers on the first ring and says it is an AI. (In this demo: your browser microphone.)</p><div class="st"><span class="led on"></span>Always on</div></div>
+      <div class="node" data-k="ai"><span class="n">2</span><h3>AI (Gemini)</h3><p>Listens, pulls out the facts (area, size, timeline) and words each reply. It never decides and never quotes a price.</p><div class="st"><span class="led"></span><span class="lt">checking&hellip;</span></div><button class="btn sm" data-t="ai">Test</button><div class="res"></div></div>
+      <div class="node"><span class="n">3</span><h3>Rules (our code)</h3><p>Nikhil's five checks, the Pune/PCMC area list, the timeline rule and the price filter. Plain code, so it is testable and predictable.</p><div class="st"><span class="led on"></span>Always on</div></div>
+      <div class="node" data-k="db"><span class="n">4</span><h3>Database (Neon)</h3><p>Every call is saved: transcript, facts, outcome, speed and cost. This is where the dashboard reads from.</p><div class="st"><span class="led"></span><span class="lt">checking&hellip;</span></div><button class="btn sm" data-t="db">Test</button><div class="res"></div></div>
+      <div class="node human" data-k="telegram"><span class="n">5</span><h3>Telegram &rarr; designer</h3><p>The designer gets the note instantly and taps "I'll take it". A human takes over here.</p><div class="st"><span class="led"></span><span class="lt">checking&hellip;</span></div><button class="btn sm" data-t="telegram">Send test message</button><div class="res"></div></div>
+      <div class="node" data-k="hubspot"><span class="n">6</span><h3>HubSpot CRM</h3><p>The lead becomes a contact with a timeline, a follow-up task and a deal, so the sales pipeline is tracked after the call.</p><div class="st"><span class="led"></span><span class="lt">checking&hellip;</span></div><button class="btn sm" data-t="hubspot">Test</button><div class="res"></div></div>
+      <div class="node"><span class="n">7</span><h3>Dashboard</h3><p>Nikhil's numbers: volume, speed, cost and value. He never pulls them by hand again.</p><div class="st"><span class="led on"></span><a href="/dashboard">Open dashboard</a></div></div>
+      <div class="node human"><span class="n">8</span><h3>Consultation &amp; price</h3><p>The designer calls back, runs the consultation and gives the real price. Pricing always stays with a human.</p><div class="st"><span class="led on"></span>By design</div></div>
+    </div>
+  </section>
+
+  <section id="hubspot">
+    <h2>What is HubSpot, and why is it here?</h2>
+    <p style="max-width:72ch"><b>HubSpot is a CRM</b> (customer relationship manager). Think of it as the studio's <b>address book plus sales tracker</b>: one record per person, with every call, note and follow-up attached, and every possible project tracked as a deal that moves through stages until it is won or lost.</p>
+    <div class="hub">
+      <div class="card"><h3>The problem it solves</h3>
+        <p class="small">Our own database and dashboard answer <i>"how is the phone system doing?"</i> They are for Nikhil's numbers. But a lead does not end when the call ends. A designer visits, a quote is sent, the client thinks for three weeks, someone follows up. That story needs a home that the whole team can see and work in. That home is the CRM.</p>
+        <p class="small" style="margin:0">So the split is clean: <b>the dashboard measures the assistant; HubSpot manages the relationships</b> the assistant creates.</p></div>
+      <div class="card"><h3>What lands in HubSpot after a call</h3>
+        <div class="mockrec"><div class="hd">Priya Kulkarni &middot; Contact</div>
+          <div class="r"><span>Phone</span><span>+91 98765 43210</span></div>
+          <div class="r"><span>City</span><span>Pune</span></div>
+          <div class="r"><span>Lead status</span><span>New</span></div>
+          <div class="r"><span>Timeline note</span><span>The full handoff note: project, size, timeline, decision-maker, what was already asked</span></div>
+          <div class="r"><span>Task</span><span>Call back within 30 minutes (due time set)</span></div>
+          <div class="r"><span>Deal</span><span>Priya Kulkarni - full home, Kothrud &rarr; first pipeline stage</span></div></div></div>
+    </div>
+    <div class="cmp2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px">
+      <div class="card"><h3>Without a CRM</h3><ul><li>Leads live in Telegram messages that scroll away</li><li>No single view of one customer across calls</li><li>No pipeline: nobody can say how many deals are open</li><li>Follow-ups depend on memory</li></ul></div>
+      <div class="card" style="border-color:var(--good)"><h3>With HubSpot</h3><ul><li>One record per customer; a repeat caller is recognised by phone number</li><li>Tasks remind the team to call back</li><li>Deals show the pipeline and what is won or lost</li><li>Any designer or manager can pick it up</li></ul></div>
+    </div>
+    <p class="small muted" style="margin-top:10px">Rules we keep: callers who are not a fit (closed) are <b>not</b> pushed to the CRM, so it stays clean. Prices are never written into it. If HubSpot is down, the call, the Telegram note and the dashboard still work.</p>
+  </section>
+
+  <section>
+    <h2>Connect HubSpot in 5 steps</h2>
+    <ol class="steps">
+      <li><div><b>Create a free HubSpot account</b> at hubspot.com (free CRM).</div></li>
+      <li><div>In HubSpot, click the <b>gear icon (Settings)</b> &rarr; <b>Integrations</b> &rarr; <b>Private Apps</b> &rarr; <b>Create private app</b>. Name it <code>Aangan Desk</code>.</div></li>
+      <li><div>Open the <b>Scopes</b> tab and tick: <code>crm.objects.contacts.read</code>, <code>crm.objects.contacts.write</code>, <code>crm.objects.deals.write</code>, <code>crm.objects.notes.write</code>, <code>crm.objects.tasks.write</code>. Click <b>Create app</b> and copy the access token (it starts with <code>pat-</code>).</div></li>
+      <li><div>Give the token to your builder (me) and it is added to Vercel as <code>HUBSPOT_TOKEN</code>.</div></li>
+      <li><div>Come back to this page: the light on box 6 turns green. Press <b>Test</b>, then make a call and look for the contact in HubSpot.</div></li>
+    </ol>
+  </section>
+</main>
+<footer><div class="wrap">Case 03 &middot; Aangan Studio</div></footer>
+<script src="/common.js"></script>
+<script src="/connect.js"></script>
+</body>
+</html>

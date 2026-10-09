@@ -14,7 +14,9 @@
     if (role === 'sys') d.querySelector('small').remove();
     const log = $('log'); log.appendChild(d); log.scrollTop = log.scrollHeight;
   }
-  function setStatus(t, live) { $('status').textContent = t; $('dot').classList.toggle('live', !!live); }
+  function setStatus(t, live) { $('status').textContent = t; $('dot').classList.toggle('live', !!live); $('wave').classList.toggle('on', !!live && /Connected|answered|Listening/.test(t) && !/thinking/i.test(t)); }
+  const LANGMAP = { en: 'en-IN', hi: 'hi-IN', mr: 'mr-IN' };
+  const lang = () => $('lang').value;
   function renderPanel(r) {
     const crit = r.decision && r.decision.criteria;
     if (crit) {
@@ -43,9 +45,9 @@
     try {
       speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
-      const v = speechSynthesis.getVoices().find(x => /en[-_]IN/i.test(x.lang)) || speechSynthesis.getVoices().find(x => /^en/i.test(x.lang));
+      const vs = speechSynthesis.getVoices(), L = LANGMAP[lang()]; const v = vs.find(x => x.lang.replace('_', '-') === L) || vs.find(x => x.lang.toLowerCase().startsWith(lang())) || vs.find(x => /en[-_]IN/i.test(x.lang)) || vs.find(x => /^en/i.test(x.lang));
       if (v) u.voice = v;
-      u.lang = (v && v.lang) || 'en-IN'; u.rate = 1.02;
+      u.lang = (v && v.lang) || LANGMAP[lang()]; u.rate = 1.02;
       u.onend = () => cb && cb(); u.onerror = () => cb && cb();
       speechSynthesis.speak(u);
     } catch (e) { cb && cb(); }
@@ -53,7 +55,7 @@
   function listen() {
     if (!SR || !S.live || S.busy || S.scenario) return;
     try {
-      rec = new SR(); rec.lang = 'en-IN'; rec.interimResults = false; rec.maxAlternatives = 1;
+      rec = new SR(); rec.lang = LANGMAP[lang()]; rec.interimResults = false; rec.maxAlternatives = 1;
       rec.onresult = e => { const t = e.results[0][0].transcript; listening = false; setMic(false); callerSays(t); };
       rec.onerror = () => { listening = false; setMic(false); };
       rec.onend = () => { listening = false; setMic(false); };
@@ -67,13 +69,13 @@
     if (S.live) return;
     Object.assign(S, { transcript: [], facts: null, asked: {}, usage: { input: 0, output: 0 }, cost: 0, blocked: 0, live: true, busy: true, scenario: scn || null, hangAfter: scn && scn.hangAfter || null, last: null });
     $('idle') && $('idle').remove(); $('log').innerHTML = ''; $('resultCard').hidden = true;
-    $('startRow').hidden = true; $('liveRow').hidden = false;
+    $('startRow').hidden = true; $('liveRow').hidden = false; $('lang').disabled = true;
     S.started = new Date(); const t0 = performance.now();
     setStatus('Ringing…', false); addMsg('sys', 'Call connected · ' + $('phoneNo').value);
     $('timer').textContent = '0:00';
     S.timerId = setInterval(() => { const s = Math.floor((Date.now() - S.started) / 1000); $('timer').textContent = Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }, 500);
     try {
-      const r = await api('/api/turn', { transcript: [] });
+      const r = await api('/api/turn', { transcript: [], lang: lang() });
       S.firstResp = Math.max(0.1, (performance.now() - t0) / 1000); S.model = r.model;
       S.transcript.push({ role: 'agent', text: r.reply }); addMsg('agent', r.reply); setStatus('Connected · answered in ' + S.firstResp.toFixed(1) + 's', true);
       S.busy = false; renderPanel(r);
@@ -86,7 +88,7 @@
     S.busy = true; $('say').value = '';
     S.transcript.push({ role: 'caller', text }); addMsg('caller', text); setStatus('Assistant is thinking…', true);
     try {
-      const r = await api('/api/turn', { transcript: S.transcript, facts: S.facts, asked: S.asked });
+      const r = await api('/api/turn', { transcript: S.transcript, facts: S.facts, asked: S.asked, lang: lang() });
       S.facts = r.facts; S.asked = r.asked; S.last = r; S.model = r.model; if (r.llm_error && !S.warned) { S.warned = true; addMsg('sys', 'Note: the AI call failed (' + r.llm_error + '), so the rules-based fallback answered this turn.'); }
       S.usage.input += r.usage.input; S.usage.output += r.usage.output; S.cost += r.cost_inr; S.blocked += r.price_blocked ? 1 : 0;
       S.transcript.push({ role: 'agent', text: r.reply }); addMsg('agent', r.reply); renderPanel(r); setStatus('Connected', true);
@@ -101,7 +103,7 @@
 
   async function endCall(by) {
     if (!S.live) return; S.live = false; clearInterval(S.timerId); try { speechSynthesis.cancel(); rec && rec.abort(); } catch (e) {}
-    $('liveRow').hidden = true; $('startRow').hidden = false; setStatus('Call ended', false); setMic(false);
+    $('liveRow').hidden = true; $('startRow').hidden = false; $('lang').disabled = false; setStatus('Call ended', false); setMic(false);
     if (S.transcript.filter(m => m.role === 'caller').length === 0) { addMsg('sys', 'Hung up before speaking. No enquiry recorded.'); return; }
     addMsg('sys', 'Writing the handoff note…');
     try {
@@ -138,7 +140,7 @@
   $('micNote').textContent = SR ? '' : 'Voice input is not supported in this browser; typing works.';
   function renderScenarios() { $('scenarios').innerHTML = '<span class="muted small" style="align-self:center">Watch a caller:</span>' + SCENARIOS.map((s, i) => '<button class="chip" data-i="' + i + '">' + esc(s.label) + '</button>').join(''); }
   fetch('/scenarios.json').then(r => r.json()).then(j => { SCENARIOS = j; renderScenarios(); }).catch(() => {});
-  $('scenarios').onclick = e => { const b = e.target.closest('.chip'); if (b && !S.live) { $('voiceOn').checked = false; startCall(SCENARIOS[+b.dataset.i]); } };
+  $('scenarios').onclick = e => { const b = e.target.closest('.chip'); if (b && !S.live) { $('voiceOn').checked = false; $('lang').value = 'en'; startCall(SCENARIOS[+b.dataset.i]); } };
   window.addEventListener('beforeunload', () => { try { speechSynthesis.cancel(); } catch (e) {} });
 
   api('/api/health').then(h => {

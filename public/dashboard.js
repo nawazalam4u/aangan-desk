@@ -4,7 +4,8 @@
   const AVG_PHONE_MIN = 4.6; // mean of the 20 September call lengths in the transcripts
   const EST_LLM_PER_CALL = 0.4; // Rs, estimate before live data: ~10k input + ~1.5k output tokens on Gemini 3.1 Flash-Lite
 
-  let leads = [], mode = 'local', bt = [];
+  let leads = [], mode = 'local', bt = [], HUB_PORTAL = null;
+  try { HUB_PORTAL = (await (await fetch('/api/integrations')).json()).hubspot.portal; } catch (e) {}
   let lockMsg = '';
   async function loadLeads() {
     const r = await fetch('/api/leads', { headers: { 'x-dashboard-key': LS.get('aangan_key', '') } });
@@ -35,9 +36,10 @@
   const median = fr.length ? fr[Math.floor(fr.length / 2)] : null;
   const within5 = leads.filter(l => (l.first_response_secs || 0) <= 300).length;
   const afterH = leads.filter(l => l.after_hours).length;
-  const mins = leads.reduce((a, l) => a + (l.duration_secs || 0) / 60, 0);
-  const llm = leads.reduce((a, l) => a + (l.llm_cost_inr || 0), 0);
-  const voice = mins * S.voiceRsPerMin;
+  const aiLeads = leads.filter(l => l.model && l.model !== 'demo-rules' && (l.llm_cost_inr || 0) > 0); // only calls the real AI handled
+  const llmAvg = aiLeads.length ? aiLeads.reduce((a, l) => a + l.llm_cost_inr, 0) / aiLeads.length : null;
+  // demo calls are played back in seconds, so use the realistic average call length for the voice-layer estimate
+  const voicePerCall = AVG_PHONE_MIN * S.voiceRsPerMin;
   const claimed = leads.filter(l => l.claimed_at && l.handoff && l.handoff.at);
   const claimMin = claimed.length ? claimed.reduce((a, l) => a + (new Date(l.claimed_at) - new Date(l.handoff.at)) / 60000, 0) / claimed.length : null;
   const sent = leads.filter(l => l.handoff && l.handoff.sent).length;
@@ -55,17 +57,17 @@
     k(claimMin == null ? '—' : claimMin.toFixed(1) + ' min', 'Designer claims a lead in', claimed.length ? claimed.length + ' claimed' : 'needs Telegram connected');
 
   // ------------- cost
-  const perCall = N ? (llm + voice) / N : EST_LLM_PER_CALL + AVG_PHONE_MIN * S.voiceRsPerMin;
-  const llmPerCall = N ? llm / N : EST_LLM_PER_CALL;
+  const llmPerCall = llmAvg == null ? EST_LLM_PER_CALL : llmAvg;
+  const perCall = llmPerCall + voicePerCall;
   const monthly = perCall * S.monthlyCalls;
-  $('costBasis').textContent = N ? 'from ' + N + ' call' + (N > 1 ? 's' : '') : 'estimate until the first call';
+  $('costBasis').textContent = llmAvg == null ? 'AI cost is an estimate until a call runs on the live AI' : 'AI cost measured on ' + aiLeads.length + ' live-AI call' + (aiLeads.length > 1 ? 's' : '');
   const row = (a, b, cls) => '<span' + (cls ? ' class="' + cls + '"' : '') + '>' + a + '</span><span' + (cls ? ' class="' + cls + '"' : '') + '>' + b + '</span>';
   $('costKv').innerHTML =
-    row('AI model (' + esc((leads.find(l => l.model && l.model !== 'demo-rules') || {}).model || 'Gemini 3.1 Flash-Lite') + ')<span class="meas">' + (N ? 'measured' : 'estimate') + '</span>', inr(llmPerCall, 2) + ' / call') +
-    row('Phone + speech layer<span class="assume">assumption</span>', inr(AVG_PHONE_MIN * S.voiceRsPerMin, 0) + ' / call') +
+    row('AI model (' + esc((leads.find(l => l.model && l.model !== 'demo-rules') || {}).model || 'Gemini 3.1 Flash-Lite') + ')<span class="meas">' + (llmAvg == null ? 'estimate' : 'measured') + '</span>', inr(llmPerCall, 2) + ' / call') +
+    row('Phone + speech layer<span class="assume">assumption</span>', inr(voicePerCall, 0) + ' / call (' + AVG_PHONE_MIN + ' min)') +
     row('Hosting (Vercel free tier)', '₹0') +
     row('Cost per call', inr(perCall, 2), 'tot') +
-    row('Cost per qualified lead', q ? inr((llm + voice) / q, 0) : inr(perCall / qualRate, 0) + ' (est.)') +
+    row('Cost per qualified lead', inr(perCall / qualRate, 0) + ' (at the September qualified rate)') +
     row('Projected for ' + S.monthlyCalls + ' calls / month', inr(monthly, 0), 'tot') +
     row('For comparison: one front-desk person<span class="assume">assumption</span>', inr(S.frontDeskMonthly, 0) + ' / month');
 
@@ -78,7 +80,7 @@
     row('Not-a-fit callers closed with no designer time', closed) +
     row('At ' + S.monthlyCalls + ' calls / month, qualified leads', '~' + estQual + ' (' + Math.round(qualRate * 100) + '% of September calls)', 'tot');
   const be = monthly / (S.projectValueLakh * 100000);
-  $('roiLine').textContent = 'Break-even check: at ' + inr(monthly, 0) + ' a month, the tool pays for itself if it helps convert ' + (be * 100).toFixed(1) + '% of one extra ₹' + S.projectValueLakh + ' lakh project per month. The brief says a sub-1-hour answer converts 4× better, but that is a correlation in your own data, so measure it here for a few weeks before promising Nikhil a lift.';
+  $('roiLine').textContent = 'Break-even check: at ' + inr(monthly, 0) + ' a month, the tool pays for itself if it helps convert ' + (be * 100).toFixed(3) + '% of one extra ₹' + S.projectValueLakh + ' lakh project per month. The brief says a sub-1-hour answer converts 4× better, but that is a correlation in your own data, so measure it here for a few weeks before promising Nikhil a lift.';
 
   // ------------- Sept comparison (from backtest rows)
   const ph = bt.filter(r => r.channel === 'phone'), wa = bt.filter(r => r.channel === 'whatsapp'), fm = bt.filter(r => r.channel === 'form');
@@ -105,12 +107,44 @@
   const fmt = d => new Date(d).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
   $('leadCount').textContent = N + ' total';
   $('empty').hidden = N > 0;
-  $('leads').querySelector('tbody').innerHTML = leads.map((l, i) =>
+  const hsLink = l => l.hubspot && l.hubspot.contact_id && HUB_PORTAL ? 'https://app.hubspot.com/contacts/' + HUB_PORTAL + '/record/0-1/' + l.hubspot.contact_id : null;
+  const rowHtml = (l, i) =>
     '<tr class="click" data-i="' + i + '" tabindex="0"><td>' + fmt(l.created_at) + (l.after_hours ? ' <span class="pill info">after hours</span>' : '') + '</td><td>' + esc(l.name || 'Unknown') + '<br><span class="muted small">' + esc(l.phone || '') + '</span></td>' +
     '<td><span class="pill ' + OUT[l.outcome][0] + '">' + OUT[l.outcome][1] + '</span><br><span class="muted small">' + esc((l.reason || '').replace(/_/g, ' ')) + '</span></td>' +
-    '<td>' + (l.priority ? '<span class="pill ' + (l.priority === 'HOT' || l.priority === 'URGENT' ? 'bad' : 'warn') + '">' + l.priority + '</span>' : '—') + '</td>' +
+    '<td>' + (l.priority ? '<span class="pill ' + (l.priority === 'HOT' || l.priority === 'URGENT' ? 'bad' : 'warn') + '">' + l.priority + '</span>' : '\u2014') + '</td>' +
     '<td>' + (l.first_response_secs || 0).toFixed(1) + ' s</td><td>' + Math.round((l.duration_secs || 0) / 6) / 10 + ' min</td><td>' + inr(l.llm_cost_inr, 3) + '</td>' +
-    '<td>' + (l.handoff && l.handoff.sent ? '<span class="pill good">Telegram sent</span>' : l.outcome === 'closed' ? '—' : '<span class="pill mute">preview only</span>') + (l.claimed_at ? '<br><span class="muted small">claimed ' + esc(l.claimed_by || '') + '</span>' : '') + (l.hubspot ? '<br><span class="pill ' + (l.hubspot.ok ? 'good' : 'bad') + '" title="' + esc(l.hubspot.error || '') + '">HubSpot ' + (l.hubspot.ok ? 'synced' : 'failed') + '</span>' : '') + '</td></tr>').join('');
+    '<td>' + (l.handoff && l.handoff.sent ? '<span class="pill good">Telegram sent</span>' : l.outcome === 'closed' ? '\u2014' : '<span class="pill mute">preview only</span>') + (l.claimed_at ? '<br><span class="muted small">claimed ' + esc(l.claimed_by || '') + '</span>' : '') +
+    (l.hubspot ? '<br>' + (hsLink(l) ? '<a href="' + hsLink(l) + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">' : '') + '<span class="pill ' + (l.hubspot.ok ? 'good' : 'bad') + '" title="' + esc(l.hubspot.error || '') + '">HubSpot ' + (l.hubspot.ok ? 'synced' : 'failed') + '</span>' + (hsLink(l) ? '</a>' : '') : '') + '</td></tr>';
+  let filt = 'all', query = '';
+  const FILTERS = [['all', 'All'], ['qualified', 'Qualified'], ['callback', 'Call-back'], ['escalated', 'Escalated'], ['closed', 'Closed']];
+  function renderTable() {
+    const q = query.trim().toLowerCase();
+    const vis = leads.map((l, i) => [l, i]).filter(([l]) => (filt === 'all' || l.outcome === filt) && (!q || [l.name, l.phone, (l.facts || {}).location_text, l.reason].join(' ').toLowerCase().includes(q)));
+    $('leads').querySelector('tbody').innerHTML = vis.map(([l, i]) => rowHtml(l, i)).join('') || '<tr><td colspan="8" class="muted">No calls match.</td></tr>';
+    $('filters').innerHTML = FILTERS.map(([k, t]) => '<button class="chip' + (k === filt ? ' on' : '') + '" data-k="' + k + '">' + t + ' <span class="muted">' + (k === 'all' ? N : leads.filter(l => l.outcome === k).length) + '</span></button>').join('');
+  }
+  $('filters').onclick = e => { const b = e.target.closest('.chip'); if (b) { filt = b.dataset.k; renderTable(); } };
+  $('search').oninput = e => { query = e.target.value; renderTable(); };
+  renderTable();
+
+  // ------------- charts, funnel, alerts
+  const istHour = d => +new Date(d).toLocaleString('en-GB', { hour: '2-digit', hour12: false, timeZone: 'Asia/Kolkata' }).slice(0, 2) % 24;
+  const sept = bt.map(r => istHour(r.ts)), live = leads.map(l => istHour(l.created_at));
+  const c1 = Array(24).fill(0), c2 = Array(24).fill(0); sept.forEach(h => c1[h]++); live.forEach(h => c2[h]++);
+  const mx = Math.max(1, ...c1.map((v, i) => v + c2[i]));
+  $('hours').innerHTML = c1.map((v, i) => '<div class="col' + (i < 10 || i >= 19 ? ' ah' : '') + '" title="' + i + ':00 \u2013 ' + v + ' September, ' + c2[i] + ' live"><div class="b2" style="height:' + (100 * c2[i] / mx) + '%"></div><div class="b1" style="height:' + (100 * v / mx) + '%"></div></div>').join('') + '<div class="hlab" style="grid-column:1/-1">' + Array.from({ length: 24 }, (_, i) => '<span>' + (i % 3 === 0 ? i : '') + '</span>').join('') + '</div>';
+  const ahShare = sept.length ? Math.round(100 * sept.filter(h => h < 10 || h >= 19).length / sept.length) : 0;
+  $('hoursNote').textContent = ahShare + '% of the 40 September enquiries arrived outside desk hours' + (bt.length ? ' (brief says about a third). Every one of them now gets an instant answer.' : '.');
+  const fSteps = [['Calls answered', N], ['Handed to a person', handedOff], ['Telegram delivered', sent], ['Claimed by a designer', claimed.length], ['In HubSpot', leads.filter(l => l.hubspot && l.hubspot.ok).length]];
+  $('funnel').innerHTML = fSteps.map(([t, v]) => '<div class="fn"><span>' + t + '</span><div class="track"><div class="fill" style="width:' + (N ? 100 * v / N : 0) + '%"></div></div><b>' + v + '</b></div>').join('');
+  const mixC = { qualified: 'var(--good)', callback: 'var(--warn)', escalated: 'var(--bad)', closed: 'var(--muted)' };
+  $('mix').innerHTML = '<div class="small muted" style="margin-bottom:6px">Outcome mix</div><div class="mixbar">' + ['qualified', 'callback', 'escalated', 'closed'].map(k => '<i style="display:block;width:' + (N ? 100 * leads.filter(l => l.outcome === k).length / N : 0) + '%;background:' + mixC[k] + '"></i>').join('') + '</div>';
+  const alerts = [];
+  const stale = leads.filter(l => l.handoff && l.handoff.sent && !l.claimed_at && l.outcome !== 'closed' && (Date.now() - new Date(l.created_at)) > 15 * 60000);
+  if (stale.length) alerts.push('\u23f1 ' + stale.length + ' handed-off lead' + (stale.length > 1 ? 's' : '') + ' not claimed by a designer after 15 minutes: ' + stale.slice(0, 3).map(l => esc(l.name || l.phone || 'unknown')).join(', ') + '. The 5-minute promise stops here, so nudge the team.');
+  const hsFail = leads.filter(l => l.hubspot && !l.hubspot.ok).length;
+  if (hsFail) alerts.push('HubSpot could not save ' + hsFail + ' lead' + (hsFail > 1 ? 's' : '') + '. Check the token on the How it connects page.');
+  $('alerts').innerHTML = alerts.map(t => '<div class="alert">' + t + '</div>').join('');
   const open = i => {
     const l = leads[i];
     $('dlgBody').innerHTML = '<div style="display:flex;justify-content:space-between;gap:10px"><h2>' + esc(l.name || 'Unknown caller') + ' <span class="pill ' + OUT[l.outcome][0] + '">' + OUT[l.outcome][1] + '</span></h2><button class="btn sm" id="x">Close</button></div>' +

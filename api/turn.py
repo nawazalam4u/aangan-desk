@@ -20,8 +20,9 @@ def process_turn(body):
     transcript = [m for m in clamp_transcript(body.get("transcript"), 40) if m["text"]]
     asked = body.get("asked") or {}            # {field: times asked}
     now = datetime.now(c.IST)
+    lang = body.get("lang") if body.get("lang") in c.LANGS else "en"
     if not transcript:
-        return {"reply": c.GREETING, "facts": c.clean_facts(None), "decision": {"decision": "ask", "ask": "project"},
+        return {"reply": c.GREETINGS.get(lang, c.GREETING), "facts": c.clean_facts(None), "decision": {"decision": "ask", "ask": "project"},
                 "usage": {"input": 0, "output": 0}, "cost_inr": 0, "asked": {}, "done": False, "provider": c.provider(),
                 "model": c.model_name(), "price_blocked": False, "ms": 0}
 
@@ -39,7 +40,7 @@ def process_turn(body):
     if facts.get("asked_price") and not asked.get("_price") and dec["decision"] in ("ask", "forward"):
         dec["deflect_price"] = True      # say the approved pricing line once, not on every turn
         asked["_price"] = 1
-    reply, u2, blocked = c.speak(transcript, dec, facts)
+    reply, u2, blocked = c.speak(transcript, dec, facts, lang)
     usage = {"input": u1["input"] + u2["input"], "output": u1["output"] + u2["output"]}
     done = dec["decision"] in ("decline", "escalate", "forward")
     return {"reply": reply, "facts": facts, "decision": dec, "usage": usage, "cost_inr": c.cost_inr(usage), "asked": asked,

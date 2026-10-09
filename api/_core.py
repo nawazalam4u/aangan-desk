@@ -268,7 +268,7 @@ def priority(f, crit):
 # Pricing guardrail (pricing.md: no number, range or per-sq-ft figure may ever be said)
 # --------------------------------------------------------------------------------------
 _PRICE_PAT = re.compile(
-    r"(₹|\brs\.?\s*\d|\binr\b|\blakhs?\b|\blacs?\b|\bcrores?\b|\bper\s*(sq|square)|/\s*(sq|square)|"
+    r"(₹|लाख|रुपय|रुपए|करोड|हज़ार|हजार|प्रति\s*(स्क्वे|वर्ग)|\brs\.?\s*\d|\binr\b|\blakhs?\b|\blacs?\b|\bcrores?\b|\bper\s*(sq|square)|/\s*(sq|square)|"
     r"\d\s*(k|l)\b|\bstarts?\s+(at|from)\b|\bapproximately\s+\d+\s*(per|/)|\b\d[\d,\.]*\s*(per|a)\s*(sq|square))",
     re.I,
 )
@@ -499,7 +499,7 @@ def _parse_json(txt):
 
 
 EXTRACT_SYSTEM = """You read a phone-call transcript between an AI receptionist and a caller to Aangan Studio, an interior design studio in Pune. Extract facts the CALLER has stated. Use the caller's LATEST position if they changed their mind. Never guess: use null when not stated. Output ONLY a JSON object with exactly these keys:
-caller_name, project_type (full_home | partial_home | single_room | office | advice_only | out_of_scope | other), scope_text, wants_execution (true if they want design + execution; false if they only want ideas/advice/colour suggestions; null if unknown), just_exploring (true if "just exploring / early stage / maybe later"), location_text (locality/city of the SITE), area_sqft (number, carpet area), property_state (e.g. bare builder flat, new possession, lived-in, rented), timeline_status (hard_deadline ONLY if they say the finished project is needed by a date/event, e.g. 'done by March', 'before Diwali', 'guests in 3 weeks'. A possession/handover/keys date is NOT a deadline, it is when they can start, so use start_only; flexible if no rush; start_only if they only say they want to start now/soon with no completion date; unknown), ready_by_weeks (number of weeks from TODAY until they need the project finished, only for hard_deadline), timeline_text, budget_min_lakh, budget_max_lakh (only if the caller volunteered a figure; in lakh), decision_maker (self = caller decides or is the owner with the spouse's go-ahead; authorised = calling for someone who authorised them; researching_for_others = only doing initial research for family/others who will decide; unknown), referral_source, preferred_slot (days/times they prefer for a consultation), asked_price (true if they asked about cost/price/rate/ballpark at any point), existing_client_complaint (true if they are an existing client complaining about a project/designer), wants_human (true if they ask for a person/senior/manager), language, notes (one short line of anything useful the designer should know).
+caller_name, project_type (full_home | partial_home | single_room | office | advice_only | out_of_scope | other), scope_text, wants_execution (true if they want design + execution; false if they only want ideas/advice/colour suggestions; null if unknown), just_exploring (true if "just exploring / early stage / maybe later"), location_text (locality/city of the SITE, always written in English letters e.g. Kothrud, even if the caller spoke Hindi or Marathi), area_sqft (number, carpet area), property_state (e.g. bare builder flat, new possession, lived-in, rented), timeline_status (hard_deadline ONLY if they say the finished project is needed by a date/event, e.g. 'done by March', 'before Diwali', 'guests in 3 weeks'. A possession/handover/keys date is NOT a deadline, it is when they can start, so use start_only; flexible if no rush; start_only if they only say they want to start now/soon with no completion date; unknown), ready_by_weeks (number of weeks from TODAY until they need the project finished, only for hard_deadline), timeline_text, budget_min_lakh, budget_max_lakh (only if the caller volunteered a figure; in lakh), decision_maker (self = caller decides or is the owner with the spouse's go-ahead; authorised = calling for someone who authorised them; researching_for_others = only doing initial research for family/others who will decide; unknown), referral_source, preferred_slot (days/times they prefer for a consultation), asked_price (true if they asked about cost/price/rate/ballpark at any point), existing_client_complaint (true if they are an existing client complaining about a project/designer), wants_human (true if they ask for a person/senior/manager), language, notes (one short line of anything useful the designer should know).
 Homes (flats, villas, rooms) are full_home / partial_home / single_room. Offices, clinics, studios, coworking and any other work-space fit-out are project_type office, which Aangan DOES do: NEVER label them out_of_scope. out_of_scope is ONLY for restaurants, hotels, cafes, retail stores/showrooms, gyms and salons. If unsure, use other, never out_of_scope or advice_only. Today is %s (IST)."""
 
 SPEAK_SYSTEM = """You are the voice of Aangan Studio's AI phone assistant (Aangan Studio does interior design + execution for homes and small offices in Pune and PCMC). You are speaking aloud on a phone call, so: warm, plain, brief (1-3 short sentences, under 45 words), one question at a time, no lists, no emojis, no markdown. If the caller writes in Hinglish or Marathi, answer in the same language/script style. You are an AI and say so honestly if asked.
@@ -512,8 +512,8 @@ HARD RULES - never break these:
 
 _ADVICE = re.compile(r"(ideas|suggest|advice|advise|advisory|consult(?:ation)? only|colou?rs?\b|styling|arrange|rearrange|just (?:want|looking)|diy|myself)", re.I)
 _EXPLORE = re.compile(r"(explor|just looking|browsing|early stage|maybe later|not (?:sure|ready)|thinking about|window shopping|research|portfolio|brochure)", re.I)
-_COMPLAIN = re.compile(r"(complain|not acceptable|unacceptable|hasn'?t replied|no reply|not replied|my designer|my project|escalat|senior|manager|nikhil|speak to (?:a |some)|talk to (?:a |some)|human|person)", re.I)
-_DEADLINE = re.compile(r"(\bby\b|before|within|done|ready|complete|finish|move[- ]?in|moving in|operational|deadline|guests|arriv|diwali|wedding|festival|max(?:imum)?\b|urgent|latest|open(?:ing)?\b|in \d+ weeks?|in (?:one|two|three|four|five) weeks?)", re.I)
+_COMPLAIN = re.compile(r"(शिकायत|तक्रार|डिज़ाइनर|डिझायनर|जवाब नहीं|उत्तर नाही|प्रतिसाद|सीनियर|सिनियर|मैनेजर|मॅनेजर|निखिल|नाराज|स्वीकार्य|किसी से बात|कोणाशी बोल|complain|not acceptable|unacceptable|hasn'?t replied|no reply|not replied|my designer|my project|escalat|senior|manager|nikhil|speak to (?:a |some)|talk to (?:a |some)|human|person)", re.I)
+_DEADLINE = re.compile(r"(तक|पर्यंत|पहले|आधी|पूरा हो|पूर्ण|तयार|दिवाली|दिवाळी|\bby\b|before|within|done|ready|complete|finish|move[- ]?in|moving in|operational|deadline|guests|arriv|diwali|wedding|festival|max(?:imum)?\b|urgent|latest|open(?:ing)?\b|in \d+ weeks?|in (?:one|two|three|four|five) weeks?)", re.I)
 _OFFICE = re.compile(r"(office|startup|clinic|workstation|cowork|co-work|cabin|studio)", re.I)
 
 
@@ -566,6 +566,12 @@ def extract_facts(transcript, prev_facts, now=None):
         f["notes"] = ((f.get("notes") or "") + " [fallback extractor: %s]" % str(e)[:80]).strip()
         return f, {"input": 0, "output": 0}
 
+
+LANGS = {"en": "English", "hi": "Hindi (Devanagari script)", "mr": "Marathi (Devanagari script)"}
+GREETINGS = {
+    "hi": "\u0928\u092e\u0938\u094d\u0924\u0947, \u0906\u0902\u0917\u0928 \u0938\u094d\u091f\u0942\u0921\u093f\u092f\u094b \u092e\u0947\u0902 \u0915\u0949\u0932 \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093f\u090f \u0927\u0928\u094d\u092f\u0935\u093e\u0926\u0964 \u092e\u0948\u0902 \u0906\u0902\u0917\u0928 \u0915\u093e \u090f\u0906\u0908 \u0905\u0938\u093f\u0938\u094d\u091f\u0947\u0902\u091f \u0939\u0942\u0901 \u0914\u0930 \u092f\u0939 \u0915\u0949\u0932 \u0930\u093f\u0915\u0949\u0930\u094d\u0921 \u0939\u094b \u0930\u0939\u0940 \u0939\u0948, \u0924\u093e\u0915\u093f \u0921\u093f\u091c\u093c\u093e\u0907\u0928 \u091f\u0940\u092e \u0915\u094b \u0906\u092a\u0938\u0947 \u0938\u092c \u0915\u0941\u091b \u0926\u094b\u092c\u093e\u0930\u093e \u0928 \u092a\u0942\u091b\u0928\u093e \u092a\u0921\u093c\u0947\u0964 \u092e\u0948\u0902 \u0906\u092a\u0915\u0940 \u0915\u0948\u0938\u0947 \u092e\u0926\u0926 \u0915\u0930 \u0938\u0915\u0924\u093e \u0939\u0942\u0901?",
+    "mr": "\u0928\u092e\u0938\u094d\u0915\u093e\u0930, \u0906\u0902\u0917\u0923 \u0938\u094d\u091f\u0941\u0921\u093f\u0913\u092e\u0927\u094d\u092f\u0947 \u0915\u0949\u0932 \u0915\u0947\u0932\u094d\u092f\u093e\u092c\u0926\u094d\u0926\u0932 \u0927\u0928\u094d\u092f\u0935\u093e\u0926. \u092e\u0940 \u0906\u0902\u0917\u0923\u091a\u093e \u090f\u0906\u092f \u0905\u0938\u093f\u0938\u094d\u091f\u0902\u091f \u0906\u0939\u0947 \u0906\u0923\u093f \u0921\u093f\u091d\u093e\u0907\u0928 \u091f\u0940\u092e\u0932\u093e \u0924\u0941\u092e\u094d\u0939\u093e\u0932\u093e \u0938\u0930\u094d\u0935 \u0915\u093e\u0939\u0940 \u092a\u0941\u0928\u094d\u0939\u093e \u0935\u093f\u091a\u093e\u0930\u093e\u0935\u0947 \u0932\u093e\u0917\u0942 \u0928\u092f\u0947 \u092e\u094d\u0939\u0923\u0942\u0928 \u0939\u093e \u0915\u0949\u0932 \u0930\u0947\u0915\u0949\u0930\u094d\u0921 \u0915\u0947\u0932\u093e \u091c\u093e\u0924 \u0906\u0939\u0947. \u092e\u0940 \u0924\u0941\u092e\u094d\u0939\u093e\u0932\u093e \u0915\u0936\u0940 \u092e\u0926\u0924 \u0915\u0930\u0942?",
+}
 
 GREETING = ("Namaste, thank you for calling Aangan Studio. I'm Aangan's AI assistant, and this call is recorded so the design team "
             "doesn't have to ask you everything again. How can I help you today?")
@@ -633,9 +639,11 @@ def template_reply(decision, facts):
     return reply
 
 
-def speak(transcript, decision, facts):
+def speak(transcript, decision, facts, lang="en"):
     """Returns (reply, usage, price_blocked)."""
     directive = make_directive(decision, facts)
+    if lang in LANGS and lang != "en":
+        directive += " IMPORTANT: speak this reply in %s, natural spoken style, even though the instruction above is in English." % LANGS[lang]
     if provider() == "none":
         r, blocked = guard_reply(template_reply(decision, facts))
         return r, {"input": 0, "output": 0}, blocked
