@@ -33,7 +33,7 @@ python3 -I tests/scenarios.py  # the 9 demo calls end to end + the price-guardra
 | `TELEGRAM_BOT_TOKEN` | Handoff notes to the designers' private group, with an "I'll take it" button. Send `/register <dashboard key>` in the group to choose where notes go. |
 | `TELEGRAM_WEBHOOK_SECRET` | Makes the button work (point the bot webhook to `/api/telegram` with the same secret) |
 | `DATABASE_URL`, `DASHBOARD_KEY` | Shared Neon Postgres database (the table is created automatically) so the dashboard shows every call, locked by a key |
-| `HUBSPOT_TOKEN` | CRM sync (the HubSpot integration): each qualified / call-back / escalated lead becomes a HubSpot contact + timeline note + a call-back task, and a deal for qualified leads). Set `HUBSPOT_PORTAL_ID` to make dashboard rows link straight to the HubSpot contact. Private App token with scopes `crm.objects.contacts.read/write`, `crm.objects.deals.write`, `crm.objects.notes.write`. Optional `HUBSPOT_DEAL_STAGE` (default `appointmentscheduled`). |
+| `HUBSPOT_TOKEN` | CRM sync (the HubSpot integration): each qualified / call-back / escalated lead becomes a HubSpot contact + timeline note + a call-back task, and a deal for qualified leads). Set `HUBSPOT_PORTAL_ID` to make dashboard rows link straight to the HubSpot contact. HubSpot **service key** (Settings > Development > Keys > Service Keys) with scopes `crm.objects.contacts.read/write` and `crm.objects.deals.read/write`; notes and tasks need no extra scope. Optional `HUBSPOT_DEAL_STAGE` (default `appointmentscheduled`). |
 
 Without a database the dashboard shows calls made in the same browser. With the database set but no `DASHBOARD_KEY`, the dashboard stays locked on purpose, because it holds callers' phone numbers.
 
