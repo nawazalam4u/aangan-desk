@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>From Zero to AI Builder - Nawaz's Field Guide</title>
+<style>
+@page{size:A4;margin:14mm 14mm 16mm}
+:root{--ink:#1d2523;--muted:#5d6763;--line:#e6dfd3;--bg:#fbf8f3;--accent:#c2613a;--teal:#2f6f62;--gold:#c9952b;--blue:#2c6788;--plum:#7a4d8f;--soft:#f3ede4}
+*{box-sizing:border-box}
+body{margin:0;font:10.6pt/1.5 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+h1,h2,h3{line-height:1.2;margin:0 0 6px;letter-spacing:-.01em}
+h2{font-size:19pt}h3{font-size:12.5pt;margin-top:10px}
+p{margin:0 0 7px}
+.page{page-break-after:always;position:relative}
+.page:last-child{page-break-after:auto}
+.cover{height:262mm;border-radius:18px;padding:22mm 16mm;color:#fff;display:flex;flex-direction:column;justify-content:space-between;
+ background:radial-gradient(700px 300px at 0% 0%,#d9774f,transparent 60%),radial-gradient(600px 300px at 100% 100%,#2f6f62,transparent 60%),linear-gradient(135deg,#2b1f19,#16292a)}
+.cover h1{font-size:34pt;line-height:1.05}
+.cover .tag{display:inline-block;background:rgba(255,255,255,.15);padding:4px 12px;border-radius:99px;font-weight:700;font-size:9pt;letter-spacing:.06em;text-transform:uppercase}
+.map{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.map div{background:rgba(255,255,255,.12);border-radius:12px;padding:10px 8px;text-align:center;font-size:8.6pt}
+.map b{display:block;font-size:16pt}
+.lvl{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.lvl .n{background:var(--accent);color:#fff;border-radius:12px;padding:6px 12px;font-weight:800;font-size:10pt;white-space:nowrap}
+.lvl .xp{margin-left:auto;font-size:8.5pt;color:var(--muted);border:1px dashed var(--line);border-radius:99px;padding:3px 10px}
+.lead{color:var(--muted);font-size:10.5pt;margin-bottom:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.card{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff;break-inside:avoid}
+.card h4{margin:0 0 3px;font-size:10.5pt}
+.card p{margin:0;font-size:9.4pt;color:#333}
+.card .eg{display:block;margin-top:5px;font-size:8.8pt;color:var(--teal)}
+.ic{font-size:15pt;margin-right:4px}
+.box{border-radius:12px;padding:10px 12px;margin:8px 0;break-inside:avoid}
+.box.tip{background:#eaf4ef;border-left:5px solid var(--teal)}
+.box.warn{background:#fbf0dc;border-left:5px solid var(--gold)}
+.box.story{background:#f3ede4;border-left:5px solid var(--accent)}
+.box.quiz{background:#eef0fb;border-left:5px solid var(--plum)}
+.quiz ol{margin:4px 0 0 18px;padding:0}.quiz li{margin:2px 0;font-size:9.5pt}
+.ans{font-size:8pt;color:var(--muted);margin-top:4px}
+table{width:100%;border-collapse:collapse;font-size:9.2pt;break-inside:auto}
+th{text-align:left;background:var(--soft);padding:6px 8px;font-size:8.6pt;text-transform:uppercase;letter-spacing:.05em}
+td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+tr{break-inside:avoid}
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:5px;margin:8px 0}
+.flow div{flex:1 1 0;min-width:78px;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:7px 6px;text-align:center;font-size:8.4pt}
+.flow div b{display:block;font-size:9pt;margin-bottom:2px}
+.flow .ai{border-color:var(--accent);background:#fbefe9}.flow .code{border-color:var(--teal);background:#eaf4ef}.flow .human{border-color:#b4382e;background:#f9e5e2}
+.arrow{flex:0 0 auto!important;min-width:0!important;border:0!important;background:none!important;align-self:center;font-size:13pt;color:var(--muted);padding:0!important}
+.timeline{border-left:3px solid var(--accent);margin:6px 0 0 8px;padding-left:14px}
+.timeline div{position:relative;margin:0 0 7px;font-size:9.4pt;break-inside:avoid}
+.timeline div:before{content:"";position:absolute;left:-21px;top:4px;width:11px;height:11px;border-radius:50%;background:var(--accent);border:2px solid #fff}
+.timeline b{color:var(--accent)}
+.fix{color:var(--teal);font-weight:600}
+.week{border:1px solid var(--line);border-radius:12px;padding:9px 11px;break-inside:avoid;background:#fff}
+.week .wk{display:inline-block;background:var(--teal);color:#fff;border-radius:8px;padding:1px 8px;font-size:8.4pt;font-weight:800;margin-bottom:3px}
+.week ul{margin:3px 0 0 16px;padding:0;font-size:9pt}.week li{margin:1px 0}
+.chk:before{content:"\2610  ";color:var(--accent)}
+.badges{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.badges div{border:1.5px dashed var(--gold);border-radius:12px;padding:8px;text-align:center;font-size:8.6pt}
+.badges b{display:block;font-size:16pt}
+.foot{font-size:8pt;color:var(--muted);margin-top:8px}
+.kbd{font-family:ui-monospace,Menlo,monospace;background:var(--soft);padding:0 5px;border-radius:5px;font-size:9pt}
+.qa{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.qa .card p{font-size:9pt}.qa .card h4{font-size:9.6pt;color:var(--accent)}
+</style>
+</head>
+<body>
+
+<!-- ============ COVER ============ -->
+<section class="page"><div class="cover">
+  <div><span class="tag">MESA &middot; AI and its Application &middot; Field guide</span>
+    <h1 style="margin-top:18px">From Zero to<br>AI Builder</h1>
+    <p style="font-size:13pt;opacity:.9;max-width:130mm">What you actually built, how it works, why every tool is there, and a two-month plan to really learn AI. Written for someone starting from nothing.</p></div>
+  <div>
+    <p style="font-weight:700;margin-bottom:8px">Your quest map (tick a box when you can explain it to a friend)</p>
+    <div class="map">
+      <div><b>1</b>What AI really is</div><div><b>2</b>How apps work</div><div><b>3</b>Your toolbox</div><div><b>4</b>The builder's playbook</div><div><b>5</b>Aangan, start to end</div><div><b>6</b>Viva + 8-week plan</div>
+    </div>
+    <p style="margin-top:14px;font-size:9pt;opacity:.8">Nawaz Alam &middot; Live project: aangan-desk.vercel.app &middot; Code: github.com/nawazalam4u/aangan-desk</p>
+  </div>
+</div></section>
+
+<!-- ============ LEVEL 1 ============ -->
+<section class="page">
+  <div class="lvl"><span class="n">LEVEL 1</span><h2>What AI really is</h2><span class="xp">+100 XP</span></div>
+  <p class="lead">Forget robots. Today's AI is mostly <b>software that learned patterns from huge amounts of examples</b>, so it can predict, sort, or create things.</p>
+  <div class="grid2">
+    <div class="card"><h4><span class="ic">🧠</span>AI (Artificial Intelligence)</h4><p>Any computer system doing something that normally needs human judgement: recognising a face, understanding speech, writing a reply.</p><span class="eg">e.g. Google Maps predicting traffic.</span></div>
+    <div class="card"><h4><span class="ic">📚</span>Machine Learning (ML)</h4><p>The way most AI is made: instead of writing rules by hand, you show the computer many examples and it learns the pattern itself.</p><span class="eg">e.g. Gmail learned what spam looks like from millions of emails.</span></div>
+    <div class="card"><h4><span class="ic">✍️</span>Generative AI</h4><p>AI that <b>creates</b> new things (text, images, voice, code) instead of only sorting. ChatGPT, Claude, Gemini, Midjourney.</p><span class="eg">e.g. Writing a LinkedIn post in Meera's voice (Case 1).</span></div>
+    <div class="card"><h4><span class="ic">💬</span>LLM (Large Language Model)</h4><p>The engine behind chatbots. Trained on a huge library of text, it predicts the next word again and again, which turns into sentences, answers and code.</p><span class="eg">Gemini, Claude, GPT are LLMs.</span></div>
+    <div class="card"><h4><span class="ic">🧩</span>Token</h4><p>LLMs read and write in small chunks called tokens (roughly 3/4 of a word). You pay per token, so cost = how much you send + how much it writes.</p><span class="eg">Our Aangan analysis costs about 5 paise per turn.</span></div>
+    <div class="card"><h4><span class="ic">📝</span>Prompt</h4><p>The instructions you give the model. A good prompt is like a good job description: role, goal, rules, examples, output format.</p><span class="eg">Our Vaani agent's prompt holds Nikhil's five rules.</span></div>
+    <div class="card"><h4><span class="ic">🪟</span>Context window</h4><p>How much text the model can "see" at once (the prompt + the conversation + documents). Anything outside it is forgotten.</p><span class="eg">We pass the whole call transcript in one go.</span></div>
+    <div class="card"><h4><span class="ic">🌀</span>Hallucination</h4><p>When an AI says something confident but false. It predicts plausible words, not truth. The big reason we keep rules and checks in <b>code</b>.</p><span class="eg">The AI once called an office "out of scope". Our safety net caught it.</span></div>
+    <div class="card"><h4><span class="ic">🏋️</span>Training vs inference</h4><p><b>Training</b> = the expensive months when the model learns (done by Google/Anthropic). <b>Inference</b> = using the finished model, which is what you pay for via an API.</p><span class="eg">You never trained a model; you used them.</span></div>
+    <div class="card"><h4><span class="ic">🤖</span>AI agent</h4><p>An AI that doesn't just answer but <b>acts</b>: follows a goal, takes steps, uses tools (book a meeting, look up data).</p><span class="eg">The Vaani receptionist is a voice agent.</span></div>
+    <div class="card"><h4><span class="ic">🎙️</span>Speech-to-text / text-to-speech</h4><p>STT turns voice into text (the AI's "ears"); TTS turns text into a natural voice (its "mouth"). Voice agents = STT + LLM + TTS.</p><span class="eg">Vaani shows these as Ears, Brain, Mouth.</span></div>
+    <div class="card"><h4><span class="ic">📎</span>RAG and embeddings (bonus)</h4><p>RAG = "look it up, then answer": the app first finds the right documents, then gives them to the LLM. Embeddings are number-fingerprints of meaning used to find similar text.</p><span class="eg">A future Aangan could search past projects before answering.</span></div>
+  </div>
+  <div class="box tip"><b>One-line mental model:</b> an LLM is a brilliant intern who has read the whole internet, writes fast, never gets tired, but sometimes makes things up. So you give it clear instructions (prompt), the right documents (context), and you check its work (code + humans).</div>
+  <div class="box quiz"><b>Quick quiz (+20 XP)</b><ol><li>Is ChatGPT "generative AI"? Why?</li><li>Why do we pay per token?</li><li>Name one hallucination our project caught.</li></ol><div class="ans">Answers: 1) yes, it creates new text. 2) tokens are the units the model reads and writes, so compute cost scales with them. 3) An office called "out of scope", or a possession date read as a deadline.</div></div>
+</section>
+
+<!-- ============ LEVEL 2 ============ -->
+<section class="page">
+  <div class="lvl"><span class="n">LEVEL 2</span><h2>How apps work (the restaurant analogy)</h2><span class="xp">+100 XP</span></div>
+  <p class="lead">Every web app you built has the same parts. Picture a restaurant.</p>
+  <div class="flow"><div><b>🪑 Front end</b>the dining room: pages you see and click</div><div class="arrow">→</div><div><b>🧑‍🍳 Back end</b>the kitchen: code on a server doing the work</div><div class="arrow">→</div><div><b>🗄️ Database</b>the pantry: where everything is stored</div><div class="arrow">→</div><div><b>📞 APIs</b>suppliers you phone: Gemini, Telegram, HubSpot</div></div>
+  <table>
+    <tr><th style="width:24%">Word</th><th>Plain meaning</th><th style="width:30%">In your project</th></tr>
+    <tr><td><b>Front end</b></td><td>What runs in the browser: HTML (structure), CSS (looks), JavaScript (behaviour).</td><td>The Live AI call page, dashboard, brief.</td></tr>
+    <tr><td><b>Back end</b></td><td>Code on a server that the browser asks to do things it can't (or shouldn't) do itself.</td><td>Python files in <span class="kbd">/api</span>: rules, Telegram, HubSpot.</td></tr>
+    <tr><td><b>API</b></td><td>A menu of requests one program can make to another over the internet. You send a request, you get a response.</td><td>We call Gemini's API to read a call; Vaani's API to start a call.</td></tr>
+    <tr><td><b>API key</b></td><td>A secret password proving it's you. Leak it and others can spend your money. Never put it in public code.</td><td>Stored as hidden settings on Vercel, not in GitHub.</td></tr>
+    <tr><td><b>Environment variable</b></td><td>A setting kept outside the code (keys, links), read when the app runs.</td><td><span class="kbd">GEMINI_API_KEY</span>, <span class="kbd">DATABASE_URL</span>…</td></tr>
+    <tr><td><b>Webhook</b></td><td>"Don't call us, we'll call you": a web address another service calls when something happens.</td><td>Vaani calls us after each call; Cal.com after each booking; Telegram when a designer taps "I'll take it".</td></tr>
+    <tr><td><b>JSON</b></td><td>The text format apps use to exchange data: <span class="kbd">{"name": "Meera", "area": "Baner"}</span>.</td><td>Every API message.</td></tr>
+    <tr><td><b>Database</b></td><td>Organised long-term memory. Without it, an app forgets everything when it restarts.</td><td>Neon (Postgres) stores every call.</td></tr>
+    <tr><td><b>Server / serverless</b></td><td>A server is a computer always running your code. Serverless = the host runs your code only when needed; you manage no computer.</td><td>Vercel runs our Python only when a request arrives.</td></tr>
+    <tr><td><b>Git &amp; GitHub</b></td><td>Git = a time machine for code (every version saved). GitHub = the online home for it, and your public portfolio.</td><td>github.com/nawazalam4u/aangan-desk</td></tr>
+    <tr><td><b>Deploy</b></td><td>Put the app on the internet so anyone can open it.</td><td>Vercel redeploys on every push to GitHub.</td></tr>
+    <tr><td><b>WebRTC</b></td><td>The browser technology for live audio/video calls (Google Meet uses it).</td><td>How you talk to the Vaani agent without a phone line.</td></tr>
+  </table>
+  <div class="box story"><b>Why this matters for AI jobs:</b> most "AI products" are 10% model and 90% normal software: getting data in, calling the model, checking the answer, saving it, showing it, and connecting it to tools people already use. That 90% is exactly what you practised.</div>
+</section>
+
+<!-- ============ LEVEL 3 ============ -->
+<section class="page">
+  <div class="lvl"><span class="n">LEVEL 3</span><h2>Your toolbox, and why each tool is there</h2><span class="xp">+100 XP</span></div>
+  <p class="lead">If the professor asks "why X?", the answer is always: <b>what job does it do, and why this one over the alternative?</b></p>
+  <table>
+    <tr><th style="width:17%">Tool</th><th style="width:30%">Its job (analogy)</th><th>Why we chose it</th></tr>
+    <tr><td><b>Vercel</b></td><td>The landlord: hosts the website and runs the back end. 🏠</td><td>Free, deploys straight from GitHub in about 30 s, runs Python "serverless" so there's no server to manage.</td></tr>
+    <tr><td><b>GitHub</b></td><td>The safe + portfolio: stores every version of the code. 🗂️</td><td>Industry standard; public repo shows your work; linked to Vercel for auto-deploys.</td></tr>
+    <tr><td><b>Neon</b></td><td>The pantry: a Postgres database in the cloud. 🗄️</td><td>Free tier, fast, and it sleeps when idle. Your Supabase slots were full, and you never delete old projects (portfolio rule).</td></tr>
+    <tr><td><b>Gemini (Google)</b></td><td>The analyst brain: reads each call and pulls out facts. 🧠</td><td>You had a key; cheap and fast (Flash-Lite, about 1 s). The code also supports Claude. We switched models when Google retired the old one.</td></tr>
+    <tr><td><b>Vaani</b></td><td>The voice: phone number, ears, mouth and the live receptionist agent. 🎙️</td><td>Indian voice-AI platform (Indian voices, Hindi), WebRTC test calls, webhooks with transcripts, Cal.com integration. About ₹5.50 a minute.</td></tr>
+    <tr><td><b>Telegram bot</b></td><td>The doorbell for designers: an instant alert with an "I'll take it" button. 🔔</td><td>Push alerts on site beat email; one-tap claim; free. Email has no claim button and needs domain setup.</td></tr>
+    <tr><td><b>HubSpot</b></td><td>The customer diary (CRM): one record per customer, notes, tasks, deals. 📒</td><td>Required by the course; it is where sales follow up for weeks. The dashboard measures the assistant; HubSpot manages relationships.</td></tr>
+    <tr><td><b>Cal.com</b></td><td>The appointment book: books the free design consultation. 📅</td><td>Free, has an API and webhooks, and its HubSpot app logs every meeting in the CRM automatically.</td></tr>
+    <tr><td><b>Python</b></td><td>The language of our back end. 🐍</td><td>Readable and the most common language in AI. We used only built-in libraries, so nothing extra to install.</td></tr>
+    <tr><td><b>Claude (me)</b></td><td>Your coding partner: planned, wrote, tested, deployed and explained. 🤝</td><td>An AI coding agent: it reads files, runs commands, uses the browser and keeps memory of your preferences between projects.</td></tr>
+  </table>
+  <div class="box warn"><b>Golden rule of keys:</b> keys live in Vercel's hidden settings and a local <span class="kbd">.env</span> file that is <b>never</b> pushed to GitHub. You rotated (replaced) keys after sharing them in chat, which is exactly what professionals do.</div>
+  <div class="box quiz"><b>Quick quiz (+20 XP)</b><ol><li>Telegram vs email: give two reasons for Telegram.</li><li>What is the difference between the dashboard and HubSpot?</li><li>Why Neon instead of Supabase this time?</li></ol><div class="ans">Answers: 1) instant push on site + one-tap claim (measurable). 2) Dashboard = how the assistant performs; HubSpot = what happens with each customer. 3) Supabase free slots were full and you never delete old portfolio projects.</div></div>
+</section>
+
+<!-- ============ LEVEL 4 ============ -->
+<section class="page">
+  <div class="lvl"><span class="n">LEVEL 4</span><h2>The builder's playbook (every project you did)</h2><span class="xp">+150 XP</span></div>
+  <p class="lead">All your MESA projects followed the same 9 steps. Learn this once and you can explain any of them.</p>
+  <div class="flow">
+    <div><b>1 Why</b>Pain, User, Outcome</div><div><b>2 Nine Checks</b>should we build it?</div><div><b>3 Map</b>Trigger → Input → Context → Processing → AI → Output</div><div><b>4 Build</b>AI + code + data</div><div><b>5 GitHub</b>save + share</div><div><b>6 Vercel</b>go live</div><div><b>7 Test</b>real data</div><div><b>8 Fix</b>what testing found</div><div><b>9 Improve</b>features, design</div>
+  </div>
+  <h3>The Nine Checks in one breath</h3>
+  <p style="font-size:9.6pt"><b>Kill switches</b> (any no = don't build): 01 Problem real · 02 Workflow repeated · 03 Input available. <b>Sizing</b> (any no = build smaller): 04 Output valuable · 05 Impact measurable · 08 ROI worth it. <b>Boundary</b> (any no = a human stays in charge): 06 Failure risk OK · 07 Judgment protected · 09 Owner clear. <b>The Cut</b> = the one thing the founder wanted that a check stops you building.</p>
+  <h3>Your projects so far</h3>
+  <div class="grid2">
+    <div class="card"><h4>📝 Case 1: Skinstinct content bot (Meera)</h4><p>Meera drops rough notes into Telegram. AI scores the note, finds a news angle, and drafts a LinkedIn post in her voice; drafts are saved for APPROVE/REJECT. <b>Cut:</b> it never posts by itself; Meera publishes (Check 07).</p><span class="eg">AI role: scoring + writing. Human gate: approval.</span></div>
+    <div class="card"><h4>🧑‍💼 Case 2: Kargo hiring screener</h4><p>CVs are uploaded; names and contact details are removed before the AI sees them (fairness and privacy); the AI scores against a rubric and writes a brief with interview questions; emails need a human to confirm.</p><span class="eg">AI role: reading and ranking. Human gate: sending decisions.</span></div>
+    <div class="card"><h4>✈️ TripLock (group trip planner)</h4><p>Friends answer 5 private questions; AI suggests destinations; code scores how well each fits every friend without revealing anyone's budget; the group votes and locks the trip.</p><span class="eg">AI role: ideas. Code role: fairness and privacy.</span></div>
+    <div class="card"><h4>🎬 Movie / TV matchmaker</h4><p>A recommender: it takes people's tastes and picks something to watch tonight, with AI helping to match and explain the choice.</p><span class="eg">AI role: matching + explaining. Pattern: preferences in, pick out.</span></div>
+  </div>
+  <div class="box tip"><b>The pattern behind all four, and Aangan:</b> AI does the fuzzy human part (read, understand, write). <b>Plain code</b> does the rules that must never break (privacy, fairness, prices). <b>A human</b> owns anything consequential (publishing, hiring, pricing). Say this sentence in your viva and you'll sound like an expert.</div>
+</section>
+
+<!-- ============ LEVEL 5a ============ -->
+<section class="page">
+  <div class="lvl"><span class="n">LEVEL 5</span><h2>Aangan Desk: the problem and the solution</h2><span class="xp">+150 XP</span></div>
+  <div class="grid3">
+    <div class="card"><h4>😣 Pain</h4><p>~200 enquiries a month; 48% got no reply in 48 hours; a third arrive after 7pm. Fast replies convert 4× better. Designers re-ask every question.</p></div>
+    <div class="card"><h4>👥 User</h4><p>The caller (talks to the AI), the 14 designers (get the note), Nikhil (owns the rules, reads the dashboard).</p></div>
+    <div class="card"><h4>🎯 Outcome</h4><p>Every call answered instantly, the right ones sent to a designer with everything asked, zero prices quoted, and numbers Nikhil never pulls by hand.</p></div>
+  </div>
+  <h3>How one real call travels</h3>
+  <div class="flow">
+    <div><b>📞 Caller</b>talks on the Live page (WebRTC) or phone</div><div class="arrow">→</div>
+    <div class="ai"><b>🎙️ Vaani agent</b>listens, follows Nikhil's rules, never says a price</div><div class="arrow">→</div>
+    <div><b>🔔 Webhook</b>transcript + summary + recording sent to us</div><div class="arrow">→</div>
+    <div class="ai"><b>🧠 Gemini</b>pulls out facts: area, size, timeline…</div><div class="arrow">→</div>
+    <div class="code"><b>⚖️ Rules (code)</b>5 checks → qualify / close / escalate / call back</div>
+  </div>
+  <div class="flow">
+    <div class="code"><b>🗄️ Neon</b>saves the call</div><div class="arrow">→</div>
+    <div class="human"><b>📲 Telegram</b>designer taps "I'll take it"</div><div class="arrow">→</div>
+    <div><b>📒 HubSpot</b>contact, note, task, deal</div><div class="arrow">→</div>
+    <div><b>📅 Cal.com</b>consultation booked → HubSpot meeting</div><div class="arrow">→</div>
+    <div><b>📊 Dashboard</b>transcript, takeaways, cost, score</div>
+  </div>
+  <h3>Nikhil's five checks (the "rubric")</h3>
+  <table>
+    <tr><th>#</th><th>Check</th><th>Pass example</th><th>Fail example</th></tr>
+    <tr><td>1</td><td>Real project (design + execution)</td><td>Full 3BHK redesign</td><td>"Just give me colour ideas", restaurant, gym</td></tr>
+    <tr><td>2</td><td>In Pune / PCMC</td><td>Baner, Kothrud</td><td>Nashik, Talegaon</td></tr>
+    <tr><td>3</td><td>Realistic timeline</td><td>Ready by March</td><td>Needed in 3 weeks (before Diwali)</td></tr>
+    <tr><td>4</td><td>Budget broadly OK (never asked)</td><td>Not mentioned = fine</td><td>₹1–1.5 lakh for kitchen + bedroom</td></tr>
+    <tr><td>5</td><td>Decision-maker on the call</td><td>"My husband and I own it"</td><td>Unclear = note it, don't push</td></tr>
+  </table>
+  <div class="box story"><b>The Cut:</b> Nikhil wanted the AI to quote per-square-foot prices. His own pricing guide says no number may ever be quoted (prices vary by site; a wrong figure on an ₹8–14 lakh job can't be taken back). Check 06 (Failure risk) fails, so pricing stays with the designer. We enforce it twice: in the agent's prompt <b>and</b> in code that scans every transcript and alerts on Telegram if a price ever slips.</div>
+</section>
+
+<!-- ============ LEVEL 5b ============ -->
+<section class="page">
+  <div class="lvl"><span class="n">LEVEL 5</span><h2>The build, start to end (with the problems)</h2><span class="xp">+150 XP</span></div>
+  <p class="lead">Real projects are mostly finding and fixing problems. Knowing these makes your viva answers believable.</p>
+  <div class="timeline">
+    <div><b>Read the case.</b> PDF + 40 real enquiries + services, pricing and rubric files. Spotted red flags: the pricing contradiction, conflicting timeline rules, a typo ("Arjun").</div>
+    <div><b>Wrote the brain.</b> Rules in code from Nikhil's rubric; tested on all 40 real enquiries (40/40 agree). <span class="fix">Fix:</span> a budget check that wrongly used the whole flat size for a 2-room job.</div>
+    <div><b>Built the website and deployed on Vercel</b>, with a demo voice simulator in the browser.</div>
+    <div><b>Connected the real AI (Gemini).</b> <span class="fix">Problem:</span> the first key was cut in half when pasted; then Google retired the model. <span class="fix">Fix:</span> new key, Gemini 3.1 Flash-Lite with a backup model.</div>
+    <div><b>Real-AI testing found 2 dangerous mistakes:</b> an office labelled "out of scope", a possession date read as a deadline. <span class="fix">Fix:</span> clearer prompt + a safety net (the AI can't close a lead unless the caller's own words support it).</div>
+    <div><b>Neon instead of Supabase</b> (slots full). Telegram bot with self-registration (<span class="kbd">/register</span>), dashboard locked with a key because it holds phone numbers.</div>
+    <div><b>HubSpot</b> via a service key on the school account; verified a real contact, note, task and deal.</div>
+    <div><b>Vaani voice agent</b> with Nikhil's rules; webhook back to our app; outbound call button.</div>
+    <div><b>WebRTC calls.</b> <span class="fix">Problem:</span> calls dropped after 3 s, because our call library was newer than Vaani's server. <span class="fix">Fix:</span> matched versions. To test without a human, we generated an Indian-English caller voice and fed it in as a microphone. <span class="fix">Problem:</span> Chrome's sandbox blocked that audio file; fixed for the test browser only.</div>
+    <div><b>Real calls exposed a logic bug:</b> a caller whose area wasn't heard was marked "qualified". <span class="fix">Fix:</span> on real calls, a missing area, project or timeline means "call back", never "qualified".</div>
+    <div><b>Vaani's real data differed from its docs</b> (seconds, not milliseconds; "web-user" instead of a number). <span class="fix">Fix:</span> handle both.</div>
+    <div><b>Cal.com + HubSpot.</b> Booking type, booking webhook, HubSpot app. <span class="fix">Problem:</span> Cal.com's firewall blocked our requests until we added a proper "user agent".</div>
+    <div><b>Final polish:</b> dashboard with real calls only, takeaways and decisions, a gamified "Studio Pulse", faster loading (parallel + cache + auto-refresh), magic links instead of typing keys.</div>
+  </div>
+  <div class="box tip"><b>Numbers to remember:</b> 40/40 rules agreement · 39/39 with the real AI · answers in under 1 s · ~₹0.4 of AI per call · ~₹5.50 per minute of voice · 0 prices quoted in every test.</div>
+</section>
+
+<!-- ============ VIVA ============ -->
+<section class="page">
+  <div class="lvl"><span class="n">BOSS LEVEL</span><h2>Viva practice: 16 questions</h2><span class="xp">+200 XP</span></div>
+  <p class="lead">Cover the answer with your hand, say it out loud, then check.</p>
+  <div class="qa">
+    <div class="card"><h4>1. What problem did you solve?</h4><p>Half of Aangan's enquiries went unanswered for two days. Our AI receptionist answers every call instantly, qualifies it with the founder's rules, and hands designers a complete note.</p></div>
+    <div class="card"><h4>2. Is it a real voice agent?</h4><p>Yes, a Vaani voice agent. You can talk to it over WebRTC on the Live page, or it can phone a number. Real call transcripts are on the dashboard.</p></div>
+    <div class="card"><h4>3. Where exactly is the AI?</h4><p>Two places: the Vaani agent (listening and talking) and Gemini (reading the transcript and extracting facts). Decisions are made by plain code.</p></div>
+    <div class="card"><h4>4. Why not let the AI decide?</h4><p>AI can hallucinate. Code is predictable and testable: we tested it on all 40 real enquiries, and Nikhil can change a rule without touching a prompt.</p></div>
+    <div class="card"><h4>5. Why no prices?</h4><p>The pricing guide forbids any figure; a wrong number on an ₹8–14 lakh job can't be undone. Check 06 fails, so the designer owns pricing. Code also audits every call for prices.</p></div>
+    <div class="card"><h4>6. What's a webhook here?</h4><p>Vaani calls our address after each call with the transcript; Cal.com calls after each booking; Telegram calls when a designer claims a lead.</p></div>
+    <div class="card"><h4>7. Why Telegram over email?</h4><p>Designers are on site: a push alert is seen in seconds, and the "I'll take it" button stops double calls and measures claim time.</p></div>
+    <div class="card"><h4>8. Why HubSpot?</h4><p>It's the CRM: one record per customer with notes, tasks and deals for weeks of follow-up. Our dashboard measures the assistant; HubSpot manages relationships.</p></div>
+    <div class="card"><h4>9. Why Cal.com?</h4><p>To book the free consultation; its HubSpot app logs the meeting automatically, and its webhook marks the lead "booked" on our dashboard.</p></div>
+    <div class="card"><h4>10. What does it cost?</h4><p>About ₹5.50 a minute for voice plus about ₹0.4 of AI analysis per call; hosting, database and CRM are on free tiers. One extra project pays for months.</p></div>
+    <div class="card"><h4>11. How did you test it?</h4><p>Rules on 40 real enquiries, the real AI on 39, attack tests for prices, simulated phone and webhook tests, and real WebRTC calls with a synthetic caller voice.</p></div>
+    <div class="card"><h4>12. A mistake you found?</h4><p>A caller whose area wasn't heard was marked qualified. Now any real call missing area, project or timeline becomes a call-back.</p></div>
+    <div class="card"><h4>13. What is WebRTC?</h4><p>Browser technology for live audio (like Google Meet). It lets anyone test the agent without a phone number.</p></div>
+    <div class="card"><h4>14. How is data kept safe?</h4><p>Keys only in hidden settings, never in GitHub; the dashboard and live calls need a key; closed callers never enter the CRM; the greeting says the call is recorded.</p></div>
+    <div class="card"><h4>15. Limits?</h4><p>No inbound phone number bought yet; speech recognition can mishear names (so we ask for a call-back instead of guessing); two rules await Nikhil's confirmation.</p></div>
+    <div class="card"><h4>16. How would you extend it?</h4><p>WhatsApp and the web form would reuse the same rules and dashboard; a real phone number; an automatic nudge when nobody claims a lead in 15 minutes.</p></div>
+  </div>
+</section>
+
+<!-- ============ 8 WEEKS ============ -->
+<section class="page">
+  <div class="lvl"><span class="n">NEXT QUEST</span><h2>Learn AI properly in 8 weeks</h2><span class="xp">+500 XP</span></div>
+  <p class="lead">About 1–1.5 hours a day. Each week: learn a little, build a little, explain it to someone. All resources listed are free.</p>
+  <div class="grid2">
+    <div class="week"><span class="wk">WEEK 1</span><b> What AI is (no code)</b><ul><li>Andrew Ng, "AI for Everyone" and "Generative AI for Everyone" (Coursera, audit free)</li><li>3Blue1Brown "Neural networks" videos (first 3)</li><li class="chk">Explain ML vs generative AI to a friend</li></ul></div>
+    <div class="week"><span class="wk">WEEK 2</span><b> Prompting like a pro</b><ul><li>Anthropic prompt engineering guide + interactive tutorial; Google's prompting guide</li><li>Practice: role, goal, rules, examples, output format</li><li class="chk">Rewrite the Aangan agent prompt in your own words</li></ul></div>
+    <div class="week"><span class="wk">WEEK 3</span><b> Python basics</b><ul><li>freeCodeCamp or Kaggle "Python" (variables, lists, dicts, functions, loops)</li><li>Read <span class="kbd">api/_core.py</span>; find the five rules</li><li class="chk">Write a script that counts words in a transcript</li></ul></div>
+    <div class="week"><span class="wk">WEEK 4</span><b> APIs and your first AI app</b><ul><li>What HTTP, JSON and API keys are (MDN "HTTP overview")</li><li>Call the Gemini or Claude API from Python with your own key</li><li class="chk">Build: "paste a review → AI says positive/negative + why"</li></ul></div>
+    <div class="week"><span class="wk">WEEK 5</span><b> How LLMs work inside</b><ul><li>Andrej Karpathy, "Intro to Large Language Models" (1-hour talk)</li><li>Tokens, embeddings, training vs fine-tuning, temperature, context window</li><li class="chk">Explain "next-token prediction" with an example</li></ul></div>
+    <div class="week"><span class="wk">WEEK 6</span><b> RAG: AI that reads your documents</b><ul><li>Hugging Face or LangChain RAG tutorial; embeddings and vector search</li><li class="chk">Build: ask questions about the Aangan services PDF</li></ul></div>
+    <div class="week"><span class="wk">WEEK 7</span><b> Agents, tools and voice</b><ul><li>What tool use / function calling is; Anthropic "Building effective agents" article</li><li>Revisit your Vaani agent: Ears (STT), Brain (LLM), Mouth (TTS), Actions (tools)</li><li class="chk">Add one tool to a small agent (e.g. look up the weather)</li></ul></div>
+    <div class="week"><span class="wk">WEEK 8</span><b> Evaluation, safety and your portfolio</b><ul><li>How to test AI: test sets, failure cases, guardrails, human-in-the-loop (what we did with the 40 enquiries)</li><li>Polish GitHub READMEs; record a 2-minute demo video per project</li><li class="chk">Write a one-page case study for Aangan Desk</li></ul></div>
+  </div>
+  <div class="box story"><b>Roles this prepares you for:</b> AI product analyst or associate PM, AI solutions / implementation consultant, founder's office AI lead, automation specialist. Recruiters look for: (1) you can explain AI simply, (2) you shipped real things (you have 5 live apps), (3) you know the limits (hallucination, cost, privacy) and design around them.</div>
+</section>
+
+<!-- ============ FINISH ============ -->
+<section class="page">
+  <div class="lvl"><span class="n">TROPHY ROOM</span><h2>Badges to earn this term</h2></div>
+  <div class="badges">
+    <div><b>🎓</b>Explain AI vs ML vs GenAI in 1 minute</div><div><b>🧭</b>Draw the call flow from memory</div><div><b>🛡️</b>Explain "The Cut" without notes</div><div><b>🔑</b>Explain API keys and why they're secret</div>
+    <div><b>🐍</b>Change one rule in the code yourself</div><div><b>🧪</b>Run the tests with <span class="kbd">python3 -I tests/backtest.py</span></div><div><b>📞</b>Do a live WebRTC call in front of someone</div><div><b>🏗️</b>Build one tiny AI app alone (Week 4)</div>
+  </div>
+  <h3 style="margin-top:14px">Your 30-second elevator pitch</h3>
+  <div class="box story">"Aangan Studio was losing half its enquiries because nobody answered in time. I built an AI voice receptionist on Vaani that answers every call instantly, qualifies callers with the founder's own rules in code, never quotes prices, and sends designers a complete note on Telegram. Leads flow into HubSpot, consultations are booked on Cal.com, and a live dashboard shows every call's transcript, decision and cost. I tested it on 40 real enquiries and real voice calls, and fixed the mistakes testing uncovered."</div>
+  <h3>Where to find everything</h3>
+  <table>
+    <tr><td>Live AI call</td><td>aangan-desk.vercel.app/live</td></tr>
+    <tr><td>Dashboard</td><td>aangan-desk.vercel.app/dashboard</td></tr>
+    <tr><td>How it connects</td><td>aangan-desk.vercel.app/connect</td></tr>
+    <tr><td>Brief, Nine Checks, Cut, map</td><td>aangan-desk.vercel.app/brief</td></tr>
+    <tr><td>Code (public)</td><td>github.com/nawazalam4u/aangan-desk</td></tr>
+  </table>
+  <p class="foot">Written by Claude (your AI coding partner) for Nawaz Alam, October 2026. The access key is deliberately not printed here. Share it only with your evaluator.</p>
+</section>
+</body>
+</html>
