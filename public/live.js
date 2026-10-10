@@ -33,7 +33,8 @@
       if (!s.ok) throw new Error(s.message);
     } catch (e) { $('startBtn').disabled = false; return setState('Could not start the call', e.message); }
     roomName = s.room_name; $('room').textContent = roomName;
-    room = new LK.Room({ adaptiveStream: true, dynacast: true });
+    if (frag.get('debug')) LK.setLogLevel('debug');
+    room = new LK.Room();
     room.on(LK.RoomEvent.TrackSubscribed, (track) => { if (track.kind === 'audio') { const el = track.attach(); el.autoplay = true; document.body.appendChild(el); } });
     room.on(LK.RoomEvent.ActiveSpeakersChanged, (sp) => {
       const agentTalking = sp.some(p => p.identity !== room.localParticipant.identity);
