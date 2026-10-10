@@ -18,6 +18,7 @@ def status():
     return {"ai": {"on": c.provider() != "none", "detail": c.model_name()},
             "db": {"on": _store.configured(), "detail": "Neon Postgres" if _store.configured() else "browser only"},
             "telegram": {"on": c.telegram_configured(), "detail": "designers' chat registered" if c.telegram_configured() else "not connected"},
+            "vaani": {"on": bool(os.environ.get("VAANI_AGENT_ID")), "detail": ("agent " + os.environ.get("VAANI_AGENT_ID", "")[:8] + (" + call-back API" if os.environ.get("VAANI_API_KEY") else "")) if os.environ.get("VAANI_AGENT_ID") else "not connected"},
             "hubspot": {"on": _hubspot.configured(), "detail": "CRM sync on" if _hubspot.configured() else "not connected",
                         "portal": os.environ.get("HUBSPOT_PORTAL_ID")}}
 

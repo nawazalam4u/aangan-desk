@@ -4,7 +4,7 @@ const LS = {
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
 };
 const SETTINGS_DEFAULT = {
-  voiceRsPerMin: 10,        // ASSUMPTION: telephony + speech-to-text + text-to-speech, Rs per minute. Replace with a real quote.
+  voiceRsPerMin: 5.6,       // Vaani's quoted running cost for this agent (Rs per minute, estimate shown in the Vaani dashboard)
   projectValueLakh: 11,     // midpoint of the Rs 8-14 lakh average project value in the brief
   frontDeskMonthly: 30000,  // ASSUMPTION: per-person monthly cost, only used for the comparison line
   monthlyCalls: 200,

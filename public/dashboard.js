@@ -65,7 +65,7 @@
   const row = (a, b, cls) => '<span' + (cls ? ' class="' + cls + '"' : '') + '>' + a + '</span><span' + (cls ? ' class="' + cls + '"' : '') + '>' + b + '</span>';
   $('costKv').innerHTML =
     row('AI model (' + esc((leads.find(l => l.model && l.model !== 'demo-rules') || {}).model || 'Gemini 3.1 Flash-Lite') + ')<span class="meas">' + (llmAvg == null ? 'estimate' : 'measured') + '</span>', inr(llmPerCall, 2) + ' / call') +
-    row('Phone + speech layer<span class="assume">assumption</span>', inr(voicePerCall, 0) + ' / call (' + AVG_PHONE_MIN + ' min)') +
+    row('Phone + voice (Vaani)<span class="assume">vendor estimate</span>', inr(voicePerCall, 0) + ' / call (' + AVG_PHONE_MIN + ' min)') +
     row('Hosting (Vercel free tier)', '₹0') +
     row('Cost per call', inr(perCall, 2), 'tot') +
     row('Cost per qualified lead', inr(perCall / qualRate, 0) + ' (at the September qualified rate)') +
@@ -110,7 +110,7 @@
   $('empty').hidden = N > 0;
   const hsLink = l => l.hubspot && l.hubspot.contact_id && HUB_PORTAL ? 'https://app.hubspot.com/contacts/' + HUB_PORTAL + '/record/0-1/' + l.hubspot.contact_id : null;
   const rowHtml = (l, i) =>
-    '<tr class="click" data-i="' + i + '" tabindex="0"><td>' + fmt(l.created_at) + (l.after_hours ? ' <span class="pill info">after hours</span>' : '') + '</td><td>' + esc(l.name || 'Unknown') + '<br><span class="muted small">' + esc(l.phone || '') + '</span></td>' +
+    '<tr class="click" data-i="' + i + '" tabindex="0"><td>' + fmt(l.created_at) + (l.after_hours ? ' <span class="pill info">after hours</span>' : '') + (l.channel === 'vaani-phone' ? ' <span class="pill good">\ud83d\udcde real call</span>' : '') + (l.price_leak ? ' <span class="pill bad">price said</span>' : '') + '</td><td>' + esc(l.name || 'Unknown') + '<br><span class="muted small">' + esc(l.phone || '') + '</span></td>' +
     '<td><span class="pill ' + OUT[l.outcome][0] + '">' + OUT[l.outcome][1] + '</span><br><span class="muted small">' + esc((l.reason || '').replace(/_/g, ' ')) + '</span></td>' +
     '<td>' + (l.priority ? '<span class="pill ' + (l.priority === 'HOT' || l.priority === 'URGENT' ? 'bad' : 'warn') + '">' + l.priority + '</span>' : '\u2014') + '</td>' +
     '<td>' + (l.first_response_secs || 0).toFixed(1) + ' s</td><td>' + Math.round((l.duration_secs || 0) / 6) / 10 + ' min</td><td>' + inr(l.llm_cost_inr, 3) + '</td>' +
@@ -149,9 +149,15 @@
   const open = i => {
     const l = leads[i];
     $('dlgBody').innerHTML = '<div style="display:flex;justify-content:space-between;gap:10px"><h2>' + esc(l.name || 'Unknown caller') + ' <span class="pill ' + OUT[l.outcome][0] + '">' + OUT[l.outcome][1] + '</span></h2><button class="btn sm" id="x">Close</button></div>' +
-      '<h3>Handoff note</h3><div class="note">' + esc(l.note) + '</div><h3 style="margin-top:14px">Transcript</h3><div class="tr">' + (l.transcript || []).map(m => '<div class="' + (m.role === 'agent' ? 'a' : 'c') + '">' + esc(m.text) + '</div>').join('') + '</div>' +
+      (l.price_leak ? '<div class="alert">\u26a0 The voice agent said a price on this call: \u201c' + esc(l.price_leak[0]) + '\u201d. Review the Vaani prompt.</div>' : '') + (/^\+\d{10,15}$/.test((l.phone || '').replace(/[^\d+]/g, '')) && l.outcome !== 'closed' ? '<p><button class="btn primary sm" id="cb">\ud83d\udcde Call back with AI (Vaani)</button> <span class="small muted" id="cbmsg">The Vaani agent rings ' + esc(l.phone) + ' and runs the same qualification.</span></p>' : '') + (l.recording_url ? '<p class="small"><a href="' + esc(l.recording_url) + '" target="_blank" rel="noopener">Listen to the call recording</a></p>' : '') + '<h3>Handoff note</h3><div class="note">' + esc(l.note) + '</div><h3 style="margin-top:14px">Transcript</h3><div class="tr">' + (l.transcript || []).map(m => '<div class="' + (m.role === 'agent' ? 'a' : 'c') + '">' + esc(m.text) + '</div>').join('') + '</div>' +
       '<p class="small muted" style="margin-top:12px">Model: ' + esc(l.model) + ' · tokens in/out: ' + ((l.usage || {}).input || 0) + '/' + ((l.usage || {}).output || 0) + ' · price attempts blocked: ' + (l.price_blocked || 0) + '</p>';
     $('dlg').showModal(); $('x').onclick = () => $('dlg').close();
+    if ($('cb')) $('cb').onclick = async () => {
+      if (!confirm('Ask the AI agent to call ' + l.phone + ' now?')) return;
+      $('cbmsg').textContent = 'Dialling\u2026';
+      try { const r = await fetch('/api/callback', { method: 'POST', headers: { 'content-type': 'application/json', 'x-dashboard-key': LS.get('aangan_key', '') }, body: JSON.stringify({ lead_id: l.id }) }); const j = await r.json(); $('cbmsg').textContent = (j.ok ? '\u2714 ' : '\u2716 ') + j.message; }
+      catch (e) { $('cbmsg').textContent = '\u2716 ' + e.message; }
+    };
   };
   $('leads').onclick = e => { const tr = e.target.closest('tr.click'); if (tr) open(+tr.dataset.i); };
   $('leads').onkeydown = e => { if (e.key === 'Enter') { const tr = e.target.closest('tr.click'); if (tr) open(+tr.dataset.i); } };
