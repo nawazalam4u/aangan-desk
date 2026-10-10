@@ -12,10 +12,11 @@
   if (!key()) showKey();
   $('saveKey').onclick = () => { LS.set('aangan_key', $('key').value.trim()); $('keyCard').hidden = true; };
 
-  function setState(t, sub, mode) { $('status').textContent = t; if (sub != null) $('sub').textContent = sub; $('orb').className = 'orb ' + (mode || 'idle'); }
+  function setState(t, sub, mode) { console.log('[live]', t, '|', sub || ''); $('status').textContent = t; if (sub != null) $('sub').textContent = sub; $('orb').className = 'orb ' + (mode || 'idle'); }
   function cap(role, text) {
     if (!text) return;
     const d = document.createElement('div'); d.className = 'cap ' + (role === 'agent' ? 'a' : 'u');
+    console.log('[caption]', role, text);
     d.innerHTML = '<small>' + (role === 'agent' ? 'AI receptionist' : 'You') + '</small>' + esc(text);
     $('captions').appendChild(d); $('captions').scrollTop = $('captions').scrollHeight;
   }
