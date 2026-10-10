@@ -43,7 +43,9 @@
   const aiLeads = leads.filter(l => l.model && l.model !== 'demo-rules' && (l.llm_cost_inr || 0) > 0); // only calls the real AI handled
   const llmAvg = aiLeads.length ? aiLeads.reduce((a, l) => a + l.llm_cost_inr, 0) / aiLeads.length : null;
   // demo calls are played back in seconds, so use the realistic average call length for the voice-layer estimate
-  const voicePerCall = AVG_PHONE_MIN * S.voiceRsPerMin;
+  const realMin = realLeads.length ? realLeads.reduce((a, l) => a + (l.duration_secs || 0), 0) / realLeads.length / 60 : null;
+  const callMin = realMin ? Math.round(realMin * 10) / 10 : AVG_PHONE_MIN;   // real average call length once real calls exist
+  const voicePerCall = callMin * S.voiceRsPerMin;
   const claimed = leads.filter(l => l.claimed_at && l.handoff && l.handoff.at);
   const claimMin = claimed.length ? claimed.reduce((a, l) => a + (new Date(l.claimed_at) - new Date(l.handoff.at)) / 60000, 0) / claimed.length : null;
   const sent = leads.filter(l => l.handoff && l.handoff.sent).length;
@@ -57,7 +59,7 @@
     k(afterH, 'After-hours calls caught', 'outside 10am–7pm or Sunday') +
     k(q, 'Qualified, sent to designers', handedOff ? sent + ' delivered on Telegram' : '', 'info') +
     k(closed, 'Closed politely (not a fit)', 'no designer time spent') +
-    k(esc_ + cb, 'Escalated / call-back queued', esc_ + ' escalated · ' + cb + ' dropped calls', 'warn') +
+    k(esc_ + cb, 'Escalated / call-back queued', esc_ + ' escalated · ' + cb + ' call-back' + (cb === 1 ? '' : 's'), 'warn') +
     k(claimMin == null ? '—' : claimMin.toFixed(1) + ' min', 'Designer claims a lead in', claimed.length ? claimed.length + ' claimed' : 'needs Telegram connected');
 
   // ------------- cost
@@ -68,7 +70,7 @@
   const row = (a, b, cls) => '<span' + (cls ? ' class="' + cls + '"' : '') + '>' + a + '</span><span' + (cls ? ' class="' + cls + '"' : '') + '>' + b + '</span>';
   $('costKv').innerHTML =
     row('AI model (' + esc((leads.find(l => l.model && l.model !== 'demo-rules') || {}).model || 'Gemini 3.1 Flash-Lite') + ')<span class="meas">' + (llmAvg == null ? 'estimate' : 'measured') + '</span>', inr(llmPerCall, 2) + ' / call') +
-    row('Phone + voice (Vaani)<span class="assume">vendor estimate</span>', inr(voicePerCall, 0) + ' / call (' + AVG_PHONE_MIN + ' min)') +
+    row('Phone + voice (Vaani)<span class="assume">vendor estimate</span>', inr(voicePerCall, 0) + ' / call (' + callMin + ' min' + (realMin ? ', real average' : ', September average') + ')') +
     row('Hosting (Vercel free tier)', '₹0') +
     row('Cost per call', inr(perCall, 2), 'tot') +
     row('Cost per qualified lead', inr(perCall / qualRate, 0) + ' (at the September qualified rate)') +
