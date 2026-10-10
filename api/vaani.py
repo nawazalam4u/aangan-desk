@@ -9,6 +9,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+import json
 import re
 from datetime import datetime, timedelta
 from http.server import BaseHTTPRequestHandler
@@ -43,6 +44,11 @@ def price_leaks(transcript):
 
 
 def process(payload):
+    if _store.configured():   # keep the last few raw events (for debugging the integration; no secrets inside)
+        try:
+            _store.set_setting("vaani_last:" + str(payload.get("event")), json.dumps(payload)[:20000])
+        except Exception:
+            pass
     ev = payload.get("event")
     data = payload.get("data") or payload
     room = data.get("room_name") or data.get("call_id") or payload.get("call_id") or payload.get("room_name") or "unknown"
