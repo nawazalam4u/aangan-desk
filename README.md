@@ -25,6 +25,7 @@ python3 -I tests/backtest.py   # the 40 real September enquiries through the rul
 python3 -I tests/scenarios.py  # the 9 demo calls end to end + the price-guardrail attack
 python3 -I tests/voice_sim.py  # simulated phone calls through /api/voice
 python3 -I tests/hubspot_mock.py  # HubSpot requests against a fake HubSpot
+python3 -I tests/vaani_sim.py    # Vaani webhooks: qualified, closed, escalated, price-leak alert
 ```
 
 ## Turn things on (Vercel > Settings > Environment Variables)
@@ -39,7 +40,16 @@ python3 -I tests/hubspot_mock.py  # HubSpot requests against a fake HubSpot
 
 Without a database the dashboard shows calls made in the same browser. With the database set but no `DASHBOARD_KEY`, the dashboard stays locked on purpose, because it holds callers' phone numbers.
 
-## Real phone calls (Twilio-style)
+## The real voice agent (Vaani)
+
+The phone voice is a **Vaani** agent (`aangan-receptionist`, app.vaanivoice.ai). Vaani owns the phone number, speech recognition and the voice; its instructions are in `vaani/receptionist_prompt.txt` (Nikhil's rules + the no-price rule).
+
+- **After every call** Vaani posts the transcript to `/api/vaani?key=<VAANI_WEBHOOK_SECRET>` (Vaani > Developers > Webhooks, events *Call Started* + *Call Post-Processing*). Our code re-applies the five rules, audits the agent's words for any price (Telegram alert if one slips), and sends the lead to Telegram, Neon, HubSpot and the dashboard.
+- **Calling customers back:** the dashboard's "Call back with AI" button calls `/api/callback`, which asks Vaani (`VAANI_API_KEY`, `VAANI_AGENT_ID`) to ring the customer.
+- **Phone number:** buy one in Vaani > Telephony (Indian numbers via Vobiz, about Rs 100 setup + Rs 500-999/month) and select it under the agent's Deploy > Inbound Phone Number.
+- Tested with `python3 -I tests/vaani_sim.py` and with a real agent conversation replayed to the live webhook.
+
+## Real phone calls without Vaani (Twilio-style)
 
 `/api/voice` is a webhook a phone provider calls for every call: it answers with spoken replies, listens, and loops through the same brain as the web demo, then creates the lead and handoff note. To go live: buy a number at a provider (Twilio, or Exotel in India), set the number's "A call comes in" webhook to `https://aangan-desk.vercel.app/api/voice` and its status callback to `https://aangan-desk.vercel.app/api/voice?status=1`, and set `TWILIO_AUTH_TOKEN` on Vercel so only the provider can call it. Tested with `python3 -I tests/voice_sim.py` (simulated calls, no phone needed).
 
