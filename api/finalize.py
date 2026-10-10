@@ -27,7 +27,10 @@ def process_finalize(b):
     transcript = clamp_transcript(b.get("transcript"))
     allf = {"project", "location", "timeline", "size", "property_state", "name", "slot"}
     facts = c.clean_facts(b.get("facts"))
-    dec = c.evaluate(facts, now, allf if b.get("ended_by") == "agent" else ())
+    soft = {"size", "property_state", "name", "slot"}
+    # Real calls are strict: a missing project type, location or timeline means "call back to confirm", never "qualified".
+    skip = soft if b.get("strict_qual") else (allf if b.get("ended_by") == "agent" else ())
+    dec = c.evaluate(facts, now, skip)
     phone = b.get("phone") or None
 
     if dec["decision"] == "escalate":
@@ -40,8 +43,14 @@ def process_finalize(b):
         outcome, label = "qualified", "Qualified - sent to designer"
         note = c.build_note(facts, dec, phone, started, len(transcript))
     else:  # caller hung up mid-qualification (T17-style): never lose them - queue a call-back
-        outcome, label = "callback", "Call dropped - call-back queued"
-        note = c.build_note(facts, dict(dec, flags=dec.get("flags", []) + ["CALL ENDED EARLY - caller hung up before the questions were finished; call back"]), phone, started, len(transcript))
+        outcome = "callback"
+        if b.get("strict_qual") and b.get("ended_by") == "agent":
+            label = "Call-back queued - %s not confirmed" % dec.get("ask", "detail")
+            why = "NOT CONFIRMED ON THE CALL: %s. Call back to confirm before booking a designer." % dec.get("ask", "detail")
+        else:
+            label = "Call dropped - call-back queued"
+            why = "CALL ENDED EARLY - caller hung up before the questions were finished; call back"
+        note = c.build_note(facts, dict(dec, flags=dec.get("flags", []) + [why]), phone, started, len(transcript))
     first_reply = b.get("first_response_secs")
     lead = {
         "id": b.get("lead_id") or ("L" + uuid.uuid4().hex[:8]),
@@ -74,7 +83,7 @@ def process_finalize(b):
     slot = facts.get("preferred_slot")
     lead["next_action"] = {
         "qualified": "Designer calls back %s to confirm the consultation%s." % ("next morning at 10" if lead["after_hours"] else "within 30 minutes", (" (caller prefers " + slot + ")") if slot else ""),
-        "callback": "Call back to finish the questions (the call ended early).",
+        "callback": "Call back to confirm the %s, then book the consultation." % (dec.get("ask") or "missing details"),
         "escalated": "Senior person calls back within 15 minutes; do not route to sales.",
         "closed": "No designer time needed. Reason: %s." % (dec.get("reason") or "").replace("_", " "),
     }[outcome]

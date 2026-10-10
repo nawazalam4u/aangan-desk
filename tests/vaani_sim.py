@@ -34,4 +34,8 @@ real = {"event": "call_postprocessing", "call_id": "webrtc-9-z", "data": {"room_
 rw = vaani.process(real); Lr = [l for l in LEADS if l["id"] == rw["lead_id"]][-1]
 assert Lr["duration_secs"] == 29 and Lr["phone"] == "browser call (WebRTC)" and Lr["vaani_quality"]["overall_quality"] == 7, (Lr["duration_secs"], Lr["phone"])
 print("dedupe + WebRTC labelling + next action + real payload shape OK")
+# location never stated on a real call -> call-back, not qualified
+NOLOC = "AGENT: Hi.\n USER: I'm Arjun, I want my whole 3BHK redone with full design and execution, 1300 sq ft, empty flat, no rush, I'm the owner.\n AGENT: Which area is it in?\n USER: Weekends work best.\n AGENT: Thank you, goodbye."
+nl = vaani.process({"event": "call_postprocessing", "data": {"room_name": "webrtc-noloc", "end_reason": "Call ended", "transcript": NOLOC}})
+assert nl["outcome"] == "callback", nl; print("missing location on a real call -> call-back OK")
 print("ALL VAANI WEBHOOK TESTS PASSED")

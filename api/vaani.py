@@ -89,7 +89,7 @@ def process(payload):
             "started_at": start.isoformat(), "ended_at": end.isoformat(),
             "ended_by": "agent" if "disconnect" in str(data.get("end_reason", "")).lower() or "ended" in str(data.get("end_reason", "")).lower() else "caller",
             "usage": usage, "cost_inr": c.cost_inr(usage), "model": "vaani voice agent + " + c.model_name(),
-            "price_blocked": len(leaks), "first_response_secs": 1.0, "demo": False}
+            "price_blocked": len(leaks), "first_response_secs": 1.0, "demo": False, "strict_qual": True}
     out = finalize.process_finalize(body)
     lead = out["lead"]
     extra = {"channel": channel, "vaani_call_id": room, "recording_url": data.get("recording_url"), "vaani_summary": data.get("summary"),
