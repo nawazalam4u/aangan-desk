@@ -3,6 +3,8 @@ const LS = {
   get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
 };
+// magic link: any page opened as  /page#key=XXXX  saves the access key once and cleans the address bar
+(function () { try { const h = new URLSearchParams(location.hash.slice(1)); const k = h.get('key'); if (k) { localStorage.setItem('aangan_key', JSON.stringify(k)); h.delete('key'); const rest = h.toString(); history.replaceState(null, '', location.pathname + location.search + (rest ? '#' + rest : '')); } } catch (e) {} })();
 const SETTINGS_DEFAULT = {
   voiceRsPerMin: 5.6,       // Vaani's quoted running cost for this agent (Rs per minute, estimate shown in the Vaani dashboard)
   projectValueLakh: 11,     // midpoint of the Rs 8-14 lakh average project value in the brief

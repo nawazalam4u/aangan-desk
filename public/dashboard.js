@@ -185,7 +185,7 @@
       '<div class="card" style="box-shadow:none;margin:10px 0"><h3>Takeaways</h3>' + (l.vaani_summary ? '<p>' + esc(l.vaani_summary) + '</p>' : '') + '<dl class="kvd">' + facts.map(x => '<dt>' + x[0] + '</dt><dd>' + esc(x[1]) + '</dd>').join('') + '</dl></div>' +
       '<div class="card" style="box-shadow:none;margin:10px 0"><h3>Decision and why</h3><p><b>' + esc(l.label || '') + '.</b> ' + esc(l.next_action || '') + '</p><ul class="crit">' + Object.keys(cr).sort().map(k => '<li><span class="pill ' + (cr[k].status === 'pass' ? 'good' : cr[k].status === 'fail' ? 'bad' : 'mute') + '">' + cr[k].status + '</span> ' + CN[k] + ': ' + esc(cr[k].reason) + '</li>').join('') + '</ul>' + ((l.flags || []).length ? '<p class="small"><b>Watch-outs:</b> ' + l.flags.map(esc).join(' \u00b7 ') + '</p>' : '') + '</div>' +
       (/^\+\d{10,15}$/.test((l.phone || '').replace(/[^\d+]/g, '')) && l.outcome !== 'closed' ? '<p><button class="btn primary sm" id="cb">\ud83d\udcde Call back with AI (Vaani)</button> <span class="small muted" id="cbmsg">The Vaani agent rings ' + esc(l.phone) + ' and runs the same qualification.</span></p>' : '') +
-      (l.recording_url ? '<p class="small"><a href="' + esc(l.recording_url) + '" target="_blank" rel="noopener">\u25b6 Listen to the call recording</a></p>' : '') +
+      (l.booking_url && !(l.booking && l.booking.status === 'booked') ? '<p><a class="btn primary sm" target="_blank" rel="noopener" href="' + esc(l.booking_url) + '">\ud83d\udcc5 Book the consultation (Cal.com)</a></p>' : '') + (l.booking && l.booking.status === 'booked' ? '<p class="pill good">\ud83d\udcc5 Consultation booked: ' + esc(new Date(l.booking.start).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })) + '</p>' : '') + (l.recording_url ? '<p class="small"><a href="' + esc(l.recording_url) + '" target="_blank" rel="noopener">\u25b6 Listen to the call recording</a></p>' : '') +
       '<h3>Full transcript</h3><div class="tr">' + (l.transcript || []).map(m => '<div class="' + (m.role === 'agent' ? 'a' : 'c') + '"><small>' + (m.role === 'agent' ? 'AI receptionist' : 'Caller') + '</small> ' + esc(m.text) + '</div>').join('') + '</div>' +
       '<details style="margin-top:12px"><summary>Handoff note sent to the designer</summary><div class="note" style="margin-top:8px">' + esc(l.note) + '</div></details>' +
       '<p class="small muted" style="margin-top:12px">Telegram: ' + (l.handoff && l.handoff.sent ? 'sent' : 'not sent') + ' \u00b7 HubSpot: ' + (l.hubspot ? (l.hubspot.ok ? 'synced' : 'failed') : 'not sent') + ' \u00b7 analysis model: ' + esc(l.model) + '</p>';
@@ -200,6 +200,8 @@
   $('leads').onclick = e => { const tr = e.target.closest('tr.click'); if (tr) open(+tr.dataset.i); };
   $('leads').onkeydown = e => { if (e.key === 'Enter') { const tr = e.target.closest('tr.click'); if (tr) open(+tr.dataset.i); } };
   $('dlg').addEventListener('click', e => { if (e.target === $('dlg')) $('dlg').close(); });
+  window.__dash = { allLeads, realLeads, open, OUT };
+  document.dispatchEvent(new Event('dash-ready'));
   if (location.hash.length > 1) { const ix = allLeads.findIndex(l => l.id === decodeURIComponent(location.hash.slice(1))); if (ix >= 0) open(ix); }
 
   $('csv').onclick = () => {

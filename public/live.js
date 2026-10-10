@@ -10,7 +10,8 @@
   const key = () => LS.get('aangan_key', '');
   const showKey = msg => { $('keyCard').hidden = false; $('keyMsg').textContent = msg || ''; };
   if (!key()) showKey();
-  $('saveKey').onclick = () => { LS.set('aangan_key', $('key').value.trim()); $('keyCard').hidden = true; };
+  $('saveKey').onclick = () => { LS.set('aangan_key', $('key').value.trim()); $('keyCard').hidden = true; setState('Unlocked', 'Press Start live call'); };
+  $('key').addEventListener('keydown', e => { if (e.key === 'Enter') $('saveKey').click(); });
 
   function setState(t, sub, mode) { console.log('[live]', t, '|', sub || ''); $('status').textContent = t; if (sub != null) $('sub').textContent = sub; $('orb').className = 'orb ' + (mode || 'idle'); }
   function cap(role, text) {

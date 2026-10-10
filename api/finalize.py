@@ -87,6 +87,11 @@ def process_finalize(b):
         "escalated": "Senior person calls back within 15 minutes; do not route to sales.",
         "closed": "No designer time needed. Reason: %s." % (dec.get("reason") or "").replace("_", " "),
     }[outcome]
+    import cal
+    lead["booking_url"] = cal.booking_url(lead) if outcome in ("qualified", "callback") else None
+    if lead["booking_url"]:
+        note = note + "\n\nBook the consultation: " + lead["booking_url"]
+        lead["note"] = note
     if outcome in ("qualified", "callback", "escalated"):
         lead["handoff"] = c.send_telegram(note, lead["id"], urgent=(outcome == "escalated"))
         lead["handoff"]["channel"] = "telegram"
