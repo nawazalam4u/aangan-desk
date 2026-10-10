@@ -47,7 +47,11 @@ class handler(BaseHTTPRequestHandler):
             send(self, {"ok": True, "mode": "webrtc", "token": r.get("token"), "room_name": r.get("room_name"),
                         "server_url": url.replace("https://", "wss://").replace("http://", "ws://"), "live_captions_url": r.get("live_captions_url")})
         except Exception as e:
-            send(self, {"ok": False, "message": str(e)[:240]})
+            msg = str(e)
+            if "DND" in msg:
+                msg = ("Vaani reached the dialler, but this number is on India's Do-Not-Disturb (DND) registry, so the call is blocked "
+                       "by law (TRAI). Use a number that is not on DND, or one that has asked to be called.")
+            send(self, {"ok": False, "message": msg[:300]})
 
     def log_message(self, *a):
         pass
