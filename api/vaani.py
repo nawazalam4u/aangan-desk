@@ -47,6 +47,9 @@ def process(payload):
     if _store.configured():   # keep the last few raw events (for debugging the integration; no secrets inside)
         try:
             _store.set_setting("vaani_last:" + str(payload.get("event")), json.dumps(payload)[:20000])
+            if payload.get("event") == "call_postprocessing":   # raw copy per call, so any call can be re-processed later
+                rid = (payload.get("data") or {}).get("room_name") or payload.get("call_id") or "unknown"
+                _store.set_setting("vaani_raw:" + str(rid), json.dumps(payload)[:60000])
         except Exception:
             pass
     ev = payload.get("event")
@@ -62,25 +65,35 @@ def process(payload):
     if not any(m["role"] == "caller" for m in transcript):
         return {"ok": True, "skipped": "no caller speech"}
     phone = data.get("phone_number") or data.get("contact_number") or payload.get("phone_number")
+    if str(phone).lower() in ("web-user", "n/a", "none", ""):
+        phone = None
     if not phone and _store.configured():
         phone = _store.get_setting("vaani_phone:" + room)
     lead_id = "V-" + re.sub(r"[^A-Za-z0-9-]", "", room)[:60]
     if _store.configured() and _store.get(lead_id):
         return {"ok": True, "duplicate": lead_id}
     channel = "vaani-webrtc" if room.startswith(("webrtc", "room")) else "vaani-phone"
-    end = datetime.now(c.IST)
-    dur = float(data.get("call_duration") or 0) / 1000.0  # milliseconds in this event
+    def when(v):
+        try:
+            return datetime.fromisoformat(str(v).replace("Z", "+00:00")).astimezone(c.IST)
+        except ValueError:
+            return None
+    end = when(data.get("call_ended_at")) or datetime.now(c.IST)
+    dur = float(data.get("call_duration") or 0)
+    if dur > 3600:          # the docs say milliseconds; live WebRTC events send seconds - accept both
+        dur = dur / 1000.0
+    start = when(data.get("call_started_at")) or when(data.get("picked_up_at")) or (end - timedelta(seconds=dur or 60))
     facts, usage = c.extract_facts(transcript, None, end)
     leaks = price_leaks(transcript)
     body = {"lead_id": lead_id, "transcript": transcript, "facts": facts, "phone": phone or ("browser call (WebRTC)" if channel == "vaani-webrtc" else "unknown number"),
-            "started_at": (end - timedelta(seconds=dur or 60)).isoformat(), "ended_at": end.isoformat(),
+            "started_at": start.isoformat(), "ended_at": end.isoformat(),
             "ended_by": "agent" if "disconnect" in str(data.get("end_reason", "")).lower() or "ended" in str(data.get("end_reason", "")).lower() else "caller",
             "usage": usage, "cost_inr": c.cost_inr(usage), "model": "vaani voice agent + " + c.model_name(),
             "price_blocked": len(leaks), "first_response_secs": 1.0, "demo": False}
     out = finalize.process_finalize(body)
     lead = out["lead"]
     extra = {"channel": channel, "vaani_call_id": room, "recording_url": data.get("recording_url"), "vaani_summary": data.get("summary"),
-             "vaani_entities": data.get("entities"), "vaani_dispositions": data.get("dispositions"), "real_call": True,
+             "vaani_entities": data.get("entities"), "vaani_quality": data.get("conversation_quality"), "vaani_end_reason": data.get("end_reason"), "vaani_dispositions": data.get("dispositions"), "real_call": True,
              "duration_secs": int(dur) if dur else lead.get("duration_secs")}
     if leaks:
         extra["price_leak"] = leaks[:3]

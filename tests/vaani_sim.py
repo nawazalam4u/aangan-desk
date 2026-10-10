@@ -28,5 +28,10 @@ assert again.get("duplicate"), again
 w = vaani.process({"event": "call_postprocessing", "data": {"room_name": "webrtc-1-x", "call_duration": 40000, "transcript": T}})
 Lw = [l for l in LEADS if l["id"] == w["lead_id"]][-1]
 assert Lw["channel"] == "vaani-webrtc" and Lw["real_call"] and Lw["next_action"].startswith("Designer calls back"), Lw["next_action"]
-print("dedupe + WebRTC labelling + next action OK")
+# real WebRTC payload shape (seconds, web-user, ISO times)
+real = {"event": "call_postprocessing", "call_id": "webrtc-9-z", "data": {"room_name": "webrtc-9-z", "phone_number": "web-user", "call_duration": 29.99,
+        "call_started_at": "2026-10-10T09:16:52.79+00:00", "call_ended_at": "2026-10-10T09:17:22.75+00:00", "conversation_quality": {"overall_quality": 7}, "transcript": T.replace("\n\n", "\n")}}
+rw = vaani.process(real); Lr = [l for l in LEADS if l["id"] == rw["lead_id"]][-1]
+assert Lr["duration_secs"] == 29 and Lr["phone"] == "browser call (WebRTC)" and Lr["vaani_quality"]["overall_quality"] == 7, (Lr["duration_secs"], Lr["phone"])
+print("dedupe + WebRTC labelling + next action + real payload shape OK")
 print("ALL VAANI WEBHOOK TESTS PASSED")
