@@ -91,7 +91,7 @@ def process_finalize(b):
         lead["handoff"] = c.send_telegram(note, lead["id"], urgent=(outcome == "escalated"))
         lead["handoff"]["channel"] = "telegram"
         lead["handoff"]["at"] = datetime.now(c.IST).isoformat()
-    if _hubspot.configured():
+    if _hubspot.configured() and outcome != "closed":   # not-a-fit callers are never pushed to the CRM
         lead["hubspot"] = _hubspot.sync_lead(lead)
     stored = False
     if _store.configured():

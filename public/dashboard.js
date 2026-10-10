@@ -73,7 +73,7 @@
     row('Phone + voice (Vaani)<span class="assume">vendor estimate</span>', inr(voicePerCall, 0) + ' / call (' + callMin + ' min' + (realMin ? ', real average' : ', September average') + ')') +
     row('Hosting (Vercel free tier)', '₹0') +
     row('Cost per call', inr(perCall, 2), 'tot') +
-    row('Cost per qualified lead', inr(perCall / qualRate, 0) + ' (at the September qualified rate)') +
+    row('Cost per qualified lead', realLeads.length ? inr(perCall * N / Math.max(q, 1), 0) + ' (from real calls)' : inr(perCall / qualRate, 0) + ' (at the September qualified rate)') +
     row('Projected for ' + S.monthlyCalls + ' calls / month', inr(monthly, 0), 'tot') +
     row('For comparison: one front-desk person<span class="assume">assumption</span>', inr(S.frontDeskMonthly, 0) + ' / month');
 
