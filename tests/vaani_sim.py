@@ -20,7 +20,7 @@ assert r2["price_leaks"] == 1 and any("PRICE RULE BROKEN" in t for t in TG); pri
 # Nashik caller -> closed; complaint -> escalated
 assert vaani.process({"event": "call_postprocessing", "data": {"room_name": "r3", "transcript": "AGENT: Hi.\n\n USER: I'm in Nashik, can you do my home office?\n\n AGENT: We only work in Pune."}})["outcome"] == "closed"
 assert vaani.process({"event": "call_postprocessing", "data": {"room_name": "r4", "transcript": "AGENT: Hi.\n\n USER: My project has been going for three months and my designer hasn't replied. Not acceptable, I want someone senior."}})["outcome"] == "escalated"
-assert vaani.process({"event": "call_ended", "room_name": "r5", "call_duration": 12})["ignored"] == "call_ended"
+assert vaani.process({"event": "call_ringing", "room_name": "r5"})["ignored"] == "call_ringing"
 # same call delivered twice -> stored once
 again = vaani.process({"event": "call_postprocessing", "call_id": "outbound-1-abc", "data": {"room_name": "outbound-1-abc", "call_duration": 55150.0, "transcript": T}})
 assert again.get("duplicate"), again
@@ -38,4 +38,8 @@ print("dedupe + WebRTC labelling + next action + real payload shape OK")
 NOLOC = "AGENT: Hi.\n USER: I'm Arjun, I want my whole 3BHK redone with full design and execution, 1300 sq ft, empty flat, no rush, I'm the owner.\n AGENT: Which area is it in?\n USER: Weekends work best.\n AGENT: Thank you, goodbye."
 nl = vaani.process({"event": "call_postprocessing", "data": {"room_name": "webrtc-noloc", "end_reason": "Call ended", "transcript": NOLOC}})
 assert nl["outcome"] == "callback", nl; print("missing location on a real call -> call-back OK")
+ph = vaani.process({"event": "call_ended", "room_name": "webrtc-ph-1", "call_duration": 40})
+assert ph.get("placeholder") and [l for l in LEADS if l["id"] == ph["placeholder"]][-1]["outcome"] == "processing"
+done = vaani.process({"event": "call_postprocessing", "data": {"room_name": "webrtc-ph-1", "transcript": T}})
+assert done.get("outcome") == "qualified", done; print("instant placeholder replaced by the real result OK")
 print("ALL VAANI WEBHOOK TESTS PASSED")

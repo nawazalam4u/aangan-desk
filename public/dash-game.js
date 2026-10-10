@@ -1,6 +1,7 @@
 // Gamified layer: Studio Pulse score, level/XP, achievements and call cards. Everything is computed from REAL calls.
 document.addEventListener('dash-ready', function () {
   const { allLeads, realLeads, open } = window.__dash;
+  const proc = allLeads.filter(l => l.outcome === 'processing');
   const R = realLeads, n = R.length, $ = id => document.getElementById(id);
   const cnt = f => R.filter(f).length;
   const q = cnt(l => l.outcome === 'qualified'), esc2 = cnt(l => l.outcome === 'escalated'), booked = cnt(l => l.booking && l.booking.status === 'booked');
@@ -31,10 +32,10 @@ document.addEventListener('dash-ready', function () {
     ['⚡', 'Speed demon', 'Median answer under 2 seconds', n >= 1 && fast < 2],
     ['🏆', 'Ten calls', '10 real calls handled', n >= 10]];
   $('badges').innerHTML = B.map(b => '<div class="badge ' + (b[3] ? 'on' : 'off') + '" title="' + b[2] + '"><span class="ic" aria-hidden="true">' + b[0] + '</span><b>' + b[1] + '</b><small>' + (b[3] ? 'Unlocked' : b[2]) + '</small></div>').join('');
-  const OUTL = { qualified: 'Qualified', closed: 'Closed', escalated: 'Escalated', callback: 'Call-back' };
+  const OUTL = { processing: 'Processing\u2026', qualified: 'Qualified', closed: 'Closed', escalated: 'Escalated', callback: 'Call-back' };
   const e = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const qb = (k, v) => v == null ? '' : '<div class="qbar"><span>' + k + '</span><i><b style="width:' + (v * 10) + '%"></b></i><span>' + v + '</span></div>';
-  $('feed').innerHTML = R.slice(0, 9).map(l => { const qq = l.vaani_quality || {}; const nm = l.name || 'Caller'; return '<div class="ccard ' + l.outcome + '" tabindex="0" data-id="' + e(l.id) + '"><div class="top"><span class="av">' + e(nm[0].toUpperCase()) + '</span><div><b>' + e(nm) + '</b><br><span class="small muted">' + new Date(l.created_at).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' · ' + Math.round(l.duration_secs || 0) + ' s</span></div><span class="pill ' + ({ qualified: 'good', closed: 'mute', escalated: 'bad', callback: 'warn' }[l.outcome]) + '" style="margin-left:auto">' + OUTL[l.outcome] + '</span></div><p>' + e(l.vaani_summary || l.next_action || '') + '</p>' + qb('Clarity', qq.clarity) + qb('Professional', qq.professionalism) + (l.booking && l.booking.status === 'booked' ? '<span class="pill good">📅 consult booked</span>' : '') + '</div>'; }).join('') || '<p class="muted">No real calls yet. <a href="/live">Make the first one</a>.</p>';
+  $('feed').innerHTML = proc.concat(R).slice(0, 9).map(l => { const qq = l.vaani_quality || {}; const nm = l.name || 'Caller'; return '<div class="ccard ' + l.outcome + '" tabindex="0" data-id="' + e(l.id) + '"><div class="top"><span class="av">' + e(nm[0].toUpperCase()) + '</span><div><b>' + e(nm) + '</b><br><span class="small muted">' + new Date(l.created_at).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' · ' + Math.round(l.duration_secs || 0) + ' s</span></div><span class="pill ' + ({ qualified: 'good', closed: 'mute', escalated: 'bad', callback: 'warn', processing: 'info' }[l.outcome]) + '" style="margin-left:auto">' + OUTL[l.outcome] + '</span></div><p>' + e(l.vaani_summary || l.next_action || '') + '</p>' + qb('Clarity', qq.clarity) + qb('Professional', qq.professionalism) + (l.booking && l.booking.status === 'booked' ? '<span class="pill good">📅 consult booked</span>' : '') + '</div>'; }).join('') || '<p class="muted">No real calls yet. <a href="/live">Make the first one</a>.</p>';
   $('feed').onclick = ev => { const c = ev.target.closest('.ccard'); if (c) open(allLeads.findIndex(x => x.id === c.dataset.id)); };
   $('feed').onkeydown = ev => { if (ev.key === 'Enter') { const c = ev.target.closest('.ccard'); if (c) open(allLeads.findIndex(x => x.id === c.dataset.id)); } };
 });

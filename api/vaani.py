@@ -59,6 +59,15 @@ def process(payload):
         if payload.get("phone_number") and _store.configured():
             _store.set_setting("vaani_phone:" + room, payload["phone_number"])
         return {"ok": True, "stored_phone": bool(payload.get("phone_number"))}
+    if ev == "call_ended" and _store.configured():
+        pid = "V-" + re.sub(r"[^A-Za-z0-9-]", "", room)[:60]
+        if not _store.get(pid):   # instant placeholder; the transcript arrives a minute later and replaces it
+            now = datetime.now(c.IST).isoformat()
+            _store.save({"id": pid, "created_at": now, "ended_at": now, "outcome": "processing", "label": "Call finished - transcript on its way",
+                         "real_call": True, "channel": "vaani-webrtc" if room.startswith(("webrtc", "room")) else "vaani-phone", "vaani_call_id": room,
+                         "duration_secs": int(float(data.get("call_duration") or payload.get("call_duration") or 0)), "transcript": [], "facts": {}, "name": None,
+                         "phone": None, "note": "", "first_response_secs": 1.0, "next_action": "Vaani is writing the transcript; this updates by itself."})
+        return {"ok": True, "placeholder": pid}
     if ev != "call_postprocessing":
         return {"ok": True, "ignored": ev}
     transcript = parse_transcript(data.get("transcript") or data.get("transcription"))
@@ -70,8 +79,10 @@ def process(payload):
     if not phone and _store.configured():
         phone = _store.get_setting("vaani_phone:" + room)
     lead_id = "V-" + re.sub(r"[^A-Za-z0-9-]", "", room)[:60]
-    if _store.configured() and _store.get(lead_id):
-        return {"ok": True, "duplicate": lead_id}
+    if _store.configured():
+        existing = _store.get(lead_id)
+        if existing and existing.get("outcome") != "processing":
+            return {"ok": True, "duplicate": lead_id}
     channel = "vaani-webrtc" if room.startswith(("webrtc", "room")) else "vaani-phone"
     def when(v):
         try:

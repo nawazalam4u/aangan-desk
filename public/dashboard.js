@@ -5,22 +5,29 @@
   const EST_LLM_PER_CALL = 0.4; // Rs, estimate before live data: ~10k input + ~1.5k output tokens on Gemini 3.1 Flash-Lite
 
   let leads = [], mode = 'local', bt = [], HUB_PORTAL = null;
-  try { HUB_PORTAL = (await (await fetch('/api/integrations')).json()).hubspot.portal; } catch (e) {}
   let lockMsg = '';
-  async function loadLeads() {
-    const r = await fetch('/api/leads', { headers: { 'x-dashboard-key': LS.get('aangan_key', '') } });
-    const j = await r.json().catch(() => ({})); return { status: r.status, j };
+  // Speed: one request for calls (+ HubSpot portal id) and the static baseline, in parallel.
+  // The last answer is cached in this browser, so the page paints instantly and then refreshes itself.
+  const fetchLeads = () => fetch('/api/leads', { headers: { 'x-dashboard-key': LS.get('aangan_key', '') } }).then(r => r.json()).catch(() => ({}));
+  const cached = LS.get('aangan_cache', null);
+  const [fresh, btj] = await Promise.all([cached ? Promise.resolve(null) : fetchLeads(), fetch('/data/backtest.json').then(r => r.json()).catch(() => [])]);
+  const j = fresh || cached || {};
+  bt = btj; mode = j.mode || 'local'; leads = j.leads || []; HUB_PORTAL = j.hubspot_portal || null;
+  if (j.mode === 'locked') lockMsg = j.error || 'Dashboard is locked.';
+  if (fresh && fresh.mode === 'shared') LS.set('aangan_cache', fresh);
+  const sig = d => JSON.stringify((d.leads || []).map(l => [l.id, l.outcome, l.booking && l.booking.status, l.claimed_at]));
+  async function refresh() {          // background refresh: repaint only when something changed and no call is open
+    const f = await fetchLeads();
+    if (f.mode !== 'shared') { if (cached && f.mode === 'locked') { LS.set('aangan_cache', null); location.reload(); } return; }
+    if (sig(f) !== sig(j)) { LS.set('aangan_cache', f); if (!document.querySelector('dialog[open]')) location.reload(); }
   }
-  try {
-    const { j } = await loadLeads();
-    mode = j.mode || 'local'; leads = j.leads || []; if (j.mode === 'locked') lockMsg = j.error || 'Dashboard is locked.';
-  } catch (e) {}
+  if (cached) refresh();
+  setInterval(refresh, 20000);
   if (mode === 'local') leads = getLocalLeads();
   // Real voice calls (Vaani, WebRTC or phone) drive every number when they exist; simulator calls are practice only.
-  const allLeads = leads.slice(); const realLeads = allLeads.filter(l => l.real_call);
+  const allLeads = leads.slice(); const processing = allLeads.filter(l => l.outcome === 'processing'); const realLeads = allLeads.filter(l => l.real_call && l.outcome !== 'processing');
   if (realLeads.length) leads = realLeads;
   if (mode === 'locked') { leads = []; }
-  try { bt = await (await fetch('/data/backtest.json')).json(); } catch (e) {}
 
   const phRows = bt.filter(r => r.channel === 'phone');
   const qualRate = phRows.length ? phRows.filter(r => r.got === 'forward' || r.got === 'ask').length / phRows.length : 0.6; // share of September phone calls that reach a designer
@@ -109,7 +116,7 @@
   }
 
   // ------------- leads table
-  const OUT = { qualified: ['good', 'Qualified'], closed: ['mute', 'Closed'], escalated: ['bad', 'Escalated'], callback: ['warn', 'Call-back'] };
+  const OUT = { processing: ['info', 'Processing\u2026'], qualified: ['good', 'Qualified'], closed: ['mute', 'Closed'], escalated: ['bad', 'Escalated'], callback: ['warn', 'Call-back'] };
   const fmt = d => new Date(d).toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
   $('leadCount').textContent = N + ' total';
   $('empty').hidden = N > 0;

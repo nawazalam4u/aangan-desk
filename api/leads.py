@@ -19,7 +19,7 @@ class handler(BaseHTTPRequestHandler):
         if self.headers.get("x-dashboard-key") != want:
             return send(self, {"mode": "locked", "leads": [], "error": "Wrong or missing dashboard key."}, 401)
         try:
-            send(self, {"mode": "shared", "leads": _store.list_leads()})
+            send(self, {"mode": "shared", "leads": _store.list_leads(), "hubspot_portal": os.environ.get("HUBSPOT_PORTAL_ID")})
         except Exception as e:
             send(self, {"mode": "local", "leads": [], "error": str(e)[:160]})
 
