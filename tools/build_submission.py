@@ -12,7 +12,7 @@ p("MESA AI and its Application · Founder's Office · Cohort C4 · Nawaz Alam")
 p('Live app: https://aangan-desk.vercel.app', True)
 p('Dashboard: https://aangan-desk.vercel.app/dashboard · How it connects (incl. HubSpot explained): https://aangan-desk.vercel.app/connect · Full write-up: https://aangan-desk.vercel.app/brief')
 p('Code (public): https://github.com/nawazalam4u/aangan-desk (linked to Vercel: every push redeploys)')
-p('Try it: open the live app and press a scenario button, for example "Qualified home". Watch the call, the five checks and the Telegram handoff note appear. The caller language can be English, Hindi or Marathi.')
+p('Try it: open https://aangan-desk.vercel.app/live, press Start live call and speak to the Vaani voice agent over WebRTC (or type a number for it to call). The dashboard then shows the real call with its transcript, takeaways and decision.')
 
 h('1. Automation Brief')
 p('Pain', True); p("About 200 enquiries a month and roughly 48% get no reply within 48 hours (about 96 a month). A third arrive outside the 10am-7pm front desk. Nikhil's numbers: an answer inside an hour converts at 4x the next-day rate, and the average project is Rs 8-14 lakh. Enquiries that do reach a designer arrive as forwarded messages with no context, so the first call re-asks what the desk already asked. September phone evidence: T08 missed at 10:47pm; T16 called Monday and was never logged; T07 hung up before details were taken; T17 line dropped.")

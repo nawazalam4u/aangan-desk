@@ -32,6 +32,10 @@ for a, b in [
  ('Guardrail', 'A safety rule that stops the AI doing something it must never do. Ours stops any price being spoken.')]:
     B(a + ': ' + b)
 
+H('2b. The real voice agent (Vaani) and WebRTC')
+P("Vaani is a voice-AI platform. On it we created an AGENT called aangan-receptionist: the worker that listens and speaks on calls, using our instructions (Nikhil's rules and the no-price rule). WebRTC is the technology that carries live voice through a web browser over the internet, the same idea as a WhatsApp or Google Meet call, so no phone line is needed. On our Live AI call page, pressing Start asks Vaani for a secure session and connects your microphone to the agent. The agent can also phone a number (outbound). When a call ends, Vaani sends us a WEBHOOK message with the transcript, a summary, a recording link and quality scores; our code then decides the outcome and updates Telegram, HubSpot, the database and the dashboard.")
+P("How we verified it: we made real WebRTC calls to the agent using a synthetic Indian-English caller voice played into the browser as its microphone. Four calls are on the dashboard: a qualified 2BHK in Baner (price refused), an out-of-area caller from Nashik (closed politely), an angry existing client (escalated), and a caller whose area was not caught (correctly sent to call-back instead of being forwarded). Outbound dialling reached Vaani; it blocks numbers on India's Do-Not-Disturb registry, as required by TRAI.")
+
 H('3. What happens during one call (the flow)')
 for t in ['A customer calls (in the demo, you speak into your browser microphone; in real life a phone provider connects the call).',
  'The caller\'s words become text.',
@@ -93,7 +97,10 @@ QA = [
  ('What happens if the AI or a service is down?', 'If the AI fails the rules-based fallback answers; if HubSpot fails the call, Telegram note and dashboard still work; a dropped call becomes a call-back lead.'),
  ('What is the biggest risk?', 'Wrongly turning away a good customer. So the code only closes a call on clear evidence, borderline cases are asked or forwarded, and every closed call is listed on the dashboard for Nikhil to review.'),
  ('What would you do next?', 'Attach a real phone number, confirm the two rules with Nikhil, add an automatic nudge when a lead is unclaimed after 15 minutes, and add WhatsApp.'),
- ('Can I see it working?', 'Open the live app, press "Qualified home", then show the dashboard, the Telegram message and the HubSpot contact.')]
+ ('Is it a real voice agent or a chatbot?', 'Real. It is a Vaani voice agent. You talk to it over WebRTC from the Live AI call page, or it phones a number. Every call\'s transcript, summary and recording link come back to our dashboard automatically.'),
+ ('What is WebRTC?', 'The standard way browsers carry live audio and video over the internet (used by Google Meet). It lets anyone test the agent without a phone number.'),
+ ('Can you start a live call to a number?', 'Yes: type it on the Live AI call page. Vaani dials it within seconds. Numbers on the DND registry are blocked by law.'),
+ ('Can I see it working?', 'Open the Live AI call page, press Start live call and speak; then open the dashboard to see the transcript, takeaways and decision.')]
 for q, a in QA:
     P('Q: ' + q, True); P('A: ' + a)
 
