@@ -58,18 +58,24 @@ def process(payload):
     phone = data.get("phone_number") or data.get("contact_number") or payload.get("phone_number")
     if not phone and _store.configured():
         phone = _store.get_setting("vaani_phone:" + room)
+    lead_id = "V-" + re.sub(r"[^A-Za-z0-9-]", "", room)[:60]
+    if _store.configured() and _store.get(lead_id):
+        return {"ok": True, "duplicate": lead_id}
+    channel = "vaani-webrtc" if room.startswith(("webrtc", "room")) else "vaani-phone"
     end = datetime.now(c.IST)
     dur = float(data.get("call_duration") or 0) / 1000.0  # milliseconds in this event
     facts, usage = c.extract_facts(transcript, None, end)
     leaks = price_leaks(transcript)
-    body = {"transcript": transcript, "facts": facts, "phone": phone or "web test (no number)",
+    body = {"lead_id": lead_id, "transcript": transcript, "facts": facts, "phone": phone or ("browser call (WebRTC)" if channel == "vaani-webrtc" else "unknown number"),
             "started_at": (end - timedelta(seconds=dur or 60)).isoformat(), "ended_at": end.isoformat(),
             "ended_by": "agent" if "disconnect" in str(data.get("end_reason", "")).lower() or "ended" in str(data.get("end_reason", "")).lower() else "caller",
             "usage": usage, "cost_inr": c.cost_inr(usage), "model": "vaani voice agent + " + c.model_name(),
             "price_blocked": len(leaks), "first_response_secs": 1.0, "demo": False}
     out = finalize.process_finalize(body)
     lead = out["lead"]
-    extra = {"channel": "vaani-phone", "vaani_call_id": room, "recording_url": data.get("recording_url"), "vaani_summary": data.get("summary")}
+    extra = {"channel": channel, "vaani_call_id": room, "recording_url": data.get("recording_url"), "vaani_summary": data.get("summary"),
+             "vaani_entities": data.get("entities"), "vaani_dispositions": data.get("dispositions"), "real_call": True,
+             "duration_secs": int(dur) if dur else lead.get("duration_secs")}
     if leaks:
         extra["price_leak"] = leaks[:3]
         c.send_telegram("⚠ PRICE RULE BROKEN on call %s. The voice agent said: \"%s\". Review the agent prompt." % (room, leaks[0][:200]), "alert", urgent=True)

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aangan Live AI Call</title>
+<meta name="description" content="Talk live to Aangan Studio's AI receptionist (Vaani voice agent) over WebRTC, or have it call a phone number.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%23b5532f%27/%3E%3Cpath d=%27M9 24V15a7 7 0 0 1 14 0v9%27 fill=%27none%27 stroke=%27white%27 stroke-width=%273%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/app.css">
+<style>
+.page{max-width:1100px;margin:0 auto;padding:24px 16px 10px}
+.lead{color:var(--muted);max-width:70ch}
+.two{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;align-items:start}
+@media (max-width:880px){.two{grid-template-columns:1fr}}
+.orb{width:150px;height:150px;border-radius:50%;margin:10px auto 14px;background:radial-gradient(circle at 35% 30%,#f6c6a8,var(--accent) 55%,#6b2a14);box-shadow:0 10px 40px color-mix(in srgb,var(--accent) 40%,transparent);transition:transform .15s}
+.orb.idle{filter:grayscale(.6) brightness(.9)}
+.orb.talk{animation:pulse 1.1s infinite ease-in-out}
+@keyframes pulse{50%{transform:scale(1.07)}}
+@media (prefers-reduced-motion:reduce){.orb.talk{animation:none}}
+.center{text-align:center}
+.status{font-weight:600;margin-bottom:4px}
+.captions{max-height:320px;overflow:auto;display:grid;gap:8px;margin-top:12px;text-align:left}
+.cap{padding:8px 12px;border-radius:12px;font-size:.92rem;max-width:90%}
+.cap.a{background:var(--surface2);justify-self:start}.cap.u{background:var(--accent);color:var(--accent-ink);justify-self:end}
+.cap small{display:block;opacity:.7;font-size:.72rem}
+.steps{font-size:.9rem;color:var(--muted);padding-left:18px}
+.res .k{display:grid;grid-template-columns:140px 1fr;gap:6px 12px;font-size:.92rem}
+.res .k dt{color:var(--muted)}.res .k dd{margin:0}
+.keybar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.keybar input{max-width:260px}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/"><i></i>Aangan Desk</a>
+  <nav aria-label="Main"><a href="/live" aria-current="page">Live AI call</a><a href="/">Demo simulator</a><a href="/dashboard">Dashboard</a><a href="/connect">How it connects</a><a href="/brief">Brief &amp; checks</a></nav>
+</div></header>
+<main class="page">
+  <h1>Talk to the real AI receptionist</h1>
+  <p class="lead">This is the production voice agent built on <b>Vaani</b>. Pretend you are a customer calling Aangan Studio. The call runs over <b>WebRTC</b> (live voice through your browser, no phone line needed). When you hang up, the transcript, takeaways and decision appear here and on the dashboard, and a qualified lead goes to the designers on Telegram and into HubSpot.</p>
+
+  <div class="card keybar" id="keyCard" hidden><b>Access key needed.</b> Live calls are billed per minute, so they are locked. <input id="key" type="password" placeholder="Paste the access key" aria-label="Access key"><button class="btn primary sm" id="saveKey">Unlock</button><span class="small muted" id="keyMsg"></span></div>
+
+  <div class="two" style="margin-top:14px">
+    <section class="card center" aria-label="Browser call">
+      <div class="orb idle" id="orb" aria-hidden="true"></div>
+      <div class="status" id="status">Ready</div>
+      <div class="small muted" id="sub">Press the button, allow the microphone, and start speaking after the greeting.</div>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap">
+        <button class="btn primary" id="startBtn">&#127897; Start live call</button>
+        <button class="btn danger" id="endBtn" hidden>End call</button>
+        <button class="btn" id="muteBtn" hidden aria-pressed="false">Mute</button>
+      </div>
+      <div class="small muted" style="margin-top:8px"><span id="timer">0:00</span> &middot; <span id="room"></span></div>
+      <div class="captions" id="captions" aria-live="polite"></div>
+    </section>
+
+    <aside class="grid">
+      <section class="card">
+        <h3>Or let the agent phone someone</h3>
+        <p class="small muted" style="margin-top:-4px">Type any number with country code. The same agent rings it within seconds and the result lands on the dashboard.</p>
+        <div style="display:grid;gap:8px">
+          <input id="num" inputmode="tel" placeholder="+91 98765 43210" aria-label="Phone number to call">
+          <input id="nm" placeholder="Name (optional)" aria-label="Name of the person">
+          <button class="btn" id="dialBtn">&#128222; Call this number now</button>
+          <div class="small" id="dialMsg"></div>
+        </div>
+      </section>
+      <section class="card">
+        <h3>Try these as the caller</h3>
+        <ul class="steps">
+          <li>"I have a 3BHK in Kothrud, full redesign. How much per square foot?" (it must not give a price)</li>
+          <li>"I'm in Nashik, can you do my home?" (it should decline politely)</li>
+          <li>"My designer hasn't replied for five days." (it should escalate)</li>
+        </ul>
+      </section>
+      <section class="card res" id="result" hidden>
+        <h3 id="resTitle">Call result</h3>
+        <div id="resBody" class="small muted">Waiting for Vaani to finish the transcript&hellip;</div>
+      </section>
+    </aside>
+  </div>
+</main>
+<footer><div class="wrap">Voice: Vaani (WebRTC via LiveKit) &middot; Rules, handoff, CRM: aangan-desk &middot; <a href="/dashboard">See all real calls</a></div></footer>
+<script src="https://cdn.jsdelivr.net/npm/livekit-client@2.22.0/dist/livekit-client.umd.js"></script>
+<script src="/common.js"></script>
+<script src="/live.js"></script>
+</body>
+</html>

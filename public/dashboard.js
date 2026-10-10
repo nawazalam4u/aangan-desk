@@ -16,6 +16,9 @@
     mode = j.mode || 'local'; leads = j.leads || []; if (j.mode === 'locked') lockMsg = j.error || 'Dashboard is locked.';
   } catch (e) {}
   if (mode === 'local') leads = getLocalLeads();
+  // Real voice calls (Vaani, WebRTC or phone) drive every number when they exist; simulator calls are practice only.
+  const allLeads = leads.slice(); const realLeads = allLeads.filter(l => l.real_call);
+  if (realLeads.length) leads = realLeads;
   if (mode === 'locked') { leads = []; }
   try { bt = await (await fetch('/data/backtest.json')).json(); } catch (e) {}
 
@@ -27,7 +30,7 @@
     $('mode').innerHTML = '<b>\ud83d\udd12 Dashboard locked.</b> It holds callers\' phone numbers, so it needs your key. <form id="kf" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><input id="kk" type="password" autocomplete="current-password" placeholder="Paste your dashboard key" aria-label="Dashboard key" style="max-width:280px"><button class="btn primary sm" type="submit">Unlock</button></form><span class="small">' + (LS.get('aangan_key', '') ? 'That key was not accepted. ' : '') + 'Your key is the DASHBOARD_KEY you were given.</span>';
     $('kf').onsubmit = e => { e.preventDefault(); LS.set('aangan_key', $('kk').value.trim()); location.reload(); };
   }
-  if (mode !== 'locked') $('mode').textContent = mode === 'shared' ? 'Shared database connected: every call from every device appears here.' : 'Demo mode: showing calls made in this browser (plus the September baseline). Connect the shared database to see calls from all devices.';
+  if (mode !== 'locked') $('mode').textContent = mode === 'shared' ? (realLeads.length ? 'Showing ' + realLeads.length + ' real voice call' + (realLeads.length > 1 ? 's' : '') + ' with the Vaani agent. Numbers below come from these calls only; simulator practice calls are kept separate.' : 'Shared database connected. No real voice calls yet: make one on the Live AI call page.') : 'Demo mode: showing calls made in this browser (plus the September baseline). Connect the shared database to see calls from all devices.';
 
   // ------------- aggregates
   const N = leads.length;
@@ -110,21 +113,24 @@
   $('empty').hidden = N > 0;
   const hsLink = l => l.hubspot && l.hubspot.contact_id && HUB_PORTAL ? 'https://app.hubspot.com/contacts/' + HUB_PORTAL + '/record/0-1/' + l.hubspot.contact_id : null;
   const rowHtml = (l, i) =>
-    '<tr class="click" data-i="' + i + '" tabindex="0"><td>' + fmt(l.created_at) + (l.after_hours ? ' <span class="pill info">after hours</span>' : '') + (l.channel === 'vaani-phone' ? ' <span class="pill good">\ud83d\udcde real call</span>' : '') + (l.price_leak ? ' <span class="pill bad">price said</span>' : '') + '</td><td>' + esc(l.name || 'Unknown') + '<br><span class="muted small">' + esc(l.phone || '') + '</span></td>' +
+    '<tr class="click" data-i="' + i + '" tabindex="0"><td>' + fmt(l.created_at) + (l.after_hours ? ' <span class="pill info">after hours</span>' : '') + (l.channel === 'vaani-webrtc' ? ' <span class="pill good">\ud83c\udf99 live WebRTC</span>' : l.channel === 'vaani-phone' ? ' <span class="pill good">\ud83d\udcde phone</span>' : ' <span class="pill mute">practice</span>') + (l.price_leak ? ' <span class="pill bad">price said</span>' : '') + '</td><td>' + esc(l.name || 'Unknown') + '<br><span class="muted small">' + esc(l.phone || '') + '</span></td>' +
     '<td><span class="pill ' + OUT[l.outcome][0] + '">' + OUT[l.outcome][1] + '</span><br><span class="muted small">' + esc((l.reason || '').replace(/_/g, ' ')) + '</span></td>' +
     '<td>' + (l.priority ? '<span class="pill ' + (l.priority === 'HOT' || l.priority === 'URGENT' ? 'bad' : 'warn') + '">' + l.priority + '</span>' : '\u2014') + '</td>' +
     '<td>' + (l.first_response_secs || 0).toFixed(1) + ' s</td><td>' + Math.round((l.duration_secs || 0) / 6) / 10 + ' min</td><td>' + inr(l.llm_cost_inr, 3) + '</td>' +
     '<td>' + (l.handoff && l.handoff.sent ? '<span class="pill good">Telegram sent</span>' : l.outcome === 'closed' ? '\u2014' : '<span class="pill mute">preview only</span>') + (l.claimed_at ? '<br><span class="muted small">claimed ' + esc(l.claimed_by || '') + '</span>' : '') +
     (l.hubspot ? '<br>' + (hsLink(l) ? '<a href="' + hsLink(l) + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">' : '') + '<span class="pill ' + (l.hubspot.ok ? 'good' : 'bad') + '" title="' + esc(l.hubspot.error || '') + '">HubSpot ' + (l.hubspot.ok ? 'synced' : 'failed') + '</span>' + (hsLink(l) ? '</a>' : '') : '') + '</td></tr>';
-  let filt = 'all', query = '';
+  let filt = 'all', query = '', typ = realLeads.length ? 'real' : 'all';
+  const TYPES = [['real', '\ud83d\udcde Real voice calls'], ['practice', 'Practice (simulator)'], ['all', 'Everything']];
+  const isType = l => typ === 'all' || (typ === 'real' ? !!l.real_call : !l.real_call);
   const FILTERS = [['all', 'All'], ['qualified', 'Qualified'], ['callback', 'Call-back'], ['escalated', 'Escalated'], ['closed', 'Closed']];
   function renderTable() {
     const q = query.trim().toLowerCase();
-    const vis = leads.map((l, i) => [l, i]).filter(([l]) => (filt === 'all' || l.outcome === filt) && (!q || [l.name, l.phone, (l.facts || {}).location_text, l.reason].join(' ').toLowerCase().includes(q)));
+    const vis = allLeads.map((l, i) => [l, i]).filter(([l]) => isType(l) && (filt === 'all' || l.outcome === filt) && (!q || [l.name, l.phone, (l.facts || {}).location_text, l.reason].join(' ').toLowerCase().includes(q)));
     $('leads').querySelector('tbody').innerHTML = vis.map(([l, i]) => rowHtml(l, i)).join('') || '<tr><td colspan="8" class="muted">No calls match.</td></tr>';
-    $('filters').innerHTML = FILTERS.map(([k, t]) => '<button class="chip' + (k === filt ? ' on' : '') + '" data-k="' + k + '">' + t + ' <span class="muted">' + (k === 'all' ? N : leads.filter(l => l.outcome === k).length) + '</span></button>').join('');
+    const pool = allLeads.filter(isType);
+    $('filters').innerHTML = TYPES.map(([k, t]) => '<button class="chip' + (k === typ ? ' on' : '') + '" data-t="' + k + '">' + t + ' <span class="muted">' + allLeads.filter(l => k === 'all' || (k === 'real' ? !!l.real_call : !l.real_call)).length + '</span></button>').join('') + '<span style="width:10px"></span>' + FILTERS.map(([k, t]) => '<button class="chip' + (k === filt ? ' on' : '') + '" data-k="' + k + '">' + t + ' <span class="muted">' + (k === 'all' ? pool.length : pool.filter(l => l.outcome === k).length) + '</span></button>').join('');
   }
-  $('filters').onclick = e => { const b = e.target.closest('.chip'); if (b) { filt = b.dataset.k; renderTable(); } };
+  $('filters').onclick = e => { const b = e.target.closest('.chip'); if (!b) return; if (b.dataset.t) typ = b.dataset.t; else filt = b.dataset.k; renderTable(); };
   $('search').oninput = e => { query = e.target.value; renderTable(); };
   renderTable();
 
@@ -145,12 +151,42 @@
   if (stale.length) alerts.push('\u23f1 ' + stale.length + ' handed-off lead' + (stale.length > 1 ? 's' : '') + ' not claimed by a designer after 15 minutes: ' + stale.slice(0, 3).map(l => esc(l.name || l.phone || 'unknown')).join(', ') + '. The 5-minute promise stops here, so nudge the team.');
   const hsFail = leads.filter(l => l.hubspot && !l.hubspot.ok).length;
   if (hsFail) alerts.push('HubSpot could not save ' + hsFail + ' lead' + (hsFail > 1 ? 's' : '') + '. Check the token on the How it connects page.');
+  // What the real calls tell Nikhil (decision support)
+  if (realLeads.length) {
+    const R = realLeads, n = R.length, pct = x => Math.round(100 * x / n) + '%';
+    const count = (arr) => { const m = {}; arr.filter(Boolean).forEach(x => m[x] = (m[x] || 0) + 1); return Object.entries(m).sort((a, b) => b[1] - a[1]); };
+    const q2 = R.filter(l => l.outcome === 'qualified').length;
+    const reasons = count(R.filter(l => l.outcome === 'closed').map(l => (l.reason || '').replace(/_/g, ' ')));
+    const areas = count(R.map(l => (l.facts || {}).location_text));
+    const types = count(R.map(l => ((l.facts || {}).project_type || '').replace(/_/g, ' ')));
+    const priceAsk = R.filter(l => (l.facts || {}).asked_price).length, leaks = R.filter(l => l.price_leak).length;
+    const avgDur = Math.round(R.reduce((a, l) => a + (l.duration_secs || 0), 0) / n);
+    const tips = [];
+    if (q2) tips.push(q2 + ' of ' + n + ' calls (' + pct(q2) + ') were worth a designer\'s time and went out with a complete note.');
+    if (reasons.length) tips.push('Most common reason to decline: ' + reasons[0][0] + ' (' + reasons[0][1] + '). ' + (reasons[0][0].includes('area') ? 'Consider whether demand outside Pune justifies a partner network.' : reasons[0][0].includes('timeline') ? 'Callers want speed; a fast-track package could be explored.' : 'Use this to sharpen marketing so fewer non-fit calls arrive.'));
+    if (priceAsk) tips.push(pct(priceAsk) + ' of callers asked about price' + (leaks ? '' : ' and the agent never gave a figure') + '. A clear "what a consultation includes" page could reassure them early.');
+    if (areas.length) tips.push('Where demand comes from: ' + areas.slice(0, 3).map(a => a[0] + ' (' + a[1] + ')').join(', ') + '.');
+    $('insights').innerHTML = '<div class="sec-h"><h2>What the real calls tell Nikhil</h2><span class="muted small">from ' + n + ' real voice call' + (n > 1 ? 's' : '') + ', updated live</span></div>' +
+      '<div class="kpis" style="margin-bottom:12px">' + [[pct(q2), 'qualified for a designer'], [avgDur + ' s', 'average call length'], [pct(priceAsk), 'asked about price'], [leaks, 'price rule breaks'], [types[0] ? types[0][0] : '\u2014', 'most common project']].map(x => '<div class="card kpi"><div class="v" style="font-size:1.4rem">' + esc(x[0]) + '</div><div class="l">' + x[1] + '</div></div>').join('') + '</div>' +
+      '<ul style="padding-left:18px;margin:0">' + tips.map(t => '<li>' + esc(t) + '</li>').join('') + '</ul>';
+  } else {
+    $('insights').innerHTML = '<div class="sec-h"><h2>What the real calls tell Nikhil</h2></div><p class="muted">No real voice calls yet. Make one on the <a href="/live">Live AI call</a> page.</p>';
+  }
   $('alerts').innerHTML = alerts.map(t => '<div class="alert">' + t + '</div>').join('');
+  const CN = { 1: 'Real project', 2: 'In Pune / PCMC', 3: 'Realistic timeline', 4: 'Budget band', 5: 'Decision-maker' };
   const open = i => {
-    const l = leads[i];
+    const l = allLeads[i]; const f = l.facts || {}; const cr = l.criteria || {};
+    const facts = [['Name', f.caller_name], ['Project', f.project_type && f.project_type.replace(/_/g, ' ')], ['Scope', f.scope_text], ['Where', f.location_text], ['Size', f.area_sqft && f.area_sqft + ' sq ft'], ['Site', f.property_state], ['Timeline', f.timeline_text], ['Budget', f.budget_max_lakh ? 'up to ' + f.budget_max_lakh + ' lakh (volunteered)' : 'not discussed'], ['Decides', f.decision_maker && f.decision_maker.replace(/_/g, ' ')], ['Preferred slot', f.preferred_slot], ['Asked price', f.asked_price ? 'yes, deflected' : 'no']].filter(x => x[1]);
     $('dlgBody').innerHTML = '<div style="display:flex;justify-content:space-between;gap:10px"><h2>' + esc(l.name || 'Unknown caller') + ' <span class="pill ' + OUT[l.outcome][0] + '">' + OUT[l.outcome][1] + '</span></h2><button class="btn sm" id="x">Close</button></div>' +
-      (l.price_leak ? '<div class="alert">\u26a0 The voice agent said a price on this call: \u201c' + esc(l.price_leak[0]) + '\u201d. Review the Vaani prompt.</div>' : '') + (/^\+\d{10,15}$/.test((l.phone || '').replace(/[^\d+]/g, '')) && l.outcome !== 'closed' ? '<p><button class="btn primary sm" id="cb">\ud83d\udcde Call back with AI (Vaani)</button> <span class="small muted" id="cbmsg">The Vaani agent rings ' + esc(l.phone) + ' and runs the same qualification.</span></p>' : '') + (l.recording_url ? '<p class="small"><a href="' + esc(l.recording_url) + '" target="_blank" rel="noopener">Listen to the call recording</a></p>' : '') + '<h3>Handoff note</h3><div class="note">' + esc(l.note) + '</div><h3 style="margin-top:14px">Transcript</h3><div class="tr">' + (l.transcript || []).map(m => '<div class="' + (m.role === 'agent' ? 'a' : 'c') + '">' + esc(m.text) + '</div>').join('') + '</div>' +
-      '<p class="small muted" style="margin-top:12px">Model: ' + esc(l.model) + ' · tokens in/out: ' + ((l.usage || {}).input || 0) + '/' + ((l.usage || {}).output || 0) + ' · price attempts blocked: ' + (l.price_blocked || 0) + '</p>';
+      '<p class="small muted" style="margin-top:-6px">' + fmt(l.created_at) + ' \u00b7 ' + (l.real_call ? (l.channel === 'vaani-webrtc' ? 'Live WebRTC call with the Vaani agent' : 'Phone call via Vaani') : 'Practice call (simulator)') + ' \u00b7 ' + Math.round((l.duration_secs || 0)) + ' s' + (l.vaani_call_id ? ' \u00b7 ' + esc(l.vaani_call_id) : '') + '</p>' +
+      (l.price_leak ? '<div class="alert">\u26a0 The voice agent said a price on this call: \u201c' + esc(l.price_leak[0]) + '\u201d. Review the Vaani prompt.</div>' : '') +
+      '<div class="card" style="box-shadow:none;margin:10px 0"><h3>Takeaways</h3>' + (l.vaani_summary ? '<p>' + esc(l.vaani_summary) + '</p>' : '') + '<dl class="kvd">' + facts.map(x => '<dt>' + x[0] + '</dt><dd>' + esc(x[1]) + '</dd>').join('') + '</dl></div>' +
+      '<div class="card" style="box-shadow:none;margin:10px 0"><h3>Decision and why</h3><p><b>' + esc(l.label || '') + '.</b> ' + esc(l.next_action || '') + '</p><ul class="crit">' + Object.keys(cr).sort().map(k => '<li><span class="pill ' + (cr[k].status === 'pass' ? 'good' : cr[k].status === 'fail' ? 'bad' : 'mute') + '">' + cr[k].status + '</span> ' + CN[k] + ': ' + esc(cr[k].reason) + '</li>').join('') + '</ul>' + ((l.flags || []).length ? '<p class="small"><b>Watch-outs:</b> ' + l.flags.map(esc).join(' \u00b7 ') + '</p>' : '') + '</div>' +
+      (/^\+\d{10,15}$/.test((l.phone || '').replace(/[^\d+]/g, '')) && l.outcome !== 'closed' ? '<p><button class="btn primary sm" id="cb">\ud83d\udcde Call back with AI (Vaani)</button> <span class="small muted" id="cbmsg">The Vaani agent rings ' + esc(l.phone) + ' and runs the same qualification.</span></p>' : '') +
+      (l.recording_url ? '<p class="small"><a href="' + esc(l.recording_url) + '" target="_blank" rel="noopener">\u25b6 Listen to the call recording</a></p>' : '') +
+      '<h3>Full transcript</h3><div class="tr">' + (l.transcript || []).map(m => '<div class="' + (m.role === 'agent' ? 'a' : 'c') + '"><small>' + (m.role === 'agent' ? 'AI receptionist' : 'Caller') + '</small> ' + esc(m.text) + '</div>').join('') + '</div>' +
+      '<details style="margin-top:12px"><summary>Handoff note sent to the designer</summary><div class="note" style="margin-top:8px">' + esc(l.note) + '</div></details>' +
+      '<p class="small muted" style="margin-top:12px">Telegram: ' + (l.handoff && l.handoff.sent ? 'sent' : 'not sent') + ' \u00b7 HubSpot: ' + (l.hubspot ? (l.hubspot.ok ? 'synced' : 'failed') : 'not sent') + ' \u00b7 analysis model: ' + esc(l.model) + '</p>';
     $('dlg').showModal(); $('x').onclick = () => $('dlg').close();
     if ($('cb')) $('cb').onclick = async () => {
       if (!confirm('Ask the AI agent to call ' + l.phone + ' now?')) return;
@@ -162,6 +198,7 @@
   $('leads').onclick = e => { const tr = e.target.closest('tr.click'); if (tr) open(+tr.dataset.i); };
   $('leads').onkeydown = e => { if (e.key === 'Enter') { const tr = e.target.closest('tr.click'); if (tr) open(+tr.dataset.i); } };
   $('dlg').addEventListener('click', e => { if (e.target === $('dlg')) $('dlg').close(); });
+  if (location.hash.length > 1) { const ix = allLeads.findIndex(l => l.id === decodeURIComponent(location.hash.slice(1))); if (ix >= 0) open(ix); }
 
   $('csv').onclick = () => {
     const cols = ['created_at', 'name', 'phone', 'outcome', 'reason', 'priority', 'after_hours', 'first_response_secs', 'duration_secs', 'llm_cost_inr'];

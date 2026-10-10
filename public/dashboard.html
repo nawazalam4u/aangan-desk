@@ -50,12 +50,15 @@ details>summary{cursor:pointer;font-weight:600}
 .chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .chips{display:flex;gap:6px;flex-wrap:wrap}.chip{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 12px;font-size:.84rem;cursor:pointer;color:var(--ink);font:inherit;font-size:.84rem}
 .alert{display:flex;gap:10px;align-items:center;margin:0 0 10px;padding:10px 14px;border-radius:12px;background:var(--bad-bg);color:var(--bad);font-size:.92rem}
+.kvd{display:grid;grid-template-columns:130px 1fr;gap:4px 12px;font-size:.9rem;margin:0}.kvd dt{color:var(--muted)}.kvd dd{margin:0}
+ul.crit{list-style:none;padding:0;margin:6px 0;display:grid;gap:4px;font-size:.9rem}
+.tr small{opacity:.7;font-size:.72rem;margin-right:4px}
 </style>
 </head>
 <body>
 <header class="top"><div class="wrap">
   <a class="brand" href="/"><i></i>Aangan Desk</a>
-  <nav aria-label="Main"><a href="/">Live call</a><a href="/dashboard" aria-current="page">Dashboard</a><a href="/connect">How it connects</a><a href="/brief">Brief &amp; checks</a></nav>
+  <nav aria-label="Main"><a href="/live">Live AI call</a><a href="/">Demo simulator</a><a href="/dashboard" aria-current="page">Dashboard</a><a href="/connect">How it connects</a><a href="/brief">Brief &amp; checks</a></nav>
 </div></header>
 <main class="wrap">
   <div style="padding:24px 0 8px">
@@ -78,6 +81,7 @@ details>summary{cursor:pointer;font-weight:600}
     </div>
   </section>
 
+  <section class="block card" id="insights"></section>
   <div id="alerts"></div>
   <section class="block two">
     <div class="card"><div class="sec-h"><h2>When enquiries arrive</h2><span class="muted small">hour of day (IST)</span></div>

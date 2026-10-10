@@ -4,7 +4,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); sys.path.ins
 for k in ("ANTHROPIC_API_KEY", "GEMINI_API_KEY", "DATABASE_URL", "TELEGRAM_BOT_TOKEN", "HUBSPOT_TOKEN", "TELEGRAM_CHAT_ID"): os.environ.pop(k, None)
 import vaani, _store, finalize, _core as c
 MEM, LEADS, TG = {}, [], []
-_store.configured = lambda: True; _store.get_setting = lambda k: MEM.get(k); _store.set_setting = lambda k, v: MEM.__setitem__(k, v); _store.save = lambda l: LEADS.append(l)
+_store.configured = lambda: True; _store.get_setting = lambda k: MEM.get(k); _store.set_setting = lambda k, v: MEM.__setitem__(k, v); _store.save = lambda l: LEADS.append(l); _store.get = lambda i: next((l for l in LEADS if l['id'] == i), None)
 c.send_telegram = lambda t, i, urgent=False: TG.append(t) or {"sent": False}
 T = ("[13:33:14] AGENT: Namaste, thank you for calling Aangan Studio. How can I help you today?\n\n[13:33:19] USER: Hi, I have a 3BHK in Kothrud and want the whole thing redone with execution. How much per sq ft?\n\n"
      "[13:33:25] AGENT: Pricing depends on the site, the materials you choose, and the scope. When would you need it completed?\n\n[13:33:31] USER: By March, no rush. About 1400 sq ft, a bare builder flat.\n\n"
@@ -21,4 +21,12 @@ assert r2["price_leaks"] == 1 and any("PRICE RULE BROKEN" in t for t in TG); pri
 assert vaani.process({"event": "call_postprocessing", "data": {"room_name": "r3", "transcript": "AGENT: Hi.\n\n USER: I'm in Nashik, can you do my home office?\n\n AGENT: We only work in Pune."}})["outcome"] == "closed"
 assert vaani.process({"event": "call_postprocessing", "data": {"room_name": "r4", "transcript": "AGENT: Hi.\n\n USER: My project has been going for three months and my designer hasn't replied. Not acceptable, I want someone senior."}})["outcome"] == "escalated"
 assert vaani.process({"event": "call_ended", "room_name": "r5", "call_duration": 12})["ignored"] == "call_ended"
+# same call delivered twice -> stored once
+again = vaani.process({"event": "call_postprocessing", "call_id": "outbound-1-abc", "data": {"room_name": "outbound-1-abc", "call_duration": 55150.0, "transcript": T}})
+assert again.get("duplicate"), again
+# a browser (WebRTC) call is labelled as such and gets a next action
+w = vaani.process({"event": "call_postprocessing", "data": {"room_name": "webrtc-1-x", "call_duration": 40000, "transcript": T}})
+Lw = [l for l in LEADS if l["id"] == w["lead_id"]][-1]
+assert Lw["channel"] == "vaani-webrtc" and Lw["real_call"] and Lw["next_action"].startswith("Designer calls back"), Lw["next_action"]
+print("dedupe + WebRTC labelling + next action OK")
 print("ALL VAANI WEBHOOK TESTS PASSED")

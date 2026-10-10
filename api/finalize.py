@@ -44,7 +44,7 @@ def process_finalize(b):
         note = c.build_note(facts, dict(dec, flags=dec.get("flags", []) + ["CALL ENDED EARLY - caller hung up before the questions were finished; call back"]), phone, started, len(transcript))
     first_reply = b.get("first_response_secs")
     lead = {
-        "id": "L" + uuid.uuid4().hex[:8],
+        "id": b.get("lead_id") or ("L" + uuid.uuid4().hex[:8]),
         "created_at": started.isoformat(),
         "ended_at": ended.isoformat(),
         "duration_secs": max(1, int((ended - started).total_seconds())),
@@ -71,6 +71,13 @@ def process_finalize(b):
         "price_blocked": int(b.get("price_blocked", 0)),
         "demo": bool(b.get("demo", True)),
     }
+    slot = facts.get("preferred_slot")
+    lead["next_action"] = {
+        "qualified": "Designer calls back %s to confirm the consultation%s." % ("next morning at 10" if lead["after_hours"] else "within 30 minutes", (" (caller prefers " + slot + ")") if slot else ""),
+        "callback": "Call back to finish the questions (the call ended early).",
+        "escalated": "Senior person calls back within 15 minutes; do not route to sales.",
+        "closed": "No designer time needed. Reason: %s." % (dec.get("reason") or "").replace("_", " "),
+    }[outcome]
     if outcome in ("qualified", "callback", "escalated"):
         lead["handoff"] = c.send_telegram(note, lead["id"], urgent=(outcome == "escalated"))
         lead["handoff"]["channel"] = "telegram"
