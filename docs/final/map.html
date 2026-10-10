@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Case 03 Components Map</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:#1d2523;font:13px/1.35 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{width:1560px;padding:30px 34px}
+.hdr{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:14px}
+.hdr h1{margin:0;font-size:26px;letter-spacing:.06em}.hdr p{margin:4px 0 0;color:#66706b;font-size:14px}
+.hdr .tag{background:#1d2523;color:#fff;border-radius:99px;padding:6px 14px;font-weight:700;font-size:12px}
+.grid{display:grid;grid-template-columns:170px repeat(6,1fr);gap:8px}
+.col{background:#1d2523;color:#fff;text-align:center;border-radius:8px;padding:9px 4px;font-weight:800;letter-spacing:.12em;font-size:12px;position:relative}
+.col:after{content:"";position:absolute;bottom:-7px;left:50%;width:9px;height:9px;margin-left:-4px;border-radius:50%;background:#2e7d55;border:2px solid #fff}
+.act{border-radius:8px;padding:10px 12px;background:#f1ece4;display:flex;flex-direction:column;justify-content:center;min-height:96px}
+.act b{font-size:15px}.act small{color:#66706b;font-size:11.5px}
+.pillh{display:inline-block;margin-top:5px;border-radius:99px;padding:1px 8px;font-size:10px;font-weight:800;width:fit-content}
+.ph{background:#f9e5e2;color:#b4382e}.pa{background:#e5f3ea;color:#2e7d55}
+.c{border:1.5px dashed #e3dccf;border-radius:8px;min-height:96px;padding:9px 10px;font-size:12.5px}
+.c b{display:block;font-size:13.5px;margin-bottom:2px}
+.sys{border:1.5px solid #2c6788;background:#e8f2f8}
+.code{border:1.5px solid #2e7d55;background:#e9f5ee}
+.ai{border:1.5px solid #c2613a;background:#fbefe9}
+.gate{border:2.5px solid #b4382e;background:#fdf0ee}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#c2613a;margin-right:5px;vertical-align:middle}
+.legend{display:flex;gap:22px;margin-top:14px;font-size:13px;color:#3c4541;flex-wrap:wrap}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:4px;margin-right:6px;vertical-align:-2px}
+.strip{margin-top:14px;display:flex;gap:8px;align-items:center;font-size:13.5px;font-weight:700}
+.strip span{background:#1d2523;color:#fff;border-radius:99px;padding:6px 14px}
+.strip em{font-style:normal;color:#66706b}
+</style></head><body><div class="wrap">
+<div class="hdr"><div><h1>COMPONENTS MAP &middot; CASE 03 / NIKHIL</h1><p>Aangan Studio &middot; AI receptionist for incoming enquiry calls &middot; Trigger &rarr; Input &rarr; Context &rarr; Processing &rarr; AI &rarr; Output</p></div><span class="tag">&#9679; Aangan Desk</span></div>
+<div class="grid">
+  <div></div><div class="col">TRIGGER</div><div class="col">INPUT</div><div class="col">CONTEXT</div><div class="col">PROCESSING</div><div class="col">AI</div><div class="col">OUTPUT</div>
+
+  <div class="act"><b>Caller</b><small>new enquiry, any hour</small><span class="pillh ph">HUMAN</span></div>
+  <div class="c sys"><b><span class="dot"></span>Calls Aangan</b>browser call (WebRTC) or phone number</div>
+  <div class="c sys"><b>Speaks</b>what, where, size, when, who decides</div>
+  <div class="c"></div><div class="c"></div><div class="c"></div>
+  <div class="c sys"><b>Gets an instant answer</b>no price ever; honest decline or "team will call you"</div>
+
+  <div class="act"><b>Vaani voice agent</b><small>ears, brain, mouth</small><span class="pillh pa">AUTOMATED</span></div>
+  <div class="c sys"><b>Answers in &lt;1 s</b>says it is an AI, call recorded</div>
+  <div class="c sys"><b>Speech &rarr; text</b>live transcript</div>
+  <div class="c code"><b>Agent prompt</b>qualified.md 5 criteria &middot; services.md scope &middot; pricing.md rule</div>
+  <div class="c"></div>
+  <div class="c ai"><b>Runs the conversation</b>asks one question at a time, deflects price</div>
+  <div class="c sys"><b><span class="dot"></span>Post-call webhook</b>transcript + summary + recording</div>
+
+  <div class="act"><b>Aangan Desk app</b><small>Vercel + Neon</small><span class="pillh pa">AUTOMATED</span></div>
+  <div class="c"></div><div class="c"></div>
+  <div class="c code"><b>Rules in code</b>Pune/PCMC list, 6-week lead time, budget floor, price filter</div>
+  <div class="c code"><b>Decide</b>qualified / close politely / escalate / call back &middot; save to Neon</div>
+  <div class="c ai"><b>Gemini</b>extracts facts from the transcript (never decides)</div>
+  <div class="c code"><b><span class="dot"></span>Handoff note</b>everything already asked</div>
+
+  <div class="act"><b>Designer</b><small>14 designers, on site</small><span class="pillh ph">HUMAN GATE</span></div>
+  <div class="c gate"><b><span class="dot"></span>Telegram alert</b>taps "I'll take it"</div>
+  <div class="c"></div><div class="c"></div>
+  <div class="c gate"><b>Judgment</b>calls back, runs the consultation</div>
+  <div class="c"></div>
+  <div class="c gate"><b>Owns the price</b>quoted at consultation only</div>
+
+  <div class="act"><b>HubSpot + Cal.com</b><small>CRM and booking</small><span class="pillh pa">AUTOMATED</span></div>
+  <div class="c sys"><b>Qualified lead</b>from the app</div>
+  <div class="c"></div><div class="c"></div>
+  <div class="c sys"><b>Contact, note, task, deal</b>booking moves the deal stage</div>
+  <div class="c"></div>
+  <div class="c sys"><b><span class="dot"></span>Consultation booked</b>meeting logged in HubSpot</div>
+
+  <div class="act"><b>Nikhil</b><small>founder, owner</small><span class="pillh ph">HUMAN</span></div>
+  <div class="c gate"><b>Escalations</b>existing-client complaints (T09)</div>
+  <div class="c"></div>
+  <div class="c"><b>Owns the rubric</b>qualified.md</div>
+  <div class="c"></div><div class="c"></div>
+  <div class="c sys"><b>Live dashboard</b>every call: transcript, takeaway, decision, cost</div>
+</div>
+<div class="legend"><span><i style="background:#e8f2f8;border:1.5px solid #2c6788"></i>System step</span><span><i style="background:#e9f5ee;border:1.5px solid #2e7d55"></i>Plain code (rules, testable)</span><span><i style="background:#fbefe9;border:1.5px solid #c2613a"></i>AI</span><span><i style="background:#fdf0ee;border:2.5px solid #b4382e"></i>Human gate</span><span><span class="dot"></span>Handoff</span></div>
+<div class="strip"><span>Answer</span><em>&rarr;</em><span>Qualify</span><em>&rarr;</em><span>Hand off</span><em>&rarr;</em><span>Book</span><em>&rarr;</em><span>Measure</span><em style="margin-left:14px">The Cut: no price is ever quoted by the AI; the designer owns pricing (Check 06).</em></div>
+</div></body></html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Case 03 Nine Checks</title>
+<style>
+@page{size:A4;margin:12mm}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:#1d2523;font:10pt/1.45 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.sheet{width:186mm;margin:0 auto;padding:8mm 0}
+.hdr{background:#1d2523;color:#fff;border-radius:10px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
+.hdr b{font-size:13pt;letter-spacing:.02em}.hdr span{font-size:8.5pt;opacity:.8}
+h2{font-size:12pt;margin:12px 0 6px}
+.fp{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:6px}
+.fp div{border:1px solid #e3dccf;border-radius:8px;padding:7px 8px;font-size:8.8pt}
+.fp b{display:block;color:#c2613a;font-size:9pt;margin-bottom:2px}
+table{width:100%;border-collapse:collapse;font-size:8.9pt}
+th{background:#f1ece4;text-align:left;padding:5px 7px;font-size:8pt;text-transform:uppercase;letter-spacing:.05em}
+td{border-bottom:1px solid #e9e3d8;padding:6px 7px;vertical-align:top}
+td.no{font-weight:800;color:#c2613a;width:28px}
+td.nm{width:118px}td.nm b{display:block}td.nm small{color:#66706b;font-size:7.8pt}
+td.res{width:64px;text-align:center}
+.p{display:inline-block;border-radius:99px;padding:2px 9px;font-weight:700;font-size:8pt}
+.pass{background:#e5f3ea;color:#2e7d55}.fail{background:#f9e5e2;color:#b4382e}
+.grp td{background:#1d2523;color:#fff;font-weight:700;font-size:8.4pt;padding:5px 7px}
+.cut{margin-top:10px;border:2px solid #b4382e;background:#fdf3f1;border-radius:10px;padding:9px 12px;font-size:9pt}
+.cut b.t{color:#b4382e;font-size:10.5pt}
+.src{font-size:7.6pt;color:#66706b;margin-top:6px}
+</style></head><body><div class="sheet">
+<div class="hdr"><div><b>THE NINE CHECKS &middot; CASE 03 / NIKHIL</b><br><span>Aangan Studio, Pune &middot; Unanswered enquiries &middot; Build scope: incoming phone calls only</span></div><span>MESA &middot; AI and its Application &middot; Cohort C4</span></div>
+
+<h2>First principles: what must be true before we automate?</h2>
+<div class="fp">
+<div><b>1. The job</b>Answer every enquiry call, find out if it is worth a designer's time, and pass it on with everything already asked.</div>
+<div><b>2. The facts</b>~200 enquiries/month; ~48% unanswered in 48 h; ~33% outside 10am&ndash;7pm; 2-person desk; &lt;1 h reply converts 4&times;; project &#8377;8&ndash;14 lakh.</div>
+<div><b>3. The rules we must obey</b>qualified.md (5 criteria), services.md (scope, Pune/PCMC, 6-week lead time), pricing.md (no number may ever be quoted).</div>
+<div><b>4. Where the human stays</b>Pricing, the consultation, complaints from existing clients, and the final fit decision.</div>
+</div>
+
+<table>
+<tr><th>#</th><th>Check</th><th>Evidence from the case</th><th>Result</th></tr>
+<tr class="grp"><td colspan="4">KILL SWITCHES &middot; any NO = do not build</td></tr>
+<tr><td class="no">01</td><td class="nm"><b>Problem Real</b><small>Documented, ongoing pain?</small></td><td>Nikhil pulled his own numbers: ~48% of ~200 enquiries a month get no response within 48 hours, and an answer within 1 hour converts 4&times; better than next day. Transcripts show it live: T08 missed at 10:47pm, T16 never logged, T07 left with no details taken.</td><td class="res"><span class="p pass">PASS</span></td></tr>
+<tr><td class="no">02</td><td class="nm"><b>Workflow Repeated</b><small>Does it recur regularly?</small></td><td>~200 enquiries every month; 20 of the 40 September transcripts are phone calls asking the same questions (what, where, size, when, who decides).</td><td class="res"><span class="p pass">PASS</span></td></tr>
+<tr><td class="no">03</td><td class="nm"><b>Input Available</b><small>Inputs exist and accessible now?</small></td><td>The caller's own words on the call, plus enquiries/ (40 transcripts), services.md, pricing.md and qualified.md, all provided. The voice line is available through a voice-AI platform (Vaani: WebRTC now, phone number when bought).</td><td class="res"><span class="p pass">PASS</span></td></tr>
+<tr class="grp"><td colspan="4">SIZING &middot; any NO = build something smaller</td></tr>
+<tr><td class="no">04</td><td class="nm"><b>Output Valuable</b><small>Would someone act on it?</small></td><td>Designers act on a complete handoff note instead of "a forwarded message with no context"; Nikhil acts on the numbers he today pulls by hand; callers get an answer at any hour.</td><td class="res"><span class="p pass">PASS</span></td></tr>
+<tr><td class="no">05</td><td class="nm"><b>Impact Measurable</b><small>Trackable with a number?</small></td><td>Time to answer, % answered within 5 minutes, qualified / closed / escalated counts, time for a designer to claim the lead, consultations booked, and cost per call, all logged per call on the dashboard.</td><td class="res"><span class="p pass">PASS</span></td></tr>
+<tr><td class="no">08</td><td class="nm"><b>ROI Worth It</b><small>Benefit clearly beats cost?</small></td><td>Voice ~&#8377;5.50/min plus ~&#8377;0.4 of AI analysis per call; hosting, database and CRM on free tiers. At 200 calls a month this is a few thousand rupees, against an average project of &#8377;8&ndash;14 lakh: one extra won project pays for many months.</td><td class="res"><span class="p pass">PASS</span></td></tr>
+<tr class="grp"><td colspan="4">BOUNDARY &middot; any NO = build the tool, the human stays here</td></tr>
+<tr><td class="no">06</td><td class="nm"><b>Failure Risk OK</b><small>If the AI is wrong, what happens?</small></td><td>Wrong qualification is recoverable: every closed call is logged and reviewable, and unclear calls go to a call-back. <b>A wrong price is not recoverable:</b> pricing.md says pricing is "indicative only, varies by site" and no number may be quoted; a figure on an &#8377;8&ndash;14 lakh decision anchors the customer.</td><td class="res"><span class="p fail">NO for pricing</span></td></tr>
+<tr><td class="no">07</td><td class="nm"><b>Judgment Protected</b><small>Human review before anything consequential?</small></td><td>The AI only answers, collects and forwards. The designer claims the lead, runs the consultation and owns the price; senior staff own existing-client complaints (T09). Nothing is promised or quoted by the AI.</td><td class="res"><span class="p pass">PASS</span></td></tr>
+<tr><td class="no">09</td><td class="nm"><b>Owner Clear</b><small>One person accountable?</small></td><td>Nikhil: he wrote qualified.md ("This is my rubric"), the rules in the system mirror it, and the dashboard lists every decision so he can correct the rubric.</td><td class="res"><span class="p pass">PASS</span></td></tr>
+</table>
+
+<div class="cut"><b class="t">THE CUT: quoting per-square-foot pricing</b><br>
+Nikhil asked: <i>"the system should be able to quote our standard per-square-foot pricing so people don't have to wait for that."</i> <b>Check 06 (Failure Risk) stops it</b>, with 07 behind it: pricing.md forbids any number, range or "starts at" figure, and pricing is confirmed by the assigned designer at the consultation. <b>What we built instead:</b> the agent gives the approved line ("Pricing depends on the site, the materials you choose, and the scope; your designer will walk you through it at the consultation") and offers to book it; asking about price never disqualifies a caller. Code audits every transcript and alerts if a figure ever slips.</div>
+<p class="src">Sources: Case 03 problem statement; qualified.md; services.md; pricing.md; enquiries (T01&ndash;T20 phone, W01&ndash;W10, F01&ndash;F10). Verdict: <b>BUILD</b>: all kill switches and sizing checks pass; one boundary (pricing) stays with a human.</p>
+</div></body></html>
